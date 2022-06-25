@@ -1,0 +1,1 @@
+typedef MyCallBackVoid = void Function();
