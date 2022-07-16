@@ -1,5 +1,4 @@
 import 'package:faker/faker.dart';
-import '../entities/authenticated_user_model.dart';
 import '../entities/entities.dart';
 
 class FakeDatabase {

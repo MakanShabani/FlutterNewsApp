@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:collection/collection.dart';
 
 import '../entities/ViewModels/view_models.dart';
@@ -87,7 +85,7 @@ class FakeAuthenticationDataSource {
     );
   }
 
-  ResponseModel<Void> logoutUser({required String userToken}) {
+  ResponseModel<void> logoutUser({required String userToken}) {
     //the user not found or user password is incorrect.
     if (!fakeData.isUserTokenValid(token: userToken)) {
       ErrorModel error = ErrorModel(
