@@ -33,6 +33,8 @@ class FakePostDataSource {
           statusCode: 200,
           data: fakeDatabase.posts
               .where((element) => element.id == categoryId)
+              .sorted((a, b) =>
+                  b.createdAt.compareTo(a.createdAt)) //Descending order
               .skip(pagingOptionsVm.offset!)
               .take(pagingOptionsVm.limit!)
               .toList());
@@ -42,6 +44,51 @@ class FakePostDataSource {
       return ResponseModel(
           statusCode: 200,
           data: fakeDatabase.posts
+              .sorted((a, b) =>
+                  b.createdAt.compareTo(a.createdAt)) //Descending order
+              .skip(pagingOptionsVm.offset!)
+              .take(pagingOptionsVm.limit!)
+              .toList());
+    }
+  }
+
+  ResponseModel<List<Post>> getSlides(
+      {required String userToken,
+      String? categoryId,
+      required PagingOptionsVm pagingOptionsVm}) {
+    //user token is not valid -- Unauthorized
+    if (!fakeDatabase.isUserTokenValid(token: userToken)) {
+      return ResponseModel(
+          statusCode: 401, error: fakeDatabase.unAuthorizedError);
+    }
+
+    if (categoryId != null) {
+      //we send category posts
+
+      //Category not exist
+      if (!fakeDatabase.categories.any((element) => element.id == categoryId)) {
+        return ResponseModel(
+            statusCode: 401, error: fakeDatabase.categoryNotExist);
+      }
+
+      //everything is ok
+      return ResponseModel(
+          statusCode: 200,
+          data: fakeDatabase.posts
+              .where((element) => element.id == categoryId)
+              .sorted((a, b) =>
+                  b.createdAt.compareTo(a.createdAt)) //Descending order
+              .skip(pagingOptionsVm.offset!)
+              .take(pagingOptionsVm.limit!)
+              .toList());
+    } else {
+      //everything is ok so we send all category posts
+
+      return ResponseModel(
+          statusCode: 200,
+          data: fakeDatabase.posts
+              .sorted((a, b) =>
+                  b.createdAt.compareTo(a.createdAt)) //Descending order
               .skip(pagingOptionsVm.offset!)
               .take(pagingOptionsVm.limit!)
               .toList());

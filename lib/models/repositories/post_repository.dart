@@ -2,6 +2,9 @@ import '../entities/ViewModels/view_models.dart';
 import '../entities/entities.dart';
 
 abstract class PostRepository {
+  Future<ResponseModel<List<Post>>> getSlides(
+      {String? categoryId, required PagingOptionsVm slidePagingOptionsVm});
+
   Future<ResponseModel<List<Post>>> getPosts(
       {required PagingOptionsVm pagingOptionsVm, String? categoryId});
 

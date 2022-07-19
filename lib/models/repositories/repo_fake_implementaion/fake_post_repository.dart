@@ -70,4 +70,17 @@ class FakePostReposiory implements PostRepository {
               postUpdateVm: postUpdateVm,
             ));
   }
+
+  @override
+  Future<ResponseModel<List<Post>>> getSlides(
+      {String? categoryId,
+      required PagingOptionsVm slidePagingOptionsVm}) async {
+    return await Future.delayed(
+        const Duration(seconds: 5),
+        () => fakePostDataSource.getSlides(
+              categoryId: categoryId,
+              userToken: credentials.credentials!.token,
+              pagingOptionsVm: slidePagingOptionsVm,
+            ));
+  }
 }
