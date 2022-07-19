@@ -60,9 +60,9 @@ class FakeDatabase {
         role: UserRole.chiefEditor,
         status: UserStatus.active));
 
-    createDummyCategories(14);
-    createDummyUser(14);
-    createDummyPost(14);
+    createDummyCategories(30);
+    createDummyUser(60);
+    createDummyPost(100);
   }
 
   void createDummyCategories(int count) {
