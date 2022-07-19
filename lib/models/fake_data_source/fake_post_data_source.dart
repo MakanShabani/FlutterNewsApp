@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:collection/collection.dart';
 
 import '../entities/ViewModels/view_models.dart';
@@ -8,21 +10,42 @@ class FakePostDataSource {
   FakeDatabase fakeDatabase = FakeDatabase();
 
   ResponseModel<List<Post>> getPosts(
-      {required String userToken, required PagingOptionsVm pagingOptionsVm}) {
+      {required String userToken,
+      String? categoryId,
+      required PagingOptionsVm pagingOptionsVm}) {
     //user token is not valid -- Unauthorized
     if (!fakeDatabase.isUserTokenValid(token: userToken)) {
       return ResponseModel(
           statusCode: 401, error: fakeDatabase.unAuthorizedError);
     }
 
-    //everything is ok
+    if (categoryId != null) {
+      //we send category posts
 
-    return ResponseModel(
-        statusCode: 200,
-        data: fakeDatabase.posts
-            .skip(pagingOptionsVm.offset!)
-            .take(pagingOptionsVm.limit!)
-            .toList());
+      //Category not exist
+      if (!fakeDatabase.categories.any((element) => element.id == categoryId)) {
+        return ResponseModel(
+            statusCode: 401, error: fakeDatabase.categoryNotExist);
+      }
+
+      //everything is ok
+      return ResponseModel(
+          statusCode: 200,
+          data: fakeDatabase.posts
+              .where((element) => element.id == categoryId)
+              .skip(pagingOptionsVm.offset!)
+              .take(pagingOptionsVm.limit!)
+              .toList());
+    } else {
+      //everything is ok so we send all category posts
+
+      return ResponseModel(
+          statusCode: 200,
+          data: fakeDatabase.posts
+              .skip(pagingOptionsVm.offset!)
+              .take(pagingOptionsVm.limit!)
+              .toList());
+    }
   }
 
   ResponseModel<List<Post>> getAuthorPosts(

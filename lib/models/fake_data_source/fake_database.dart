@@ -23,6 +23,12 @@ class FakeDatabase {
     statusCode: 401,
   );
 
+  final ErrorModel categoryNotExist = ErrorModel(
+    message: 'Category Not Exist',
+    detail: 'Category not found with this id.',
+    statusCode: 404,
+  );
+
   void createDummyUser(int count) {
     Faker faker = Faker();
     for (int i = 0; i <= count; i++) {

@@ -3,7 +3,7 @@ import '../entities/entities.dart';
 
 abstract class PostRepository {
   Future<ResponseModel<List<Post>>> getPosts(
-      {required PagingOptionsVm pagingOptionsVm});
+      {required PagingOptionsVm pagingOptionsVm, String? categoryId});
 
   Future<ResponseModel<List<Post>>> getAuthorPosts(
       {required String userId, required PagingOptionsVm pagingOptionsVm});

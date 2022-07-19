@@ -49,11 +49,12 @@ class FakePostReposiory implements PostRepository {
 
   @override
   Future<ResponseModel<List<Post>>> getPosts(
-      {required PagingOptionsVm pagingOptionsVm}) async {
+      {required PagingOptionsVm pagingOptionsVm, String? categoryId}) async {
     return await Future.delayed(
         const Duration(seconds: 5),
         () => fakePostDataSource.getPosts(
               userToken: credentials.credentials!.token,
+              categoryId: categoryId,
               pagingOptionsVm: pagingOptionsVm,
             ));
   }
