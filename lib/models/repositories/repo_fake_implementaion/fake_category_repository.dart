@@ -14,7 +14,7 @@ class FakeCategoryRepository implements CategoryRepository {
     return await Future.delayed(
       const Duration(seconds: 5),
       () => fakeCategoryDataSource.getCategories(
-        userToken: credentials.credentials!.token,
+        userToken: credentials.authenticatedUser!.token,
         pagingOptionsVm: pagingOptionsVm,
       ),
     );

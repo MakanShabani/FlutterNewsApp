@@ -2,6 +2,7 @@
 import 'package:bloc/bloc.dart';
 // ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
+import 'package:responsive_admin_dashboard/user_credentials.dart';
 
 import '../../models/entities/entities.dart';
 import '../../models/entities/ViewModels/view_models.dart';
@@ -12,13 +13,22 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
+  final UserCredentials userCredentials;
   final AuthenticationRepository authenticationRepository;
 
-  AuthenticationBloc({required this.authenticationRepository})
-      : super(AuthenticationInitial()) {
+  AuthenticationBloc({
+    required this.authenticationRepository,
+    required this.userCredentials,
+  }) : super(AuthenticationInitial()) {
     on<AuthenticationEvent>((event, emit) async {
       if (event is LogoutEvent) {
         await authenticationRepository.logout();
+
+        //everything is ok
+
+        //Save user credentials to database, singleton or sharedprefrences
+        userCredentials.authenticatedUser = null;
+
         emit(Loggedout());
         return;
       }
@@ -33,6 +43,11 @@ class AuthenticationBloc
           return;
         }
 
+        //everything is ok
+
+        //Save user credentials to database, singleton or sharedprefrences
+        userCredentials.authenticatedUser = response.data!;
+
         emit(LoggedIn(user: response.data!));
         return;
       }
@@ -46,6 +61,10 @@ class AuthenticationBloc
           emit(RegisteringError(error: response.error!));
           return;
         }
+        //everything is ok
+
+        //Save user credentials to database, singleton or sharedprefrences
+        userCredentials.authenticatedUser = response.data!;
 
         emit(Registered(user: response.data!));
         return;

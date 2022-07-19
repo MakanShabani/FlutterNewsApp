@@ -29,6 +29,6 @@ class FakeAuthenticationRepository implements AuthenticationRepository {
     return Future.delayed(
         const Duration(seconds: 5),
         () => fakeAuthDataSource.logoutUser(
-            userToken: userCredentials.credentials!.token));
+            userToken: userCredentials.authenticatedUser!.token));
   }
 }

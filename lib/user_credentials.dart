@@ -10,5 +10,5 @@ class UserCredentials {
 
   UserCredentials._privateConstructor();
 
-  AuthenticatedUserModel? credentials;
+  AuthenticatedUserModel? authenticatedUser;
 }

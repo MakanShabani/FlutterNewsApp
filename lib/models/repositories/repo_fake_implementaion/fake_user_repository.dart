@@ -14,7 +14,7 @@ class FakeUserRepository implements UserRepository {
     return await Future.delayed(
         const Duration(seconds: 5),
         () => fakeUserDataSource.getUser(
-            userToken: credentials.credentials!.token, userId: authorId));
+            userToken: credentials.authenticatedUser!.token, userId: authorId));
   }
 
   @override
@@ -23,7 +23,7 @@ class FakeUserRepository implements UserRepository {
     return await Future.delayed(
         const Duration(seconds: 5),
         () => fakeUserDataSource.getusers(
-            userToken: credentials.credentials!.token,
+            userToken: credentials.authenticatedUser!.token,
             pagingOptionsVm: pagingOptionsVm));
   }
 
@@ -33,6 +33,7 @@ class FakeUserRepository implements UserRepository {
     return await Future.delayed(
         const Duration(seconds: 5),
         () => fakeUserDataSource.updateUser(
-            userToken: credentials.credentials!.token, updateVm: updateVm));
+            userToken: credentials.authenticatedUser!.token,
+            updateVm: updateVm));
   }
 }

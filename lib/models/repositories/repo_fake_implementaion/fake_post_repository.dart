@@ -14,7 +14,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
         const Duration(seconds: 5),
         () => fakePostDataSource.createPost(
-            userToken: credentials.credentials!.token,
+            userToken: credentials.authenticatedUser!.token,
             postCreationVm: postCreationVm));
   }
 
@@ -23,7 +23,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
         const Duration(seconds: 5),
         () => fakePostDataSource.deletePost(
-            userToken: credentials.credentials!.token, postId: postId));
+            userToken: credentials.authenticatedUser!.token, postId: postId));
   }
 
   @override
@@ -33,7 +33,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
         const Duration(seconds: 5),
         () => fakePostDataSource.getAuthorPosts(
-              userToken: credentials.credentials!.token,
+              userToken: credentials.authenticatedUser!.token,
               userId: userId,
               pagingOptionsVm: pagingOptionsVm,
             ));
@@ -44,7 +44,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
         const Duration(seconds: 5),
         () => fakePostDataSource.getPost(
-            userToken: credentials.credentials!.token, postId: postId));
+            userToken: credentials.authenticatedUser!.token, postId: postId));
   }
 
   @override
@@ -53,7 +53,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
         const Duration(seconds: 5),
         () => fakePostDataSource.getPosts(
-              userToken: credentials.credentials!.token,
+              userToken: credentials.authenticatedUser!.token,
               categoryId: categoryId,
               pagingOptionsVm: pagingOptionsVm,
             ));
@@ -65,7 +65,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
         const Duration(seconds: 5),
         () => fakePostDataSource.updatePost(
-              userToken: credentials.credentials!.token,
+              userToken: credentials.authenticatedUser!.token,
               postId: postId,
               postUpdateVm: postUpdateVm,
             ));
@@ -79,7 +79,7 @@ class FakePostReposiory implements PostRepository {
         const Duration(seconds: 5),
         () => fakePostDataSource.getSlides(
               categoryId: categoryId,
-              userToken: credentials.credentials!.token,
+              userToken: credentials.authenticatedUser!.token,
               pagingOptionsVm: slidePagingOptionsVm,
             ));
   }
