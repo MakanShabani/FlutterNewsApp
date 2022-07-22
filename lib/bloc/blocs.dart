@@ -1,2 +1,3 @@
 export './authentication/authentication_bloc.dart';
-export './home_section/home_section_bloc.dart';
+export './post/post_bloc.dart';
+export './category/category_bloc.dart';
