@@ -1,12 +1,12 @@
-// ignore: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:bloc/bloc.dart';
-// ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
-import 'package:responsive_admin_dashboard/user_credentials.dart';
 
 import '../../models/entities/entities.dart';
 import '../../models/entities/ViewModels/view_models.dart';
 import '../../models/repositories/repositories.dart';
+import '../../user_credentials.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
