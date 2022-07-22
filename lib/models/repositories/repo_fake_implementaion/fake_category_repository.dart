@@ -12,7 +12,7 @@ class FakeCategoryRepository implements CategoryRepository {
   Future<ResponseModel<List<PostCategory>>> getCategories(
       {required PagingOptionsVm pagingOptionsVm}) async {
     return await Future.delayed(
-      const Duration(seconds: 5),
+      const Duration(microseconds: 1),
       () => fakeCategoryDataSource.getCategories(
         userToken: credentials.authenticatedUser!.token,
         pagingOptionsVm: pagingOptionsVm,
