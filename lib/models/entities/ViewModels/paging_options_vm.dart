@@ -10,7 +10,7 @@ class PagingOptionsVm {
     }
 
     if (offset == null || offset <= 0) {
-      this.offset = 10;
+      this.offset = 0;
     } else {
       this.offset = offset;
     }

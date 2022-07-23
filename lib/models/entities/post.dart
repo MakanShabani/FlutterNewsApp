@@ -11,6 +11,7 @@ class Post extends Entity {
   PostStatus status;
   PostCategory category;
   User author;
+  bool isBookmarked;
 
   Post({
     required String id,
@@ -22,6 +23,7 @@ class Post extends Entity {
     required this.category,
     required this.author,
     required this.status,
+    required this.isBookmarked,
     this.imagesUrls,
   }) : super(id: id, createdAt: createdAt, updatedAt: updatedAt);
 }
