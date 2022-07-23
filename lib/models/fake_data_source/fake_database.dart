@@ -55,14 +55,14 @@ class FakeDatabase {
         firstName: 'admin',
         lastName: 'admin',
         age: 20,
-        email: 'admin@gmail.com',
-        password: 'Admin12!@',
+        email: 'a',
+        password: 'a',
         role: UserRole.chiefEditor,
         status: UserStatus.active));
 
-    createDummyCategories(30);
-    createDummyUser(60);
-    createDummyPost(100);
+    createDummyCategories(10);
+    createDummyUser(10);
+    createDummyPost(400);
   }
 
   void createDummyCategories(int count) {
@@ -94,6 +94,7 @@ class FakeDatabase {
             faker.lorem.sentence(),
         status: PostStatus.published,
         category: (categories..shuffle()).first,
+        isBookmarked: false,
         imagesUrls: [
           faker.image.image(
               width: 1280,

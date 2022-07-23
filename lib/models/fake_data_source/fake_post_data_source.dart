@@ -32,7 +32,7 @@ class FakePostDataSource {
       return ResponseModel(
           statusCode: 200,
           data: fakeDatabase.posts
-              .where((element) => element.id == categoryId)
+              .where((element) => element.category.id == categoryId)
               .sorted((a, b) =>
                   b.createdAt.compareTo(a.createdAt)) //Descending order
               .skip(pagingOptionsVm.offset!)
@@ -75,7 +75,7 @@ class FakePostDataSource {
       return ResponseModel(
           statusCode: 200,
           data: fakeDatabase.posts
-              .where((element) => element.id == categoryId)
+              .where((element) => element.category.id == categoryId)
               .sorted((a, b) =>
                   b.createdAt.compareTo(a.createdAt)) //Descending order
               .skip(pagingOptionsVm.offset!)
@@ -187,6 +187,7 @@ class FakePostDataSource {
       status: PostStatus.reviewing,
       category: postCreationVm.category,
       author: user,
+      isBookmarked: false,
     );
 
     return ResponseModel(statusCode: 200, data: post);
