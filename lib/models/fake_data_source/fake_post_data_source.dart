@@ -19,6 +19,19 @@ class FakePostDataSource {
           statusCode: 401, error: fakeDatabase.unAuthorizedError);
     }
 
+    User? user = fakeDatabase.users
+        .firstWhereOrNull((u) => u.id == fakeDatabase.authenticatedUser!.id);
+
+    //User not found
+    if (user == null) {
+      ErrorModel error = ErrorModel(
+        message: 'User not found',
+        detail: 'User not found.',
+        statusCode: 404,
+      );
+      return ResponseModel(statusCode: 404, error: error);
+    }
+
     if (categoryId != null) {
       //we send category posts
 
@@ -28,16 +41,32 @@ class FakePostDataSource {
             statusCode: 401, error: fakeDatabase.categoryNotExist);
       }
 
+      //get posts
+      Iterable<Post> posts = fakeDatabase.posts
+          .where((element) => element.category.id == categoryId)
+          .sorted(
+              (a, b) => b.createdAt.compareTo(a.createdAt)) //Descending order
+          .skip(pagingOptionsVm.offset)
+          .take(pagingOptionsVm.limit);
+
+      //check each post bookmark status and modify it accordingly
+      //if user has any bookmarked posts.
+      var userBookmarkedPostTableEntry = fakeDatabase
+          .bookmarkedPostsTable.entries
+          .firstWhereOrNull((element) => element.key == user.id);
+      if (userBookmarkedPostTableEntry != null) {
+        for (var element in posts) {
+          userBookmarkedPostTableEntry.value.contains(element.id)
+              ? element.isBookmarked = true
+              : element.isBookmarked = false;
+        }
+      }
+
       //everything is ok
       return ResponseModel(
-          statusCode: 200,
-          data: fakeDatabase.posts
-              .where((element) => element.category.id == categoryId)
-              .sorted((a, b) =>
-                  b.createdAt.compareTo(a.createdAt)) //Descending order
-              .skip(pagingOptionsVm.offset)
-              .take(pagingOptionsVm.limit)
-              .toList());
+        statusCode: 200,
+        data: posts.toList(),
+      );
     } else {
       //everything is ok so we send all category posts
 
@@ -110,8 +139,8 @@ class FakePostDataSource {
     //User not found
     if (user == null) {
       ErrorModel error = ErrorModel(
-        message: 'User not found',
-        detail: 'User not found.',
+        message: 'Author not found',
+        detail: 'Author not found.',
         statusCode: 404,
       );
 
@@ -120,13 +149,28 @@ class FakePostDataSource {
 
     //everything is ok
 
+    //get posts
+    Iterable<Post> posts = fakeDatabase.posts
+        .where((p) => p.author.id == userId)
+        .skip(pagingOptionsVm.offset)
+        .take(pagingOptionsVm.limit);
+
+    //check each post bookmark status and modify it accordingly
+    //if user has any bookmarked posts.
+    var userBookmarkedPostTableEntry = fakeDatabase.bookmarkedPostsTable.entries
+        .firstWhereOrNull((element) => element.key == user.id);
+    if (userBookmarkedPostTableEntry != null) {
+      for (var element in posts) {
+        userBookmarkedPostTableEntry.value.contains(element.id)
+            ? element.isBookmarked = true
+            : element.isBookmarked = false;
+      }
+    }
+
     return ResponseModel(
-        statusCode: 200,
-        data: fakeDatabase.posts
-            .where((p) => p.author.id == userId)
-            .skip(pagingOptionsVm.offset)
-            .take(pagingOptionsVm.limit)
-            .toList());
+      statusCode: 200,
+      data: posts.toList(),
+    );
   }
 
   ResponseModel<Post> getPost({required String userToken, required postId}) {
@@ -134,6 +178,19 @@ class FakePostDataSource {
     if (!fakeDatabase.isUserTokenValid(token: userToken)) {
       return ResponseModel(
           statusCode: 401, error: fakeDatabase.unAuthorizedError);
+    }
+
+    User? user = fakeDatabase.users
+        .firstWhereOrNull((u) => u.id == fakeDatabase.authenticatedUser!.id);
+
+    //User not found
+    if (user == null) {
+      ErrorModel error = ErrorModel(
+        message: 'User not found',
+        detail: 'User not found.',
+        statusCode: 404,
+      );
+      return ResponseModel(statusCode: 404, error: error);
     }
 
     Post? post = fakeDatabase.posts.firstWhereOrNull((p) => p.id == postId);
@@ -150,6 +207,16 @@ class FakePostDataSource {
     }
 
     //everything is ok
+
+    //check post bookmark status and modify it accordingly
+    //if user has any bookmarked posts.
+    var userBookmarkedPostTableEntry = fakeDatabase.bookmarkedPostsTable.entries
+        .firstWhereOrNull((element) => element.key == user.id);
+    if (userBookmarkedPostTableEntry != null) {
+      userBookmarkedPostTableEntry.value.contains(post.id)
+          ? post.isBookmarked = true
+          : post.isBookmarked = false;
+    }
 
     return ResponseModel(statusCode: 200, data: post);
   }
