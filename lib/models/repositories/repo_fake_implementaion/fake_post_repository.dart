@@ -83,4 +83,26 @@ class FakePostReposiory implements PostRepository {
               pagingOptionsVm: slidePagingOptionsVm,
             ));
   }
+
+  @override
+  Future<ResponseModel<List<Post>>> getBookmarkedPosts(
+      {required PagingOptionsVm pagingOptionsVm}) async {
+    return await Future.delayed(
+      const Duration(seconds: 5),
+      () => fakePostDataSource.getUserBookmarkedPosts(
+          userToken: credentials.authenticatedUser!.token,
+          pagingOptionsVm: pagingOptionsVm),
+    );
+  }
+
+  @override
+  Future<ResponseModel<void>> toggleBookmark({required String postId}) async {
+    return await Future.delayed(
+      const Duration(seconds: 5),
+      () => fakePostDataSource.toggleBookmarkPost(
+        userToken: credentials.authenticatedUser!.token,
+        postId: postId,
+      ),
+    );
+  }
 }

@@ -20,4 +20,9 @@ abstract class PostRepository {
       {required String postId, required PostUpdateVm postUpdateVm});
 
   Future<ResponseModel<void>> deletePost({required postId});
+
+  Future<ResponseModel<void>> toggleBookmark({required String postId});
+
+  Future<ResponseModel<List<Post>>> getBookmarkedPosts(
+      {required PagingOptionsVm pagingOptionsVm});
 }
