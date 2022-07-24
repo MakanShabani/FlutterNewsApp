@@ -18,8 +18,8 @@ class FakeCategoryDataSource {
     return ResponseModel(
         statusCode: 200,
         data: fakeDatabase.categories
-            .skip(pagingOptionsVm.offset!)
-            .take(pagingOptionsVm.limit!)
+            .skip(pagingOptionsVm.offset)
+            .take(pagingOptionsVm.limit)
             .toList());
   }
 }

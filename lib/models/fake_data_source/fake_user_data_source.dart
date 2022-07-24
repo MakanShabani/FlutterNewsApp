@@ -45,8 +45,8 @@ class FakeUserDataSource {
     return ResponseModel(
         statusCode: 200,
         data: fakeDatabase.users
-            .skip(pagingOptionsVm.offset!)
-            .take(pagingOptionsVm.limit!)
+            .skip(pagingOptionsVm.offset)
+            .take(pagingOptionsVm.limit)
             .toList());
   }
 

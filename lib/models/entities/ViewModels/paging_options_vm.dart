@@ -1,6 +1,6 @@
 class PagingOptionsVm {
-  int? limit = 10;
-  int? offset = 0;
+  late int limit;
+  late int offset;
 
   PagingOptionsVm({int? limit, int? offset}) {
     if (limit == null || limit <= 0) {
