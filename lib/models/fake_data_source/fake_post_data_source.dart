@@ -35,8 +35,8 @@ class FakePostDataSource {
               .where((element) => element.category.id == categoryId)
               .sorted((a, b) =>
                   b.createdAt.compareTo(a.createdAt)) //Descending order
-              .skip(pagingOptionsVm.offset!)
-              .take(pagingOptionsVm.limit!)
+              .skip(pagingOptionsVm.offset)
+              .take(pagingOptionsVm.limit)
               .toList());
     } else {
       //everything is ok so we send all category posts
@@ -46,8 +46,8 @@ class FakePostDataSource {
           data: fakeDatabase.posts
               .sorted((a, b) =>
                   b.createdAt.compareTo(a.createdAt)) //Descending order
-              .skip(pagingOptionsVm.offset!)
-              .take(pagingOptionsVm.limit!)
+              .skip(pagingOptionsVm.offset)
+              .take(pagingOptionsVm.limit)
               .toList());
     }
   }
@@ -78,8 +78,8 @@ class FakePostDataSource {
               .where((element) => element.category.id == categoryId)
               .sorted((a, b) =>
                   b.createdAt.compareTo(a.createdAt)) //Descending order
-              .skip(pagingOptionsVm.offset!)
-              .take(pagingOptionsVm.limit!)
+              .skip(pagingOptionsVm.offset)
+              .take(pagingOptionsVm.limit)
               .toList());
     } else {
       //everything is ok so we send all category posts
@@ -89,8 +89,8 @@ class FakePostDataSource {
           data: fakeDatabase.posts
               .sorted((a, b) =>
                   b.createdAt.compareTo(a.createdAt)) //Descending order
-              .skip(pagingOptionsVm.offset!)
-              .take(pagingOptionsVm.limit!)
+              .skip(pagingOptionsVm.offset)
+              .take(pagingOptionsVm.limit)
               .toList());
     }
   }
@@ -124,8 +124,8 @@ class FakePostDataSource {
         statusCode: 200,
         data: fakeDatabase.posts
             .where((p) => p.author.id == userId)
-            .skip(pagingOptionsVm.offset!)
-            .take(pagingOptionsVm.limit!)
+            .skip(pagingOptionsVm.offset)
+            .take(pagingOptionsVm.limit)
             .toList());
   }
 
@@ -310,5 +310,107 @@ class FakePostDataSource {
     fakeDatabase.posts.remove(post);
 
     return ResponseModel(statusCode: 204);
+  }
+
+  ResponseModel<void> toggleBookmarkPost(
+      {required String userToken, required String postId}) {
+//user token is not valid -- Unauthorized
+    if (!fakeDatabase.isUserTokenValid(token: userToken)) {
+      return ResponseModel(
+          statusCode: 401, error: fakeDatabase.unAuthorizedError);
+    }
+
+    User? user = fakeDatabase.users
+        .firstWhereOrNull((u) => u.id == fakeDatabase.authenticatedUser!.id);
+
+    //User not found
+    if (user == null) {
+      ErrorModel error = ErrorModel(
+        message: 'User not found',
+        detail: 'User not found.',
+        statusCode: 404,
+      );
+
+      return ResponseModel(statusCode: 404, error: error);
+    }
+
+    Post? post = fakeDatabase.posts.firstWhereOrNull((p) => p.id == postId);
+
+    //Post not found
+    if (post == null) {
+      ErrorModel error = ErrorModel(
+        message: 'Post not found',
+        detail: 'Post not found.',
+        statusCode: 404,
+      );
+
+      return ResponseModel(statusCode: 404, error: error);
+    }
+
+    //everything is ok
+
+    fakeDatabase.bookmarkedPostsTable.update(
+      user.id,
+      (value) {
+        if (value.contains(postId)) {
+          //we'll unbookmark the post
+          value.remove(postId);
+        } else {
+          //we'll bookmark the post
+
+          value.add(postId);
+        }
+        return value;
+      },
+      //we'll add this user to bookmarked table  if it doesn't exist in the table
+      //the list must be growable for updating purposes
+      ifAbsent: () => List.empty(growable: true)..add(postId),
+    );
+
+    return ResponseModel(statusCode: 204);
+  }
+
+  ResponseModel<List<Post>> getUserBookmarkedPosts({
+    required String userToken,
+    required PagingOptionsVm pagingOptionsVm,
+  }) {
+    //user token is not valid -- Unauthorized
+    if (!fakeDatabase.isUserTokenValid(token: userToken)) {
+      return ResponseModel(
+          statusCode: 401, error: fakeDatabase.unAuthorizedError);
+    }
+
+    User? user = fakeDatabase.users
+        .firstWhereOrNull((u) => u.id == fakeDatabase.authenticatedUser!.id);
+
+    //User not found
+    if (user == null) {
+      ErrorModel error = ErrorModel(
+        message: 'User not found',
+        detail: 'User not found.',
+        statusCode: 404,
+      );
+
+      return ResponseModel(statusCode: 404, error: error);
+    }
+    //everything is ok
+
+    var userEntryInBookmarkedtable = fakeDatabase.bookmarkedPostsTable.entries
+        .firstWhereOrNull((element) => element.key == user.id);
+
+    if (userEntryInBookmarkedtable == null) {
+      // user has'nt any bookmarked posts
+
+      return ResponseModel(statusCode: 200, data: List.empty());
+    }
+
+    return ResponseModel(
+        statusCode: 200,
+        data: userEntryInBookmarkedtable.value
+            .map((e) => fakeDatabase.posts.firstWhereOrNull((p) => p.id == e)!
+              ..isBookmarked = true)
+            .skip(pagingOptionsVm.offset)
+            .take(pagingOptionsVm.limit)
+            .toList());
   }
 }

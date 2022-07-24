@@ -16,7 +16,7 @@ class FakeDatabase {
   List<PostCategory> categories = List.empty(growable: true);
   List<Post> posts = List.empty(growable: true);
   AuthenticatedUserModel? authenticatedUser;
-
+  Map<String, List<String>> bookmarkedPostsTable = {};
   final ErrorModel unAuthorizedError = ErrorModel(
     message: 'Unauthorized',
     detail: 'You have not permission to do this action.\nPlease login first.',
