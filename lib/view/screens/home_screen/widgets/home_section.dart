@@ -5,7 +5,6 @@ import './widgets.dart';
 import '../../../../bloc/blocs.dart';
 import '../../../../models/entities/ViewModels/view_models.dart';
 import '../../../../models/repositories/repo_fake_implementaion/fake_category_repository.dart';
-import '../../../../models/repositories/repo_fake_implementaion/fake_post_repository.dart';
 
 class HomeSection extends StatefulWidget {
   const HomeSection({Key? key}) : super(key: key);
@@ -40,50 +39,35 @@ class _HomeSectionState extends State<HomeSection>
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => FakeCategoryRepository()),
-        RepositoryProvider(
-          create: (context) => FakePostReposiory(),
-        )
       ],
       child: BlocProvider(
-        create: (context) => CategoryBloc(
+        create: (context) => HomeSectionBloc(
           categoryRepository: context.read<FakeCategoryRepository>(),
-        )..add(InitializeCategoryEvent(
-            pagingOptionsVm: PagingOptionsVm(offset: 0, limit: 15))),
-        child: BlocConsumer<CategoryBloc, CategoryState>(
+        )..add(HomeSectionInitializeEvent(
+            pagingOptionsVm: PagingOptionsVm(offset: 0, limit: 10))),
+        child: BlocConsumer<HomeSectionBloc, HomeSectionState>(
           listenWhen: (previous, current) =>
-              current is CategoriesInitializationSuccessfullState,
+              current is HomeSectionInitializationSuccessfullState,
           listener: (context, state) {
-            if (state is CategoriesInitializationSuccessfullState) {
+            if (state is HomeSectionInitializationSuccessfullState) {
               //initialize _tabController with categories length
               _tabController = TabController(
                   length: state.categories.length + 1, vsync: this);
             }
           },
           buildWhen: (previous, current) =>
-              current is CategoriesInitializationHasErrorState ||
-              current is CategoriesInitializationSuccessfullState ||
-              current is CategoriesInitializingState,
+              current is HomeSectionInitializationHasErrorState ||
+              current is HomeSectionInitializationSuccessfullState ||
+              current is HomeSectionInitializingState,
           builder: (context, state) {
-            if (state is CategoriesInitializationHasErrorState) {
+            if (state is HomeSectionInitializationHasErrorState) {
               //show error content
               return Center(
                 child: Text(state.error.message),
               );
             }
-
-            if (state is CategoriesInitializingState) {
-              // show loading
-
-              return const Center(
-                child: Text(
-                  'Loading...',
-                  style: TextStyle(color: Colors.black),
-                ),
-              );
-            }
-
             //everything is ok so we show fetched Data
-            if (state is CategoriesInitializationSuccessfullState) {
+            if (state is HomeSectionInitializationSuccessfullState) {
               //First tab is 'All News'
               //Then we map each item in state.categories to a Tab in Tabbar
               //We add 'All News' as the first category to the Tabbar so --> tabs[index:0] = 'All News'
@@ -103,21 +87,28 @@ class _HomeSectionState extends State<HomeSection>
                                 : state.categories.elementAt(index - 1).title)),
                   ),
                 ),
-                body: TabBarView(
-                    controller: _tabController,
-                    children: List<Widget>.generate(
-                        state.categories.length + 1,
-                        (index) => TabContent(
-                              categoryIndex: index,
-                              category: index == 0
-                                  ? null
-                                  : state.categories[index - 1],
-                            ))),
+                body: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 15.0, 0, 0),
+                  child: TabBarView(
+                      controller: _tabController,
+                      children: List<Widget>.generate(
+                          state.categories.length + 1,
+                          (index) => TabContent(
+                                categoryIndex: index,
+                                category: index == 0
+                                    ? null
+                                    : state.categories[index - 1],
+                              ))),
+                ),
               );
             }
 
-            return Container(
-              color: Colors.red,
+            // Initializing State
+            return const Center(
+              child: Text(
+                'Loading...',
+                style: TextStyle(color: Colors.black),
+              ),
             );
           },
         ),
