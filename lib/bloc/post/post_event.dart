@@ -3,22 +3,8 @@ part of 'post_bloc.dart';
 @immutable
 abstract class PostEvent {}
 
-class InitializePostsEvent extends PostEvent {
-  final PostCategory? categoryToLoad;
-  final PagingOptionsVm pagingOptions;
+class PostToggleBookmarkEvent extends PostEvent {
+  final String postId;
 
-  InitializePostsEvent({
-    this.categoryToLoad,
-    required this.pagingOptions,
-  });
-}
-
-class FetchMorePostsEvent extends PostEvent {
-  final PostCategory? categoryToLoad;
-  final PagingOptionsVm pagingOptions;
-
-  FetchMorePostsEvent({
-    required this.categoryToLoad,
-    required this.pagingOptions,
-  });
+  PostToggleBookmarkEvent({required this.postId});
 }

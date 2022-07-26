@@ -3,76 +3,23 @@ part of 'post_bloc.dart';
 @immutable
 abstract class PostState {}
 
-class TabPageContentInitial extends PostState {}
+class PostInitial extends PostState {}
 
-class PostsInitializingState extends PostState {
-  final PostCategory? currentCategory;
-
-  PostsInitializingState({
-    this.currentCategory,
-  });
+class PostTogglingBookmarkState extends PostState {
+  final String postId;
+  PostTogglingBookmarkState({required this.postId});
 }
 
-class PostsInitializingSuccessfullState extends PostState {
-  final PostCategory? currentCategory;
-  final List<Post> posts;
-  final PagingOptionsVm pagingOptionsVm;
-
-  PostsInitializingSuccessfullState({
-    this.currentCategory,
-    required this.posts,
-    required this.pagingOptionsVm,
-  });
+class PostTogglingPostBookmarkSuccessfullState extends PostState {
+  final String postId;
+  PostTogglingPostBookmarkSuccessfullState({required this.postId});
 }
 
-class PostsInitializingHasErrorState extends PostState {
-  final PostCategory? currentCategory;
-  final ErrorModel error;
-
-  PostsInitializingHasErrorState({
-    this.currentCategory,
-    required this.error,
-  });
-}
-
-class FetchingMorePostState extends PostState {
-  final PostCategory? currentCategory;
-  final List<Post> posts;
-  final PagingOptionsVm currentPagingOptions;
-  final PagingOptionsVm fetchingPagingOptionsVm;
-
-  FetchingMorePostState({
-    this.currentCategory,
-    required this.posts,
-    required this.currentPagingOptions,
-    required this.fetchingPagingOptionsVm,
-  });
-}
-
-class FetchingMorePostSuccessfullState extends PostState {
-  final PostCategory? currentCategory;
-  final List<Post> posts;
-  final PagingOptionsVm pagingOptionsVm;
-
-  FetchingMorePostSuccessfullState({
-    this.currentCategory,
-    required this.posts,
-    required this.pagingOptionsVm,
-  });
-}
-
-class FetchingMorePostHasErrorState extends PostState {
-  final PostCategory? currentCategory;
-  final List<Post> posts;
-  final PagingOptionsVm currentPagingOptions;
-  final PagingOptionsVm errorPagingOptionsVm;
-  final ErrorModel error;
-
-  FetchingMorePostHasErrorState({
-    required this.error,
-    this.currentCategory,
-    required this.posts,
-    required this.currentPagingOptions,
-    required this.errorPagingOptionsVm,
+class PostTogglingPostBookmarkHasErrorState extends PostState {
+  final String postId;
+  final ErrorModel errorModel;
+  PostTogglingPostBookmarkHasErrorState({
+    required this.postId,
+    required this.errorModel,
   });
 }
