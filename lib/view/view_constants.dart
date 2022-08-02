@@ -1,1 +1,2 @@
-const double screensContentsPadding = 8.0;
+const double screensContentsHorizontalPadding = 8.0;
+const double circularBorderRadious = 10.0;

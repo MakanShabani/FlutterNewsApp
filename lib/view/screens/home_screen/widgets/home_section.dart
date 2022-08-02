@@ -87,19 +87,16 @@ class _HomeSectionState extends State<HomeSection>
                                 : state.categories.elementAt(index - 1).title)),
                   ),
                 ),
-                body: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 15.0, 0, 0),
-                  child: TabBarView(
-                      controller: _tabController,
-                      children: List<Widget>.generate(
-                          state.categories.length + 1,
-                          (index) => TabContent(
-                                categoryIndex: index,
-                                category: index == 0
-                                    ? null
-                                    : state.categories[index - 1],
-                              ))),
-                ),
+                body: TabBarView(
+                    controller: _tabController,
+                    children: List<Widget>.generate(
+                        state.categories.length + 1,
+                        (index) => TabContent(
+                              categoryIndex: index,
+                              category: index == 0
+                                  ? null
+                                  : state.categories[index - 1],
+                            ))),
               );
             }
 

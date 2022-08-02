@@ -1,23 +1,27 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../../../bloc/blocs.dart';
 import '../../../../infrastructure/callback_functions.dart';
 import '../../../../models/entities/entities.dart';
 import '../../../../models/repositories/repo_fake_implementaion/fake_post_repository.dart';
+import '../../../widgets/widgest.dart';
 
 class PostCarouselWithIndicator extends StatefulWidget {
   final List<Post> items;
   final double height;
   final double cauroselLeftPadding;
   final double cauroselRightPadding;
+  final double borderRadious;
   final CustomeValueSetterCallback<String, bool>? onTogglePostBookmark;
   const PostCarouselWithIndicator({
     Key? key,
     required this.items,
     required this.height,
+    required this.borderRadious,
     required this.cauroselLeftPadding,
     required this.cauroselRightPadding,
     this.onTogglePostBookmark,
@@ -76,13 +80,13 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                   ? const EdgeInsets.fromLTRB(4.0, 0, 4.0, 0)
                   : const EdgeInsets.all(0),
               child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(widget.borderRadious),
                   child: Stack(
                     children: [
                       Image.network(
                           fit: BoxFit.fill,
                           width: double.infinity,
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHCeytlX9sAmdzJFxZNQZrEX44JUnGDvWuAg&usqp=CAU'),
+                          widget.items[itemIndex].imagesUrls!.first),
                       Padding(
                         padding:
                             const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
@@ -115,60 +119,39 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                                         builder: (context, state) {
                                           if (state
                                               is! PostTogglingBookmarkState) {
-                                            return IconButton(
-                                                constraints:
-                                                    const BoxConstraints(),
-                                                padding: EdgeInsets.zero,
+                                            return PostBookmarkButton(
                                                 onPressed: () => context
                                                     .read<PostBloc>()
                                                     .add(
-                                                      PostToggleBookmarkEvent(
-                                                        postId: widget
-                                                            .items[itemIndex]
-                                                            .id,
-                                                      ),
-                                                    ),
-                                                icon: Icon(
-                                                  Icons.bookmark,
-                                                  color: widget.items[itemIndex]
-                                                          .isBookmarked
-                                                      ? Colors.orange
-                                                      : Colors.white,
-                                                  size: 16.0,
-                                                ));
+                                                        PostToggleBookmarkEvent(
+                                                            postId: widget
+                                                                .items[
+                                                                    itemIndex]
+                                                                .id)),
+                                                unBookmarkedColor: Colors.white,
+                                                bookmarkedColor: Colors.orange,
+                                                isBookmarking: false,
+                                                isBookmarked: widget
+                                                    .items[itemIndex]
+                                                    .isBookmarked);
                                           }
 
                                           //PostTogglingBookmarkState
-
-                                          return widget.items[itemIndex].id ==
-                                                  state.postId
-                                              ? const SpinKitThreeBounce(
-                                                  size: 12.0,
-                                                  color: Colors.white,
-                                                )
-                                              : IconButton(
-                                                  constraints:
-                                                      const BoxConstraints(),
-                                                  padding: EdgeInsets.zero,
-                                                  onPressed: () => context
-                                                      .read<PostBloc>()
-                                                      .add(
-                                                        PostToggleBookmarkEvent(
-                                                          postId: widget
-                                                              .items[itemIndex]
-                                                              .id,
-                                                        ),
-                                                      ),
-                                                  icon: Icon(
-                                                    Icons.bookmark,
-                                                    color: widget
-                                                            .items[itemIndex]
-                                                            .isBookmarked
-                                                        ? Colors.orange
-                                                        : Colors.white,
-                                                    size: 16.0,
-                                                  ));
-                                          ;
+                                          return PostBookmarkButton(
+                                              onPressed: () => context
+                                                  .read<PostBloc>()
+                                                  .add(PostToggleBookmarkEvent(
+                                                      postId: widget
+                                                          .items[itemIndex]
+                                                          .id)),
+                                              unBookmarkedColor: Colors.white,
+                                              bookmarkedColor: Colors.orange,
+                                              isBookmarking:
+                                                  widget.items[itemIndex].id ==
+                                                      state.postId,
+                                              isBookmarked: widget
+                                                  .items[itemIndex]
+                                                  .isBookmarked);
                                         },
                                       ),
                                     ]),

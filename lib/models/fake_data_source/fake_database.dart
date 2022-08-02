@@ -87,11 +87,11 @@ class FakeDatabase {
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
-        title: '${faker.lorem.word()} ${faker.lorem.word()}',
-        summary: faker.lorem.sentence(),
-        content: faker.lorem.sentence() +
+        title: '${faker.lorem.word()} ${faker.lorem.sentence()}',
+        summary: faker.lorem.sentence() +
             faker.lorem.sentence() +
             faker.lorem.sentence(),
+        content: faker.randomGenerator.string(400, min: 200),
         status: PostStatus.published,
         category: (categories..shuffle()).first,
         isBookmarked: false,
