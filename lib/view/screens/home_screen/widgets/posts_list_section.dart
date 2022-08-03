@@ -28,11 +28,10 @@ class _PostsListSectionState extends State<PostsListSection> {
                   .posts
                   .length,
           itemBuilder: (context, index) => PostItemInVerticalList(
-              leftPadding: view_constants.screensContentsHorizontalPadding,
               topPadding: 15,
               rightPadding: view_constants.screensContentsHorizontalPadding,
-              bottomPadding: 15,
-              bottoMargin: 20.0,
+              bottoMargin: 10.0,
+              leftPadding: view_constants.screensContentsHorizontalPadding,
               borderRadious: view_constants.circularBorderRadious,
               item: state is HomeSectionTabContentInitializingSuccessfullState
                   ? state.posts[index]

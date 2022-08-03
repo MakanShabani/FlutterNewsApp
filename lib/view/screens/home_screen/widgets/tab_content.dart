@@ -92,7 +92,7 @@ class _TabContentState extends State<TabContent>
                                       .screensContentsHorizontalPadding),
                               child: Text(
                                 'Latest news',
-                                style: TextStyle(fontSize: 18.0),
+                                style: TextStyle(fontSize: 22.0),
                               ),
                             )
                           : const SizedBox(

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class PostBookmarkButton extends StatelessWidget {
-  final Color bookmarkedColor;
-  final Color unBookmarkedColor;
+  final Color? bookmarkedColor;
+  final Color? unBookmarkedColor;
   final bool isBookmarked;
   final bool isBookmarking;
   final double? loadingSize;
@@ -12,8 +12,8 @@ class PostBookmarkButton extends StatelessWidget {
       {Key? key,
       required this.isBookmarking,
       required this.isBookmarked,
-      required this.bookmarkedColor,
-      required this.unBookmarkedColor,
+      this.bookmarkedColor,
+      this.unBookmarkedColor,
       this.loadingSize,
       this.onPressed})
       : super(key: key);
@@ -31,7 +31,9 @@ class PostBookmarkButton extends StatelessWidget {
             onPressed: onPressed,
             icon: Icon(
               Icons.bookmark,
-              color: isBookmarked ? bookmarkedColor : unBookmarkedColor,
+              color: isBookmarked
+                  ? bookmarkedColor ?? Colors.orange
+                  : unBookmarkedColor ?? Colors.white,
               size: 16.0,
             ));
   }
