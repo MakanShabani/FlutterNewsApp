@@ -5,14 +5,21 @@ import '../../fake_data_source/fake_data_source.dart';
 import '../post_repository.dart';
 
 class FakePostReposiory implements PostRepository {
+  FakePostReposiory({
+    required this.fetchDelayDurationInSeconds,
+    required this.toggleBookmarkDelay,
+  });
+
   UserCredentials credentials = UserCredentials();
   FakePostDataSource fakePostDataSource = FakePostDataSource();
+  final int fetchDelayDurationInSeconds;
+  final int toggleBookmarkDelay;
 
   @override
   Future<ResponseModel<Post>> createPost(
       {required PostCreationVm postCreationVm}) async {
     return await Future.delayed(
-        const Duration(seconds: 5),
+        Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.createPost(
             userToken: credentials.authenticatedUser!.token,
             postCreationVm: postCreationVm));
@@ -21,7 +28,7 @@ class FakePostReposiory implements PostRepository {
   @override
   Future<ResponseModel<void>> deletePost({required postId}) async {
     return await Future.delayed(
-        const Duration(seconds: 5),
+        Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.deletePost(
             userToken: credentials.authenticatedUser!.token, postId: postId));
   }
@@ -31,7 +38,7 @@ class FakePostReposiory implements PostRepository {
       {required String userId,
       required PagingOptionsVm pagingOptionsVm}) async {
     return await Future.delayed(
-        const Duration(seconds: 5),
+        Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.getAuthorPosts(
               userToken: credentials.authenticatedUser!.token,
               userId: userId,
@@ -42,7 +49,7 @@ class FakePostReposiory implements PostRepository {
   @override
   Future<ResponseModel<Post>> getPost({required postId}) async {
     return await Future.delayed(
-        const Duration(seconds: 5),
+        Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.getPost(
             userToken: credentials.authenticatedUser!.token, postId: postId));
   }
@@ -51,7 +58,7 @@ class FakePostReposiory implements PostRepository {
   Future<ResponseModel<List<Post>>> getPosts(
       {required PagingOptionsVm pagingOptionsVm, String? categoryId}) async {
     return await Future.delayed(
-        const Duration(seconds: 5),
+        Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.getPosts(
               userToken: credentials.authenticatedUser!.token,
               categoryId: categoryId,
@@ -63,7 +70,7 @@ class FakePostReposiory implements PostRepository {
   Future<ResponseModel<Post>> updatePost(
       {required String postId, required PostUpdateVm postUpdateVm}) async {
     return await Future.delayed(
-        const Duration(seconds: 5),
+        Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.updatePost(
               userToken: credentials.authenticatedUser!.token,
               postId: postId,
@@ -76,7 +83,7 @@ class FakePostReposiory implements PostRepository {
       {String? categoryId,
       required PagingOptionsVm slidePagingOptionsVm}) async {
     return await Future.delayed(
-        const Duration(seconds: 5),
+        Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.getSlides(
               categoryId: categoryId,
               userToken: credentials.authenticatedUser!.token,
@@ -88,7 +95,7 @@ class FakePostReposiory implements PostRepository {
   Future<ResponseModel<List<Post>>> getBookmarkedPosts(
       {required PagingOptionsVm pagingOptionsVm}) async {
     return await Future.delayed(
-      const Duration(seconds: 5),
+      Duration(seconds: fetchDelayDurationInSeconds),
       () => fakePostDataSource.getUserBookmarkedPosts(
           userToken: credentials.authenticatedUser!.token,
           pagingOptionsVm: pagingOptionsVm),
@@ -98,7 +105,7 @@ class FakePostReposiory implements PostRepository {
   @override
   Future<ResponseModel<void>> toggleBookmark({required String postId}) async {
     return await Future.delayed(
-      const Duration(seconds: 5),
+      Duration(seconds: toggleBookmarkDelay),
       () => fakePostDataSource.toggleBookmarkPost(
         userToken: credentials.authenticatedUser!.token,
         postId: postId,

@@ -5,14 +5,16 @@ import '../../fake_data_source/fake_data_source.dart';
 import '../user_repository.dart';
 
 class FakeUserRepository implements UserRepository {
-  UserCredentials credentials = UserCredentials();
+  FakeUserRepository({required this.delayDurationInSeconds});
 
+  UserCredentials credentials = UserCredentials();
   FakeUserDataSource fakeUserDataSource = FakeUserDataSource();
+  final int delayDurationInSeconds;
 
   @override
   Future<ResponseModel<User>> getAuthor({required String authorId}) async {
     return await Future.delayed(
-        const Duration(seconds: 5),
+        Duration(seconds: delayDurationInSeconds),
         () => fakeUserDataSource.getUser(
             userToken: credentials.authenticatedUser!.token, userId: authorId));
   }
@@ -21,7 +23,7 @@ class FakeUserRepository implements UserRepository {
   Future<ResponseModel<List<User>>> getAuthors(
       {required PagingOptionsVm pagingOptionsVm}) async {
     return await Future.delayed(
-        const Duration(seconds: 5),
+        Duration(seconds: delayDurationInSeconds),
         () => fakeUserDataSource.getusers(
             userToken: credentials.authenticatedUser!.token,
             pagingOptionsVm: pagingOptionsVm));
@@ -31,7 +33,7 @@ class FakeUserRepository implements UserRepository {
   Future<ResponseModel<User>> updateMyProfile(
       {required UserUpdateVm updateVm}) async {
     return await Future.delayed(
-        const Duration(seconds: 5),
+        Duration(seconds: delayDurationInSeconds),
         () => fakeUserDataSource.updateUser(
             userToken: credentials.authenticatedUser!.token,
             updateVm: updateVm));
