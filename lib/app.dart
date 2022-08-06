@@ -35,7 +35,7 @@ class App extends StatelessWidget {
                   authenticationRepository:
                       context.read<FakeAuthenticationRepository>())),
           BlocProvider(
-              create: (context) => PostBookmarkTrackerCubit(
+              create: (context) => PostBookmarkCubit(
                   postRepository: context.read<FakePostReposiory>())),
         ],
         child: MaterialApp(

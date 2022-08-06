@@ -5,7 +5,7 @@ import '../../../../bloc/blocs.dart';
 import '../../../../models/entities/entities.dart';
 import '../../../../models/repositories/repo_fake_implementaion/fake_post_repository.dart';
 import '../../../view_constants.dart' as view_constants;
-import './widgets.dart';
+import '../../../widgets/widgest.dart';
 
 class TabContent extends StatefulWidget {
   final int categoryIndex;
@@ -30,16 +30,11 @@ class _TabContentState extends State<TabContent>
 
     return BlocProvider(
       create: (context) => HomeSectionTabContentBloc(
-          postTrackerCubit: context.read<PostBookmarkTrackerCubit>(),
           haowManyPostToFetchEachTime: 10,
           categoryId: widget.category?.id,
           postRepository: context.read<FakePostReposiory>())
         ..add(HomeSectionTabContentInitializeEvent()),
       child: BlocBuilder<HomeSectionTabContentBloc, HomeSectionTabContentState>(
-        buildWhen: (previous, current) =>
-            current is HomeSectionTabContentInitializingState ||
-            current is HomeSectionTabContentInitializingSuccessfullState ||
-            current is HomeSectionTabContentInitializingHasErrorState,
         builder: (context, state) {
           if (state is HomeSectionTabContentInitializingHasErrorState) {
             //show error
@@ -51,55 +46,64 @@ class _TabContentState extends State<TabContent>
             );
           }
 
-          if (state is HomeSectionTabContentInitializingSuccessfullState) {
+          if (state is! HomeSectionTabContentInitializingState) {
             //show contents
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 15.0,
-                    ),
-                    widget.category == null
-                        ? PostCarouselWithIndicator(
-                            height: 200.0,
-                            borderRadious: view_constants.circularBorderRadious,
-                            cauroselLeftPadding:
-                                view_constants.screensContentsHorizontalPadding,
-                            cauroselRightPadding:
-                                view_constants.screensContentsHorizontalPadding,
-                            items: state.posts.take(5).toList(),
-                            onBookmarkButtonPressed: (postId) =>
-                                context.read<HomeSectionTabContentBloc>().add(
-                                      HomeSectionTabContentTogglePostBookmarkEvent(
-                                          postId: postId),
-                                    ),
-                          )
-                        : const SizedBox(
-                            height: 0,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  widget.category == null
+                      ? PostCarouselWithIndicator(
+                          height: 200.0,
+                          borderRadious: view_constants.circularBorderRadious,
+                          cauroselLeftPadding:
+                              view_constants.screensContentsHorizontalPadding,
+                          cauroselRightPadding:
+                              view_constants.screensContentsHorizontalPadding,
+                          items: state.posts.take(5).toList(),
+                          onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
+                              context.read<HomeSectionTabContentBloc>().add(
+                                  HomeSectionTabContentUpdatePostBookmarkEvent(
+                                      postId: postId,
+                                      newBookmarkStatus: newBookmarkStatus)),
+                        )
+                      : const SizedBox(
+                          height: 0,
+                        ),
+                  SizedBox(
+                    height: widget.category == null ? 10.0 : 0,
+                  ),
+                  widget.category == null
+                      ? const Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: view_constants
+                                  .screensContentsHorizontalPadding),
+                          child: Text(
+                            'Latest news',
+                            style: TextStyle(fontSize: 22.0),
                           ),
-                    SizedBox(
-                      height: widget.category == null ? 10.0 : 0,
-                    ),
-                    widget.category == null
-                        ? const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: view_constants
-                                    .screensContentsHorizontalPadding),
-                            child: Text(
-                              'Latest news',
-                              style: TextStyle(fontSize: 22.0),
+                        )
+                      : const SizedBox(
+                          height: 0,
+                        ),
+                  SizedBox(
+                    height: widget.category == null ? 15.0 : 0,
+                  ),
+                  PostsListSection(
+                    items: state.posts,
+                    onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
+                        context.read<HomeSectionTabContentBloc>().add(
+                              HomeSectionTabContentUpdatePostBookmarkEvent(
+                                  postId: postId,
+                                  newBookmarkStatus: newBookmarkStatus),
                             ),
-                          )
-                        : const SizedBox(
-                            height: 0,
-                          ),
-                    SizedBox(
-                      height: widget.category == null ? 15.0 : 0,
-                    ),
-                    const PostsListSection(),
-                  ]),
+                  ),
+                ],
+              ),
             );
           }
 
@@ -112,11 +116,5 @@ class _TabContentState extends State<TabContent>
         },
       ),
     );
-  }
-
-  void onPostBookmarkToggled({required String postId}) {
-    context
-        .read<HomeSectionTabContentBloc>()
-        .add(HomeSectionTabContentTogglePostBookmarkEvent(postId: postId));
   }
 }

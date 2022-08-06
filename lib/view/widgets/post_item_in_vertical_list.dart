@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../infrastructure/callback_functions.dart';
+import '../screens/home_screen/widgets/widgets.dart';
 import './widgest.dart';
-import '../../bloc/blocs.dart';
 import '../../models/entities/entities.dart';
 
 class PostItemInVerticalList extends StatelessWidget {
@@ -16,8 +16,8 @@ class PostItemInVerticalList extends StatelessWidget {
   final double? rightMargin;
   final double? topMargin;
   final double? leftMargin;
-
-  final ValueSetter<String>? onBookmarkButtonPressed;
+  final CustomeValueSetterCallback<String, bool>? onPostBookmarkPressed;
+  final CustomeValueSetterCallback<String, bool>? onPostBookMarkUpdated;
 
   static const double imageHeight = 120.0;
   static const double imageWidth = 120.0;
@@ -30,20 +30,21 @@ class PostItemInVerticalList extends StatelessWidget {
   static const double textSectionTopPadding = 15.0;
   static const double textSectionBottomPadding = textSectionTopMargin;
 
-  const PostItemInVerticalList(
-      {Key? key,
-      required this.item,
-      this.borderRadious,
-      this.leftPadding,
-      this.topPadding,
-      this.rightPadding,
-      this.bottomPadding,
-      this.bottoMargin,
-      this.topMargin,
-      this.rightMargin,
-      this.leftMargin,
-      this.onBookmarkButtonPressed})
-      : super(key: key);
+  const PostItemInVerticalList({
+    Key? key,
+    required this.item,
+    this.onPostBookmarkPressed,
+    this.onPostBookMarkUpdated,
+    this.borderRadious,
+    this.leftPadding,
+    this.topPadding,
+    this.rightPadding,
+    this.bottomPadding,
+    this.bottoMargin,
+    this.topMargin,
+    this.rightMargin,
+    this.leftMargin,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -92,21 +93,20 @@ class PostItemInVerticalList extends StatelessWidget {
                               style: TextStyle(
                                   fontSize: 12.0, color: Colors.black54),
                             ),
-                            BlocBuilder<PostBookmarkTrackerCubit,
-                                PostBookmarkTrackerState>(
-                              builder: (context, state) {
-                                return PostBookmarkButton(
-                                    onPressed: onBookmarkButtonPressed == null
-                                        ? null
-                                        : () =>
-                                            onBookmarkButtonPressed!(item.id),
-                                    unBookmarkedColor: Colors.black54,
-                                    bookmarkedColor: Colors.orange,
-                                    isBookmarking: state.togglingPostsIds
-                                        .contains(item.id),
-                                    isBookmarked: item.isBookmarked);
-                              },
-                            )
+                            PostBookmarkSection(
+                              bookmarkedColor: Colors.orange,
+                              unBookmarkedColor: Colors.black54,
+                              initialBookmarkStatus: item.isBookmarked,
+                              postID: item.id,
+                              onPostBookmarkUpdated:
+                                  (postId, newBookmarkValue) =>
+                                      onPostBookmarkUpdated(
+                                          postId, newBookmarkValue),
+                              onnBookmarkButtonPressed:
+                                  (postId, newBookmarkValueToSet) =>
+                                      onPostBookMarkPressed(
+                                          postId, newBookmarkValueToSet),
+                            ),
                           ],
                         ),
                       ),
@@ -124,5 +124,26 @@ class PostItemInVerticalList extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  //we use this fuction to update post's bookmark value locally
+  //if onPostBookMarkUpdated CallBack is provided the the post's bookmark will be updated in the parent widegt's post lists too.
+  void onPostBookmarkUpdated(String postId, bool newBookmarkStatus) {
+    //update local list
+    item.isBookmarked = newBookmarkStatus;
+
+    //update parent widget's list
+    if (onPostBookMarkUpdated != null) {
+      onPostBookMarkUpdated!(postId, newBookmarkStatus);
+    }
+  }
+
+  // we use this function to do stuff when bookmark button is pressed
+  //if onPostBookmarkPressed is provided , parent widget's demands as function will be call
+  void onPostBookMarkPressed(String postId, bool newBookmarkStatusToSet) {
+    //call parent widget's function
+    if (onPostBookmarkPressed != null) {
+      onPostBookmarkPressed!(postId, newBookmarkStatusToSet);
+    }
   }
 }

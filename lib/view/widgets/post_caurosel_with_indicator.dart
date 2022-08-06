@@ -2,29 +2,32 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../bloc/blocs.dart';
+import '../../../../infrastructure/callback_functions.dart';
 import '../../../../models/entities/entities.dart';
-import '../../../widgets/widgest.dart';
+import './widgest.dart';
 
 class PostCarouselWithIndicator extends StatefulWidget {
-  final List<Post> items;
   final double height;
   final double cauroselLeftPadding;
   final double cauroselRightPadding;
   final double borderRadious;
-  final ValueSetter<String>? onBookmarkButtonPressed;
+  final List<Post> items;
 
-  const PostCarouselWithIndicator(
-      {Key? key,
-      required this.items,
-      required this.height,
-      required this.borderRadious,
-      required this.cauroselLeftPadding,
-      required this.cauroselRightPadding,
-      this.onBookmarkButtonPressed})
-      : super(key: key);
+  final CustomeValueSetterCallback<String, bool>? onPostBookmarkPressed;
+
+  final CustomeValueSetterCallback<String, bool>? onPostBookMarkUpdated;
+
+  const PostCarouselWithIndicator({
+    Key? key,
+    this.onPostBookmarkPressed,
+    this.onPostBookMarkUpdated,
+    required this.items,
+    required this.height,
+    required this.borderRadious,
+    required this.cauroselLeftPadding,
+    required this.cauroselRightPadding,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -85,36 +88,31 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                           SizedBox(
                             height: 22.0,
                             child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    '2 hours ago',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 12.0),
-                                  ),
-                                  BlocBuilder<PostBookmarkTrackerCubit,
-                                      PostBookmarkTrackerState>(
-                                    builder: (context, state) {
-                                      return PostBookmarkButton(
-                                          onPressed: widget
-                                                      .onBookmarkButtonPressed ==
-                                                  null
-                                              ? null
-                                              : () => widget
-                                                      .onBookmarkButtonPressed!(
-                                                  widget.items[itemIndex].id),
-                                          unBookmarkedColor: Colors.white,
-                                          bookmarkedColor: Colors.orange,
-                                          isBookmarking: state.togglingPostsIds
-                                              .contains(
-                                                  widget.items[itemIndex].id),
-                                          isBookmarked: widget
-                                              .items[itemIndex].isBookmarked);
-                                    },
-                                  ),
-                                ]),
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  '2 hours ago',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12.0),
+                                ),
+                                PostBookmarkSection(
+                                  bookmarkedColor: Colors.orange,
+                                  unBookmarkedColor: Colors.white,
+                                  initialBookmarkStatus:
+                                      widget.items[itemIndex].isBookmarked,
+                                  postID: widget.items[itemIndex].id,
+                                  onPostBookmarkUpdated: (postId,
+                                          newBookmarkValue) =>
+                                      onPostBookmarkUpdated(
+                                          itemIndex, postId, newBookmarkValue),
+                                  onnBookmarkButtonPressed:
+                                      (postId, newBookmarkValueToSet) =>
+                                          onPostBookMarkPressed(
+                                              postId, newBookmarkValueToSet),
+                                ),
+                              ],
+                            ),
                           ),
                           Text(
                             widget.items[itemIndex].title,
@@ -152,5 +150,25 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
         }).toList(),
       ),
     ]);
+  }
+
+  //we use this fuction to update post's bookmark value locally
+  //if onPostBookMarkUpdated CallBack is provided the the post's bookmark will be updated in the parent widegt's post lists too.
+  void onPostBookmarkUpdated(int index, String postId, bool newBookmarkStatus) {
+    //update local list
+    widget.items[index].isBookmarked = newBookmarkStatus;
+
+    //update parent widget's list
+    if (widget.onPostBookMarkUpdated != null) {
+      widget.onPostBookMarkUpdated!(postId, newBookmarkStatus);
+    }
+  }
+
+  // we use this function to do stuff when bookmark button is pressed
+  //if widget.onPostBookmarkPressed is provided , parent widget's demands as function will be call
+  void onPostBookMarkPressed(String postId, bool newBookmarkStatusToSet) {
+    widget.onPostBookmarkPressed != null
+        ? () => widget.onPostBookmarkPressed!(postId, newBookmarkStatusToSet)
+        : null;
   }
 }
