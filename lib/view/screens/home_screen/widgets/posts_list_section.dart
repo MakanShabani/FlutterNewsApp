@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../bloc/blocs.dart';
@@ -22,22 +24,19 @@ class _PostsListSectionState extends State<PostsListSection> {
         return ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: state is HomeSectionTabContentInitializingSuccessfullState
-              ? state.posts.length
-              : (state as HomeSectionTabContentFetchingMorePostSuccessfullState)
-                  .posts
-                  .length,
+          itemCount: state.posts.length,
           itemBuilder: (context, index) => PostItemInVerticalList(
-              topPadding: 15,
-              rightPadding: view_constants.screensContentsHorizontalPadding,
-              bottoMargin: 10.0,
-              leftPadding: view_constants.screensContentsHorizontalPadding,
-              borderRadious: view_constants.circularBorderRadious,
-              item: state is HomeSectionTabContentInitializingSuccessfullState
-                  ? state.posts[index]
-                  : (state
-                          as HomeSectionTabContentFetchingMorePostSuccessfullState)
-                      .posts[index]),
+            topPadding: 15,
+            rightPadding: view_constants.screensContentsHorizontalPadding,
+            bottoMargin: 10.0,
+            leftPadding: view_constants.screensContentsHorizontalPadding,
+            borderRadious: view_constants.circularBorderRadious,
+            item: state.posts[index],
+            onBookmarkButtonPressed: (postId) => context
+                .read<HomeSectionTabContentBloc>()
+                .add(HomeSectionTabContentTogglePostBookmarkEvent(
+                    postId: postId)),
+          ),
         );
       },
     );

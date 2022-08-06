@@ -1,84 +1,95 @@
 part of 'home_section_tab_content_bloc.dart';
 
 @immutable
-abstract class HomeSectionTabContentState {}
-
-class HomeSectionTabContentInitial extends HomeSectionTabContentState {}
-
-class HomeSectionTabContentInitializingState
-    extends HomeSectionTabContentState {
-  final PostCategory? currentCategory;
-
-  HomeSectionTabContentInitializingState({
-    this.currentCategory,
-  });
-}
-
-class HomeSectionTabContentInitializingSuccessfullState
-    extends HomeSectionTabContentState {
-  final PostCategory? currentCategory;
+abstract class HomeSectionTabContentState {
+  final String? categoryId;
   final List<Post> posts;
   final PagingOptionsVm pagingOptionsVm;
-
-  HomeSectionTabContentInitializingSuccessfullState({
-    this.currentCategory,
+  const HomeSectionTabContentState({
+    this.categoryId,
     required this.posts,
     required this.pagingOptionsVm,
   });
 }
 
+class HomeSectionTabContentInitial extends HomeSectionTabContentState {
+  const HomeSectionTabContentInitial({
+    required super.posts,
+    required super.pagingOptionsVm,
+    super.categoryId,
+  });
+}
+
+class HomeSectionTabContentInitializingState
+    extends HomeSectionTabContentState {
+  const HomeSectionTabContentInitializingState({
+    super.categoryId,
+    required super.pagingOptionsVm,
+    required super.posts,
+  });
+}
+
+class HomeSectionTabContentInitializingSuccessfullState
+    extends HomeSectionTabContentState {
+  const HomeSectionTabContentInitializingSuccessfullState({
+    super.categoryId,
+    required super.posts,
+    required super.pagingOptionsVm,
+  });
+}
+
 class HomeSectionTabContentInitializingHasErrorState
     extends HomeSectionTabContentState {
-  final PostCategory? currentCategory;
   final ErrorModel error;
 
-  HomeSectionTabContentInitializingHasErrorState({
-    this.currentCategory,
+  const HomeSectionTabContentInitializingHasErrorState({
+    super.categoryId,
+    required super.pagingOptionsVm,
+    required super.posts,
     required this.error,
   });
 }
 
 class HomeSectionTabContentFetchingMorePostState
     extends HomeSectionTabContentState {
-  final PostCategory? currentCategory;
-  final List<Post> posts;
-  final PagingOptionsVm currentPagingOptions;
   final PagingOptionsVm fetchingPagingOptionsVm;
 
-  HomeSectionTabContentFetchingMorePostState({
-    this.currentCategory,
-    required this.posts,
-    required this.currentPagingOptions,
+  const HomeSectionTabContentFetchingMorePostState({
+    super.categoryId,
+    required super.posts,
+    required super.pagingOptionsVm,
     required this.fetchingPagingOptionsVm,
   });
 }
 
 class HomeSectionTabContentFetchingMorePostSuccessfullState
     extends HomeSectionTabContentState {
-  final PostCategory? currentCategory;
-  final List<Post> posts;
-  final PagingOptionsVm pagingOptionsVm;
-
-  HomeSectionTabContentFetchingMorePostSuccessfullState({
-    this.currentCategory,
-    required this.posts,
-    required this.pagingOptionsVm,
+  const HomeSectionTabContentFetchingMorePostSuccessfullState({
+    super.categoryId,
+    required super.posts,
+    required super.pagingOptionsVm,
   });
 }
 
 class HomeSectionTabContentFetchingMorePostHasErrorState
     extends HomeSectionTabContentState {
-  final PostCategory? currentCategory;
-  final List<Post> posts;
-  final PagingOptionsVm currentPagingOptions;
   final PagingOptionsVm errorPagingOptionsVm;
   final ErrorModel error;
 
-  HomeSectionTabContentFetchingMorePostHasErrorState({
+  const HomeSectionTabContentFetchingMorePostHasErrorState({
     required this.error,
-    this.currentCategory,
-    required this.posts,
-    required this.currentPagingOptions,
+    super.categoryId,
+    required super.posts,
+    required super.pagingOptionsVm,
     required this.errorPagingOptionsVm,
+  });
+}
+
+class HomeSectionTabContentPostBookmarkUpdated
+    extends HomeSectionTabContentState {
+  const HomeSectionTabContentPostBookmarkUpdated({
+    required super.posts,
+    required super.pagingOptionsVm,
+    super.categoryId,
   });
 }

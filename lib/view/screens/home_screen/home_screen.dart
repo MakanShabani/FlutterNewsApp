@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../bloc/blocs.dart';
+import '../../../models/repositories/repo_fake_implementaion/fake_post_repository.dart';
 import './widgets/widgets.dart';
 
 class HomeScreen extends StatefulWidget {

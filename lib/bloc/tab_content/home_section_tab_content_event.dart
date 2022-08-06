@@ -3,34 +3,18 @@ part of 'home_section_tab_content_bloc.dart';
 @immutable
 abstract class HomeSectionTabContentEvent {}
 
-class HomeSectionTabContentInitializeEvent extends HomeSectionTabContentEvent {
-  final PostCategory? categoryToLoad;
-  final PagingOptionsVm pagingOptions;
-
-  HomeSectionTabContentInitializeEvent({
-    this.categoryToLoad,
-    required this.pagingOptions,
-  });
-}
+class HomeSectionTabContentInitializeEvent extends HomeSectionTabContentEvent {}
 
 class HomeSectionTabContentFetchMorePostsEvent
-    extends HomeSectionTabContentEvent {
-  final PostCategory? categoryToLoad;
-  final PagingOptionsVm pagingOptions;
+    extends HomeSectionTabContentEvent {}
 
-  HomeSectionTabContentFetchMorePostsEvent({
-    required this.categoryToLoad,
-    required this.pagingOptions,
-  });
-}
-
-class HomeSectionTabContentUpdatePostBookmarkStatus
+class HomeSectionTabContentUpdatePostBookmarkEvent
     extends HomeSectionTabContentEvent {
   final String postId;
-  final bool isBookmarked;
+  final bool newBookmarkStatus;
 
-  HomeSectionTabContentUpdatePostBookmarkStatus({
+  HomeSectionTabContentUpdatePostBookmarkEvent({
     required this.postId,
-    required this.isBookmarked,
+    required this.newBookmarkStatus,
   });
 }

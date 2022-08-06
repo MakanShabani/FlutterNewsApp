@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_admin_dashboard/models/repositories/repo_fake_implementaion/fake_category_repository.dart';
+import 'package:responsive_admin_dashboard/models/repositories/repo_fake_implementaion/fake_post_repository.dart';
 import 'package:responsive_admin_dashboard/user_credentials.dart';
 
 import 'bloc/blocs.dart';
@@ -12,14 +14,30 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => FakeAuthenticationRepository(),
-      child: BlocProvider(
-        lazy: false,
-        create: (context) => AuthenticationBloc(
-            userCredentials: UserCredentials(),
-            authenticationRepository:
-                context.read<FakeAuthenticationRepository>()),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(
+            create: (context) =>
+                FakeAuthenticationRepository(delayDurationInSeconds: 2)),
+        RepositoryProvider(
+            create: (context) => FakePostReposiory(
+                fetchDelayDurationInSeconds: 2, toggleBookmarkDelay: 10)),
+        RepositoryProvider(
+            create: (context) =>
+                FakeCategoryRepository(delayDurationInSeconds: 1)),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+              lazy: false,
+              create: (context) => AuthenticationBloc(
+                  userCredentials: UserCredentials(),
+                  authenticationRepository:
+                      context.read<FakeAuthenticationRepository>())),
+          BlocProvider(
+              create: (context) => PostBookmarkTrackerCubit(
+                  postRepository: context.read<FakePostReposiory>())),
+        ],
         child: MaterialApp(
           title: 'News App',
           theme: ThemeData(
