@@ -46,7 +46,7 @@ class _TabContentState extends State<TabContent>
             );
           }
 
-          if (state is! HomeSectionTabContentInitializingState) {
+          if (state is HomeSectionTabContentContentMustBeShownState) {
             //show contents
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -58,7 +58,7 @@ class _TabContentState extends State<TabContent>
                   ),
                   widget.category == null
                       ? PostCarouselWithIndicator(
-                          height: 200.0,
+                          height: 210.0,
                           borderRadious: view_constants.circularBorderRadious,
                           cauroselLeftPadding:
                               view_constants.screensContentsHorizontalPadding,

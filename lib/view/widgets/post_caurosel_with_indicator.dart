@@ -73,32 +73,42 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
               : const EdgeInsets.all(0),
           child: ClipRRect(
               borderRadius: BorderRadius.circular(widget.borderRadious),
-              child: Stack(
-                children: [
-                  Image.network(
-                      fit: BoxFit.fill,
-                      width: double.infinity,
-                      widget.items[itemIndex].imagesUrls!.first),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: InkWell(
+                child: GridTile(
+                  footer: Container(
+                    color: Colors.black54.withOpacity(0.4),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 5.0, 0, 5.0),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            height: 22.0,
+                            height: 34.0,
+                            child: Text(
+                              widget.items[itemIndex].title,
+                              maxLines: 2,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15.0,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5.0,
+                          ),
+                          SizedBox(
+                            height: 20.0,
                             child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text(
                                   '2 hours ago',
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 12.0),
+                                      color: Colors.white70, fontSize: 12.0),
                                 ),
                                 PostBookmarkSection(
                                   bookmarkedColor: Colors.orange,
-                                  unBookmarkedColor: Colors.white,
+                                  unBookmarkedColor: Colors.white70,
                                   initialBookmarkStatus:
                                       widget.items[itemIndex].isBookmarked,
                                   postID: widget.items[itemIndex].id,
@@ -110,21 +120,19 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                                       (postId, newBookmarkValueToSet) =>
                                           onPostBookMarkPressed(
                                               postId, newBookmarkValueToSet),
-                                ),
+                                )
                               ],
                             ),
-                          ),
-                          Text(
-                            widget.items[itemIndex].title,
-                            maxLines: 2,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ]),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                ],
+                  child: Image.network(
+                      fit: BoxFit.fill,
+                      width: double.infinity,
+                      widget.items[itemIndex].imagesUrls!.first),
+                ),
               )),
         ),
       ),
