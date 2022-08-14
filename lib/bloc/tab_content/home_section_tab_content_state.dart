@@ -12,22 +12,6 @@ abstract class HomeSectionTabContentState {
   });
 }
 
-//This state simplifies the state checking in the ui
-//other states must be extend this state when they must show the main content instead of extending HomeSectionTabContentState.
-//this state extends HomeSectionTabContentState.
-//so in the ui when you want to check if main content of the page should be shown instead of checking each state type and then
-//decide to show the main content or not we could only check if the state is of this type or not.
-//instead of 'if(state is ... || if state is ...) => showMainCOntent()'
-//we could use 'if(state is HomeSectionTabContentContentMustBeShownState) => showMainCOntent()'
-abstract class HomeSectionTabContentContentMustBeShownState
-    extends HomeSectionTabContentState {
-  const HomeSectionTabContentContentMustBeShownState({
-    required super.posts,
-    required super.pagingOptionsVm,
-    super.categoryId,
-  });
-}
-
 class HomeSectionTabContentInitial extends HomeSectionTabContentState {
   const HomeSectionTabContentInitial({
     required super.posts,
@@ -46,7 +30,7 @@ class HomeSectionTabContentInitializingState
 }
 
 class HomeSectionTabContentInitializingSuccessfullState
-    extends HomeSectionTabContentContentMustBeShownState {
+    extends HomeSectionTabContentState {
   const HomeSectionTabContentInitializingSuccessfullState({
     super.categoryId,
     required super.posts,
@@ -67,7 +51,7 @@ class HomeSectionTabContentInitializingHasErrorState
 }
 
 class HomeSectionTabContentFetchingMorePostState
-    extends HomeSectionTabContentContentMustBeShownState {
+    extends HomeSectionTabContentState {
   final PagingOptionsVm fetchingPagingOptionsVm;
 
   const HomeSectionTabContentFetchingMorePostState({
@@ -79,7 +63,7 @@ class HomeSectionTabContentFetchingMorePostState
 }
 
 class HomeSectionTabContentFetchingMorePostSuccessfullState
-    extends HomeSectionTabContentContentMustBeShownState {
+    extends HomeSectionTabContentState {
   const HomeSectionTabContentFetchingMorePostSuccessfullState({
     super.categoryId,
     required super.posts,
@@ -88,7 +72,7 @@ class HomeSectionTabContentFetchingMorePostSuccessfullState
 }
 
 class HomeSectionTabContentFetchingMorePostHasErrorState
-    extends HomeSectionTabContentContentMustBeShownState {
+    extends HomeSectionTabContentState {
   final PagingOptionsVm errorPagingOptionsVm;
   final ErrorModel error;
 
@@ -102,7 +86,7 @@ class HomeSectionTabContentFetchingMorePostHasErrorState
 }
 
 class HomeSectionTabContentPostBookmarkUpdated
-    extends HomeSectionTabContentContentMustBeShownState {
+    extends HomeSectionTabContentState {
   const HomeSectionTabContentPostBookmarkUpdated({
     required super.posts,
     required super.pagingOptionsVm,

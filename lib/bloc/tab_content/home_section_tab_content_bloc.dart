@@ -1,5 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
@@ -61,7 +63,9 @@ class HomeSectionTabContentBloc
     on<HomeSectionTabContentFetchMorePostsEvent>((event, emit) async {
       if (state is HomeSectionTabContentInitial ||
           state is HomeSectionTabContentInitializingState ||
-          state is HomeSectionTabContentInitializingHasErrorState) return;
+          state is HomeSectionTabContentInitializingHasErrorState) {
+        return;
+      }
 
       emit(
         HomeSectionTabContentFetchingMorePostState(
@@ -76,7 +80,9 @@ class HomeSectionTabContentBloc
       );
 
       ResponseModel<List<Post>> postResponse = await postRepository.getPosts(
-          pagingOptionsVm: state.pagingOptionsVm, categoryId: state.categoryId);
+          pagingOptionsVm: (state as HomeSectionTabContentFetchingMorePostState)
+              .fetchingPagingOptionsVm,
+          categoryId: state.categoryId);
 
       if (postResponse.statusCode != 200) {
         emit(HomeSectionTabContentFetchingMorePostHasErrorState(
