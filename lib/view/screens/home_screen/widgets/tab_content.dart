@@ -20,6 +20,27 @@ class TabContent extends StatefulWidget {
 
 class _TabContentState extends State<TabContent>
     with AutomaticKeepAliveClientMixin {
+  late ScrollController _scrollController;
+  late HomeSectionTabContentBloc _hSTCbloc;
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(scrollListenrer);
+    _hSTCbloc = HomeSectionTabContentBloc(
+        postRepository: context.read<FakePostReposiory>(),
+        haowManyPostToFetchEachTime: 10,
+        categoryId: widget.category?.id)
+      ..add(HomeSectionTabContentInitializeEvent());
+  }
+
+  @override
+  void dispose() {
+    _hSTCbloc.close();
+    _scrollController.removeListener(scrollListenrer);
+    super.dispose();
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -29,12 +50,12 @@ class _TabContentState extends State<TabContent>
     super.build(context);
 
     return BlocProvider(
-      create: (context) => HomeSectionTabContentBloc(
-          haowManyPostToFetchEachTime: 10,
-          categoryId: widget.category?.id,
-          postRepository: context.read<FakePostReposiory>())
-        ..add(HomeSectionTabContentInitializeEvent()),
+      create: (context) => _hSTCbloc,
       child: BlocBuilder<HomeSectionTabContentBloc, HomeSectionTabContentState>(
+        buildWhen: (previous, current) =>
+            current is HomeSectionTabContentInitializingHasErrorState ||
+            current is HomeSectionTabContentInitializingState ||
+            current is HomeSectionTabContentInitializingSuccessfullState,
         builder: (context, state) {
           if (state is HomeSectionTabContentInitializingHasErrorState) {
             //show error
@@ -46,65 +67,99 @@ class _TabContentState extends State<TabContent>
             );
           }
 
-          if (state is HomeSectionTabContentContentMustBeShownState) {
+          if (state is HomeSectionTabContentInitializingSuccessfullState) {
             //show contents
-            return SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 15.0,
+            return CustomScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.vertical,
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildListDelegate([
+                      const SizedBox(
+                        height: 15.0,
+                      ),
+                      widget.category == null
+                          ? PostCarouselWithIndicator(
+                              height: 210.0,
+                              borderRadious:
+                                  view_constants.circularBorderRadious,
+                              cauroselLeftPadding: view_constants
+                                  .screensContentsHorizontalPadding,
+                              cauroselRightPadding: view_constants
+                                  .screensContentsHorizontalPadding,
+                              items: state.posts.take(5).toList(),
+                              onPostBookMarkUpdated: (postId,
+                                      newBookmarkStatus) =>
+                                  context.read<HomeSectionTabContentBloc>().add(
+                                      HomeSectionTabContentUpdatePostBookmarkEvent(
+                                          postId: postId,
+                                          newBookmarkStatus:
+                                              newBookmarkStatus)),
+                            )
+                          : const SizedBox(
+                              height: 0,
+                            ),
+                      SizedBox(
+                        height: widget.category == null ? 10.0 : 0,
+                      ),
+                      widget.category == null
+                          ? const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: view_constants
+                                      .screensContentsHorizontalPadding),
+                              child: Text(
+                                'Latest news',
+                                style: TextStyle(fontSize: 22.0),
+                              ),
+                            )
+                          : const SizedBox(
+                              height: 0,
+                            ),
+                      SizedBox(
+                        height: widget.category == null ? 15.0 : 0,
+                      ),
+                    ]),
                   ),
-                  widget.category == null
-                      ? PostCarouselWithIndicator(
-                          height: 210.0,
-                          borderRadious: view_constants.circularBorderRadious,
-                          cauroselLeftPadding:
-                              view_constants.screensContentsHorizontalPadding,
-                          cauroselRightPadding:
-                              view_constants.screensContentsHorizontalPadding,
-                          items: state.posts.take(5).toList(),
-                          onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
-                              context.read<HomeSectionTabContentBloc>().add(
+                  BlocBuilder<HomeSectionTabContentBloc,
+                      HomeSectionTabContentState>(
+                    buildWhen: (previous, current) => current
+                        is HomeSectionTabContentFetchingMorePostSuccessfullState,
+                    builder: (context, state) {
+                      return PostsListSection(
+                        items: state.posts,
+                        onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
+                            context.read<HomeSectionTabContentBloc>().add(
                                   HomeSectionTabContentUpdatePostBookmarkEvent(
                                       postId: postId,
-                                      newBookmarkStatus: newBookmarkStatus)),
-                        )
-                      : const SizedBox(
-                          height: 0,
-                        ),
-                  SizedBox(
-                    height: widget.category == null ? 10.0 : 0,
+                                      newBookmarkStatus: newBookmarkStatus),
+                                ),
+                      );
+                    },
                   ),
-                  widget.category == null
-                      ? const Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: view_constants
-                                  .screensContentsHorizontalPadding),
-                          child: Text(
-                            'Latest news',
-                            style: TextStyle(fontSize: 22.0),
-                          ),
-                        )
-                      : const SizedBox(
-                          height: 0,
-                        ),
-                  SizedBox(
-                    height: widget.category == null ? 15.0 : 0,
-                  ),
-                  PostsListSection(
-                    items: state.posts,
-                    onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
-                        context.read<HomeSectionTabContentBloc>().add(
-                              HomeSectionTabContentUpdatePostBookmarkEvent(
-                                  postId: postId,
-                                  newBookmarkStatus: newBookmarkStatus),
-                            ),
-                  ),
-                ],
-              ),
-            );
+                  BlocBuilder<HomeSectionTabContentBloc,
+                      HomeSectionTabContentState>(
+                    buildWhen: (previous, current) =>
+                        current is HomeSectionTabContentFetchingMorePostState ||
+                        current
+                            is HomeSectionTabContentFetchingMorePostSuccessfullState ||
+                        current
+                            is HomeSectionTabContentFetchingMorePostHasErrorState,
+                    builder: (context, state) {
+                      return SliverFixedExtentList(
+                          delegate: SliverChildListDelegate.fixed([
+                            state is HomeSectionTabContentFetchingMorePostState
+                                ? const LoadingIndicator(
+                                    hasBackground: true,
+                                    backgroundHeight: 20.0,
+                                  )
+                                : const SizedBox(
+                                    height: 20.0,
+                                  )
+                          ]),
+                          itemExtent: 20.0);
+                    },
+                  )
+                ]);
           }
 
           //show loading
@@ -116,5 +171,23 @@ class _TabContentState extends State<TabContent>
         },
       ),
     );
+  }
+
+  void scrollListenrer() {
+    if (_hSTCbloc.state is! HomeSectionTabContentInitializingSuccessfullState &&
+        _hSTCbloc.state
+            is! HomeSectionTabContentFetchingMorePostSuccessfullState &&
+        _hSTCbloc.state
+            is! HomeSectionTabContentFetchingMorePostHasErrorState) {
+      return;
+    }
+
+    if (_hSTCbloc.state is HomeSectionTabContentFetchingMorePostState) {
+      return;
+    }
+    if (_scrollController.offset ==
+        _scrollController.position.maxScrollExtent) {
+      _hSTCbloc.add(HomeSectionTabContentFetchMorePostsEvent());
+    }
   }
 }
