@@ -2,6 +2,7 @@
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:responsive_admin_dashboard/infrastructure/shared_preferences_service.dart';
 
 import '../../models/entities/entities.dart';
 import '../../models/entities/ViewModels/view_models.dart';
@@ -26,8 +27,9 @@ class AuthenticationBloc
 
         //everything is ok
 
-        //Save user credentials to database, singleton or sharedprefrences
+        //Remove user credentials to database, singleton or sharedprefrences
         userCredentials.authenticatedUser = null;
+        SharedPreferencesService.removeUserInfo();
 
         emit(Loggedout());
         return;
@@ -47,6 +49,8 @@ class AuthenticationBloc
 
         //Save user credentials to database, singleton or sharedprefrences
         userCredentials.authenticatedUser = response.data!;
+        SharedPreferencesService.saveUserInfo(
+            userCredentials.authenticatedUser!);
 
         emit(LoggedIn(user: response.data!));
         return;
@@ -65,6 +69,8 @@ class AuthenticationBloc
 
         //Save user credentials to database, singleton or sharedprefrences
         userCredentials.authenticatedUser = response.data!;
+        SharedPreferencesService.saveUserInfo(
+            userCredentials.authenticatedUser!);
 
         emit(Registered(user: response.data!));
         return;
