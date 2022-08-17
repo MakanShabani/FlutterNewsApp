@@ -39,14 +39,14 @@ class FakeAuthenticationDataSource {
 
     fakeData.authenticatedUser = AuthenticatedUserModel(
         token: 'token ${newUser.email}',
-        expirationDate: DateTime.now().add(const Duration(hours: 1)),
+        expireAt: DateTime.now().add(const Duration(hours: 1)),
         user: newUser);
 
     return ResponseModel(
       statusCode: 200,
       data: AuthenticatedUserModel(
         token: 'token ${userRegisterVm.email}',
-        expirationDate: DateTime.now().add(const Duration(hours: 1)),
+        expireAt: DateTime.now().add(const Duration(hours: 1)),
         user: newUser,
       ),
     );
@@ -72,14 +72,14 @@ class FakeAuthenticationDataSource {
 
     fakeData.authenticatedUser = AuthenticatedUserModel(
         token: 'token ${user.email}',
-        expirationDate: DateTime.now().add(const Duration(hours: 1)),
+        expireAt: DateTime.now().add(const Duration(hours: 1)),
         user: user);
 
     return ResponseModel(
       statusCode: 200,
       data: AuthenticatedUserModel(
         token: 'token ${user.email}',
-        expirationDate: DateTime.now().add(const Duration(hours: 1)),
+        expireAt: DateTime.now().add(const Duration(hours: 1)),
         user: user,
       ),
     );

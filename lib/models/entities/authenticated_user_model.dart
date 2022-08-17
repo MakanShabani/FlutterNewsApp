@@ -2,10 +2,10 @@ import 'user.dart';
 
 class AuthenticatedUserModel extends User {
   String token;
-  DateTime expirationDate;
+  DateTime expireAt;
 
   AuthenticatedUserModel(
-      {required this.token, required this.expirationDate, required User user})
+      {required this.token, required this.expireAt, required User user})
       : super(
           id: user.id,
           firstName: user.firstName,
@@ -14,10 +14,24 @@ class AuthenticatedUserModel extends User {
           email: user.email,
           role: user.role,
           status: user.status,
-          imageUr: user.imageUr,
+          imageUrl: user.imageUrl,
           phone: user.phone,
           posts: user.posts,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
         );
+
+  factory AuthenticatedUserModel.fromJson(Map<String, dynamic> parsedJson) =>
+      AuthenticatedUserModel(
+        token: parsedJson['token'],
+        expireAt: parsedJson['expire_at'],
+        user: User.fromJson(parsedJson),
+      );
+  @override
+  Map<String, dynamic> toJson() {
+    final data = super.toJson();
+    data['token'] = token;
+    data['expire_at'] = expireAt;
+    return data;
+  }
 }

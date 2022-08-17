@@ -120,7 +120,7 @@ class FakeDatabase {
   bool isUserTokenValid({required String token}) {
     if (authenticatedUser == null ||
         authenticatedUser!.token != token ||
-        authenticatedUser!.expirationDate.isBefore(DateTime.now())) {
+        authenticatedUser!.expireAt.isBefore(DateTime.now())) {
       return false;
     }
 
