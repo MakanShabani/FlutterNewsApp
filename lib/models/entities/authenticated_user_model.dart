@@ -24,14 +24,14 @@ class AuthenticatedUserModel extends User {
   factory AuthenticatedUserModel.fromJson(Map<String, dynamic> parsedJson) =>
       AuthenticatedUserModel(
         token: parsedJson['token'],
-        expireAt: parsedJson['expire_at'],
+        expireAt: DateTime.parse(parsedJson['expire_at']),
         user: User.fromJson(parsedJson),
       );
   @override
   Map<String, dynamic> toJson() {
     final data = super.toJson();
     data['token'] = token;
-    data['expire_at'] = expireAt;
+    data['expire_at'] = expireAt.toString();
     return data;
   }
 }

@@ -44,8 +44,8 @@ class User extends Entity {
       password: parsedJson['password'],
       age: parsedJson['age'],
       email: parsedJson['email'],
-      role: parsedJson['role'],
-      status: parsedJson['status'],
+      role: UserRole.fromIndex(parsedJson['role']),
+      status: UserStatus.fromIndex(parsedJson['status']),
       phone: parsedJson['phone'],
       imageUrl: parsedJson['image_url'],
     );
@@ -58,8 +58,8 @@ class User extends Entity {
     data['password'] = password;
     data['age'] = age;
     data['email'] = email;
-    data['role'] = role;
-    data['status'] = status;
+    data['role'] = role.index;
+    data['status'] = status.index;
     data['phone'] = phone;
     data['image_url'] = imageUrl;
     return data;

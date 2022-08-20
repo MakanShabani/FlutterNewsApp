@@ -11,7 +11,7 @@ class SharedPreferencesService {
     // Obtain shared preferences.
     final prefs = await SharedPreferences.getInstance();
 
-    return await prefs.setString(userInfoKey, jsonEncode(user));
+    return await prefs.setString(userInfoKey, jsonEncode(user.toJson()));
   }
 
   static Future<bool> removeUserInfo() async {
