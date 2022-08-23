@@ -1,4 +1,4 @@
-import '../../../user_credentials.dart';
+import '../../../logged_in_user_info.dart';
 import '../../entities/ViewModels/view_models.dart';
 import '../../entities/entities.dart';
 import '../../fake_data_source/fake_data_source.dart';
@@ -7,7 +7,7 @@ import '../repositories.dart';
 class FakeCategoryRepository implements CategoryRepository {
   FakeCategoryRepository({required this.delayDurationInSeconds});
 
-  UserCredentials credentials = UserCredentials();
+  LoggedInUserInfo credentials = LoggedInUserInfo();
   FakeCategoryDataSource fakeCategoryDataSource = FakeCategoryDataSource();
   final int delayDurationInSeconds;
 

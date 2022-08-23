@@ -7,19 +7,19 @@ import 'package:responsive_admin_dashboard/infrastructure/shared_preferences_ser
 import '../../models/entities/entities.dart';
 import '../../models/entities/ViewModels/view_models.dart';
 import '../../models/repositories/repositories.dart';
-import '../../user_credentials.dart';
+import '../../logged_in_user_info.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final UserCredentials userCredentials;
+  final LoggedInUserInfo loggedInUser;
   final AuthenticationRepository authenticationRepository;
 
   AuthenticationBloc({
     required this.authenticationRepository,
-    required this.userCredentials,
+    required this.loggedInUser,
   }) : super(AuthenticationInitial()) {
     on<AuthenticationEvent>((event, emit) async {
       if (event is LogoutEvent) {
@@ -28,7 +28,7 @@ class AuthenticationBloc
         //everything is ok
 
         //Remove user credentials to database, singleton or sharedprefrences
-        userCredentials.authenticatedUser = null;
+        loggedInUser.authenticatedUser = null;
         SharedPreferencesService.removeUserInfo();
 
         emit(Loggedout());
@@ -48,9 +48,8 @@ class AuthenticationBloc
         //everything is ok
 
         //Save user credentials to database, singleton or sharedprefrences
-        userCredentials.authenticatedUser = response.data!;
-        SharedPreferencesService.saveUserInfo(
-            userCredentials.authenticatedUser!);
+        loggedInUser.authenticatedUser = response.data!;
+        SharedPreferencesService.saveUserInfo(loggedInUser.authenticatedUser!);
 
         emit(LoggedIn(user: response.data!));
         return;
@@ -68,9 +67,8 @@ class AuthenticationBloc
         //everything is ok
 
         //Save user credentials to database, singleton or sharedprefrences
-        userCredentials.authenticatedUser = response.data!;
-        SharedPreferencesService.saveUserInfo(
-            userCredentials.authenticatedUser!);
+        loggedInUser.authenticatedUser = response.data!;
+        SharedPreferencesService.saveUserInfo(loggedInUser.authenticatedUser!);
 
         emit(Registered(user: response.data!));
         return;

@@ -1,4 +1,4 @@
-import 'package:responsive_admin_dashboard/user_credentials.dart';
+import 'package:responsive_admin_dashboard/logged_in_user_info.dart';
 
 import '../../fake_data_source/fake_data_source.dart';
 import '../authentication_repository.dart';
@@ -8,7 +8,7 @@ import '../../entities/entities.dart';
 class FakeAuthenticationRepository implements AuthenticationRepository {
   FakeAuthenticationRepository({required this.delayDurationInSeconds});
 
-  UserCredentials userCredentials = UserCredentials();
+  LoggedInUserInfo userCredentials = LoggedInUserInfo();
   FakeAuthenticationDataSource fakeAuthDataSource =
       FakeAuthenticationDataSource();
 

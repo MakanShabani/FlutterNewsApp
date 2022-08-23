@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_admin_dashboard/models/repositories/repo_fake_implementaion/fake_category_repository.dart';
 import 'package:responsive_admin_dashboard/models/repositories/repo_fake_implementaion/fake_post_repository.dart';
-import 'package:responsive_admin_dashboard/user_credentials.dart';
+import 'package:responsive_admin_dashboard/logged_in_user_info.dart';
 
 import 'bloc/blocs.dart';
 import 'models/repositories/repo_fake_implementaion/fake_authetication_repository.dart';
@@ -31,7 +31,7 @@ class App extends StatelessWidget {
           BlocProvider(
               lazy: false,
               create: (context) => AuthenticationBloc(
-                  userCredentials: UserCredentials(),
+                  loggedInUser: LoggedInUserInfo(),
                   authenticationRepository:
                       context.read<FakeAuthenticationRepository>())),
           BlocProvider(
