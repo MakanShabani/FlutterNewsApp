@@ -1,5 +1,5 @@
-import '../entities/ViewModels/view_models.dart';
-import '../entities/entities.dart';
+import '../models/entities/ViewModels/view_models.dart';
+import '../models/entities/entities.dart';
 
 abstract class PostRepository {
   Future<ResponseModel<List<Post>>> getSlides(
