@@ -1,4 +1,4 @@
-import 'package:responsive_admin_dashboard/logged_in_user_info.dart';
+import 'package:responsive_admin_dashboard/data_source/logged_in_user_info.dart';
 
 import '../../data_source/fake_data_source/fake_data_source.dart';
 import '../authentication_repository.dart';

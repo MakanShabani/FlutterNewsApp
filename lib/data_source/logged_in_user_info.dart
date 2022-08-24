@@ -1,4 +1,4 @@
-import 'models/entities/authenticated_user_model.dart';
+import '../models/entities/authenticated_user_model.dart';
 
 class LoggedInUserInfo {
   static final LoggedInUserInfo _instance =

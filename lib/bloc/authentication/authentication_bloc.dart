@@ -6,7 +6,7 @@ import 'package:responsive_admin_dashboard/infrastructure/shared_preferences_ser
 
 import '../../models/entities/entities.dart';
 import '../../models/entities/ViewModels/view_models.dart';
-import '../../logged_in_user_info.dart';
+import '../../data_source/logged_in_user_info.dart';
 import '../../repositories/repositories.dart';
 
 part 'authentication_event.dart';
