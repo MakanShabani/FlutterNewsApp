@@ -1,5 +1,5 @@
-import '../entities/ViewModels/view_models.dart';
-import '../entities/entities.dart';
+import '../../models/entities/ViewModels/view_models.dart';
+import '../../models/entities/entities.dart';
 import 'fake_database.dart';
 
 class FakeCategoryDataSource {

@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 
 import '../../models/entities/ViewModels/view_models.dart';
 import '../../models/entities/entities.dart';
-import '../../models/repositories/repositories.dart';
+import '../../repositories/category_repository.dart';
 
 part 'home_section_event.dart';
 part 'home_section_state.dart';

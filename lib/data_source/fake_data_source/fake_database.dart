@@ -1,5 +1,5 @@
 import 'package:faker/faker.dart';
-import '../entities/entities.dart';
+import '../../models/entities/entities.dart';
 
 class FakeDatabase {
   static final FakeDatabase _instance = FakeDatabase._privateConstructor();

@@ -1,14 +1,13 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import '../../models/entities/ViewModels/view_models.dart';
 import '../../models/entities/entities.dart';
-import '../../models/repositories/repositories.dart';
 import 'package:collection/collection.dart';
+
+import '../../repositories/repositories.dart';
 
 part 'home_section_tab_content_event.dart';
 part 'home_section_tab_content_state.dart';

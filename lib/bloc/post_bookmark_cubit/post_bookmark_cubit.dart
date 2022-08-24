@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
 import '../../models/entities/entities.dart';
-import '../../models/repositories/repositories.dart';
+import '../../repositories/repositories.dart';
 
 part 'post_bookmark_state.dart';
 
