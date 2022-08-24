@@ -10,7 +10,7 @@ class FakePostReposiory implements PostRepository {
     required this.toggleBookmarkDelay,
   });
 
-  LoggedInUserInfo credentials = LoggedInUserInfo();
+  LoggedInUserInfo user = LoggedInUserInfo();
   FakePostDataSource fakePostDataSource = FakePostDataSource();
   final int fetchDelayDurationInSeconds;
   final int toggleBookmarkDelay;
@@ -21,7 +21,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
         Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.createPost(
-            userToken: credentials.authenticatedUser!.token,
+            userToken: user.authenticatedUser!.token,
             postCreationVm: postCreationVm));
   }
 
@@ -30,7 +30,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
         Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.deletePost(
-            userToken: credentials.authenticatedUser!.token, postId: postId));
+            userToken: user.authenticatedUser!.token, postId: postId));
   }
 
   @override
@@ -40,7 +40,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
         Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.getAuthorPosts(
-              userToken: credentials.authenticatedUser!.token,
+              userToken: user.authenticatedUser!.token,
               userId: userId,
               pagingOptionsVm: pagingOptionsVm,
             ));
@@ -51,7 +51,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
         Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.getPost(
-            userToken: credentials.authenticatedUser!.token, postId: postId));
+            userToken: user.authenticatedUser!.token, postId: postId));
   }
 
   @override
@@ -60,7 +60,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
         Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.getPosts(
-              userToken: credentials.authenticatedUser!.token,
+              userToken: user.authenticatedUser!.token,
               categoryId: categoryId,
               pagingOptionsVm: pagingOptionsVm,
             ));
@@ -72,7 +72,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
         Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.updatePost(
-              userToken: credentials.authenticatedUser!.token,
+              userToken: user.authenticatedUser!.token,
               postId: postId,
               postUpdateVm: postUpdateVm,
             ));
@@ -86,7 +86,7 @@ class FakePostReposiory implements PostRepository {
         Duration(seconds: fetchDelayDurationInSeconds),
         () => fakePostDataSource.getSlides(
               categoryId: categoryId,
-              userToken: credentials.authenticatedUser!.token,
+              userToken: user.authenticatedUser!.token,
               pagingOptionsVm: slidePagingOptionsVm,
             ));
   }
@@ -97,7 +97,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
       Duration(seconds: fetchDelayDurationInSeconds),
       () => fakePostDataSource.getUserBookmarkedPosts(
-          userToken: credentials.authenticatedUser!.token,
+          userToken: user.authenticatedUser!.token,
           pagingOptionsVm: pagingOptionsVm),
     );
   }
@@ -107,7 +107,7 @@ class FakePostReposiory implements PostRepository {
     return await Future.delayed(
       Duration(seconds: toggleBookmarkDelay),
       () => fakePostDataSource.toggleBookmarkPost(
-        userToken: credentials.authenticatedUser!.token,
+        userToken: user.authenticatedUser!.token,
         postId: postId,
       ),
     );

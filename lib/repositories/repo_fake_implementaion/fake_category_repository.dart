@@ -7,7 +7,7 @@ import '../repositories.dart';
 class FakeCategoryRepository implements CategoryRepository {
   FakeCategoryRepository({required this.delayDurationInSeconds});
 
-  LoggedInUserInfo credentials = LoggedInUserInfo();
+  LoggedInUserInfo user = LoggedInUserInfo();
   FakeCategoryDataSource fakeCategoryDataSource = FakeCategoryDataSource();
   final int delayDurationInSeconds;
 
@@ -17,7 +17,7 @@ class FakeCategoryRepository implements CategoryRepository {
     return await Future.delayed(
       Duration(seconds: delayDurationInSeconds),
       () => fakeCategoryDataSource.getCategories(
-        userToken: credentials.authenticatedUser!.token,
+        userToken: user.authenticatedUser!.token,
         pagingOptionsVm: pagingOptionsVm,
       ),
     );

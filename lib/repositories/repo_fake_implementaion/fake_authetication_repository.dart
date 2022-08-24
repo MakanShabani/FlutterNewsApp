@@ -8,7 +8,7 @@ import '../../models/entities/entities.dart';
 class FakeAuthenticationRepository implements AuthenticationRepository {
   FakeAuthenticationRepository({required this.delayDurationInSeconds});
 
-  LoggedInUserInfo userCredentials = LoggedInUserInfo();
+  LoggedInUserInfo user = LoggedInUserInfo();
   FakeAuthenticationDataSource fakeAuthDataSource =
       FakeAuthenticationDataSource();
 
@@ -33,6 +33,6 @@ class FakeAuthenticationRepository implements AuthenticationRepository {
     return Future.delayed(
         Duration(seconds: delayDurationInSeconds),
         () => fakeAuthDataSource.logoutUser(
-            userToken: userCredentials.authenticatedUser!.token));
+            userToken: user.authenticatedUser!.token));
   }
 }

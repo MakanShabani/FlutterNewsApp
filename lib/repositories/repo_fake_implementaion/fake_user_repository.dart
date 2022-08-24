@@ -7,7 +7,7 @@ import '../user_repository.dart';
 class FakeUserRepository implements UserRepository {
   FakeUserRepository({required this.delayDurationInSeconds});
 
-  LoggedInUserInfo credentials = LoggedInUserInfo();
+  LoggedInUserInfo user = LoggedInUserInfo();
   FakeUserDataSource fakeUserDataSource = FakeUserDataSource();
   final int delayDurationInSeconds;
 
@@ -16,7 +16,7 @@ class FakeUserRepository implements UserRepository {
     return await Future.delayed(
         Duration(seconds: delayDurationInSeconds),
         () => fakeUserDataSource.getUser(
-            userToken: credentials.authenticatedUser!.token, userId: authorId));
+            userToken: user.authenticatedUser!.token, userId: authorId));
   }
 
   @override
@@ -25,7 +25,7 @@ class FakeUserRepository implements UserRepository {
     return await Future.delayed(
         Duration(seconds: delayDurationInSeconds),
         () => fakeUserDataSource.getusers(
-            userToken: credentials.authenticatedUser!.token,
+            userToken: user.authenticatedUser!.token,
             pagingOptionsVm: pagingOptionsVm));
   }
 
@@ -35,7 +35,6 @@ class FakeUserRepository implements UserRepository {
     return await Future.delayed(
         Duration(seconds: delayDurationInSeconds),
         () => fakeUserDataSource.updateUser(
-            userToken: credentials.authenticatedUser!.token,
-            updateVm: updateVm));
+            userToken: user.authenticatedUser!.token, updateVm: updateVm));
   }
 }
