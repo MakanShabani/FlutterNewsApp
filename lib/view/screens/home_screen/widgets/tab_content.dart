@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../bloc/blocs.dart';
 import '../../../../models/entities/entities.dart';
-import '../../../../models/repositories/repo_fake_implementaion/fake_post_repository.dart';
+import '../../../../repositories/repo_fake_implementaion/fake_repositories.dart';
 import '../../../view_constants.dart' as view_constants;
 import '../../../widgets/widgest.dart';
 

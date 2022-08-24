@@ -1,7 +1,7 @@
 import '../../../logged_in_user_info.dart';
-import '../../entities/ViewModels/view_models.dart';
-import '../../entities/entities.dart';
-import '../../fake_data_source/fake_data_source.dart';
+import '../../models/entities/ViewModels/view_models.dart';
+import '../../models/entities/entities.dart';
+import '../../data_source/fake_data_source/fake_data_source.dart';
 import '../user_repository.dart';
 
 class FakeUserRepository implements UserRepository {
