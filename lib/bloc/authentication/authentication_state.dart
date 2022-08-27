@@ -7,6 +7,8 @@ abstract class AuthenticationState {
 
 class AuthenticationInitial extends AuthenticationState {}
 
+class AuthenticationInitializingState extends AuthenticationState {}
+
 class Loggedout extends AuthenticationState {}
 
 class LoggingIn extends AuthenticationState {}

@@ -5,6 +5,8 @@ abstract class AuthenticationEvent {
   const AuthenticationEvent();
 }
 
+class InitializeEvent extends AuthenticationEvent {}
+
 class LoginEvent extends AuthenticationEvent {
   final UserLoginVm loginVm;
 

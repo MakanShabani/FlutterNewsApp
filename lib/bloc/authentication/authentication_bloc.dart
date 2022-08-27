@@ -2,8 +2,8 @@
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:responsive_admin_dashboard/infrastructure/shared_preferences_service.dart';
 
+import '../../infrastructure/shared_preferences_service.dart';
 import '../../models/entities/entities.dart';
 import '../../models/entities/ViewModels/view_models.dart';
 import '../../data_source/logged_in_user_info.dart';
@@ -16,63 +16,80 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final LoggedInUserInfo loggedInUser;
   final AuthenticationRepository authenticationRepository;
+  final SharedPreferencesService sharedPreferencesService;
 
   AuthenticationBloc({
     required this.authenticationRepository,
     required this.loggedInUser,
+    required this.sharedPreferencesService,
   }) : super(AuthenticationInitial()) {
-    on<AuthenticationEvent>((event, emit) async {
-      if (event is LogoutEvent) {
-        await authenticationRepository.logout();
+    on<InitializeEvent>((event, emit) async {
+      emit(AuthenticationInitializingState());
 
-        //everything is ok
+      AuthenticatedUserModel? user =
+          await sharedPreferencesService.getUserInfo();
 
-        //Remove user credentials to database, singleton or sharedprefrences
-        loggedInUser.authenticatedUser = null;
-        SharedPreferencesService.removeUserInfo();
-
+      if (user == null || user.expireAt.isBefore(DateTime.now())) {
         emit(Loggedout());
         return;
       }
 
-      if (event is LoginEvent) {
-        emit(LoggingIn());
-        ResponseModel<AuthenticatedUserModel> response =
-            await authenticationRepository.login(loginVm: event.loginVm);
+      //TODO : we could contact server and
+      //update user's proile , user's bookmarks etc here
 
-        if (response.data == null) {
-          emit(LoggingInError(error: response.error!));
-          return;
-        }
+      emit(LoggedIn(user: user));
+    });
 
-        //everything is ok
+    on<LogoutEvent>((event, emit) async {
+      await authenticationRepository.logout();
 
-        //Save user credentials to database, singleton or sharedprefrences
-        loggedInUser.authenticatedUser = response.data!;
-        SharedPreferencesService.saveUserInfo(loggedInUser.authenticatedUser!);
+      //everything is ok
 
-        emit(LoggedIn(user: response.data!));
+      //Remove user credentials to database, singleton or sharedprefrences
+      loggedInUser.authenticatedUser = null;
+      sharedPreferencesService.removeUserInfo();
+
+      emit(Loggedout());
+      return;
+    });
+
+    on<LoginEvent>((event, emit) async {
+      emit(LoggingIn());
+      ResponseModel<AuthenticatedUserModel> response =
+          await authenticationRepository.login(loginVm: event.loginVm);
+
+      if (response.data == null) {
+        emit(LoggingInError(error: response.error!));
         return;
       }
 
-      if (event is RegisterEvent) {
-        ResponseModel<AuthenticatedUserModel> response =
-            await authenticationRepository.registerUser(
-                registerVm: event.registerVm);
+      //everything is ok
 
-        if (response.data == null) {
-          emit(RegisteringError(error: response.error!));
-          return;
-        }
-        //everything is ok
+      //Save user credentials to database, singleton or sharedprefrences
+      loggedInUser.authenticatedUser = response.data!;
+      sharedPreferencesService.saveUserInfo(loggedInUser.authenticatedUser!);
 
-        //Save user credentials to database, singleton or sharedprefrences
-        loggedInUser.authenticatedUser = response.data!;
-        SharedPreferencesService.saveUserInfo(loggedInUser.authenticatedUser!);
+      emit(LoggedIn(user: response.data!));
+      return;
+    });
 
-        emit(Registered(user: response.data!));
+    on<RegisterEvent>((event, emit) async {
+      ResponseModel<AuthenticatedUserModel> response =
+          await authenticationRepository.registerUser(
+              registerVm: event.registerVm);
+
+      if (response.data == null) {
+        emit(RegisteringError(error: response.error!));
         return;
       }
+      //everything is ok
+
+      //Save user credentials to database, singleton or sharedprefrences
+      loggedInUser.authenticatedUser = response.data!;
+      sharedPreferencesService.saveUserInfo(loggedInUser.authenticatedUser!);
+
+      emit(Registered(user: response.data!));
+      return;
     });
   }
 }

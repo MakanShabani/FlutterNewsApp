@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_admin_dashboard/data_source/logged_in_user_info.dart';
+import 'package:responsive_admin_dashboard/infrastructure/shared_preferences_service.dart';
 
 import 'bloc/blocs.dart';
 import 'repositories/repo_fake_implementaion/fake_repositories.dart';
@@ -29,6 +30,7 @@ class App extends StatelessWidget {
           BlocProvider(
               lazy: false,
               create: (context) => AuthenticationBloc(
+                  sharedPreferencesService: SharedPreferencesService(),
                   loggedInUser: LoggedInUserInfo(),
                   authenticationRepository:
                       context.read<FakeAuthenticationRepository>())),
