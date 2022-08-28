@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../post_category.dart';
+import '../entities/post_category.dart';
 
 class PostUpdateVm {
   String? title;

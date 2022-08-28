@@ -46,7 +46,7 @@ class FakeDatabase {
     }
   }
 
-  void initializeDatabase() {
+  void initializeDatabase() async {
     //create admin
     users.add(User(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
@@ -55,7 +55,7 @@ class FakeDatabase {
         firstName: 'admin',
         lastName: 'admin',
         age: 20,
-        email: 'a',
+        email: 'aadmin@gmail.com',
         password: 'a',
         role: UserRole.chiefEditor,
         status: UserStatus.active));

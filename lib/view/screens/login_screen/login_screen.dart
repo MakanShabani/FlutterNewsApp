@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_admin_dashboard/models/entities/ViewModels/user_login_vm.dart';
 import 'package:responsive_admin_dashboard/view/widgets/app_snack_bar.dart';
 import '../../../bloc/blocs.dart';
+import '../../../models/ViewModels/view_models.dart';
 import '../../../router/route_names.dart';
 import './widgets/widgets.dart';
 

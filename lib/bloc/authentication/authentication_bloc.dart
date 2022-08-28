@@ -4,8 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
 import '../../infrastructure/shared_preferences_service.dart';
+import '../../models/ViewModels/view_models.dart';
 import '../../models/entities/entities.dart';
-import '../../models/entities/ViewModels/view_models.dart';
 import '../../data_source/logged_in_user_info.dart';
 import '../../repositories/repositories.dart';
 
@@ -30,6 +30,8 @@ class AuthenticationBloc
           await sharedPreferencesService.getUserInfo();
 
       if (user == null || user.expireAt.isBefore(DateTime.now())) {
+        await sharedPreferencesService.removeUserInfo();
+        loggedInUser.authenticatedUser = null;
         emit(Loggedout());
         return;
       }
@@ -37,6 +39,7 @@ class AuthenticationBloc
       //TODO : we could contact server and
       //update user's proile , user's bookmarks etc here
 
+      loggedInUser.authenticatedUser = user;
       emit(LoggedIn(user: user));
     });
 
@@ -47,7 +50,7 @@ class AuthenticationBloc
 
       //Remove user credentials to database, singleton or sharedprefrences
       loggedInUser.authenticatedUser = null;
-      sharedPreferencesService.removeUserInfo();
+      await sharedPreferencesService.removeUserInfo();
 
       emit(Loggedout());
       return;
@@ -67,7 +70,8 @@ class AuthenticationBloc
 
       //Save user credentials to database, singleton or sharedprefrences
       loggedInUser.authenticatedUser = response.data!;
-      sharedPreferencesService.saveUserInfo(loggedInUser.authenticatedUser!);
+      await sharedPreferencesService
+          .saveUserInfo(loggedInUser.authenticatedUser!);
 
       emit(LoggedIn(user: response.data!));
       return;
@@ -86,7 +90,8 @@ class AuthenticationBloc
 
       //Save user credentials to database, singleton or sharedprefrences
       loggedInUser.authenticatedUser = response.data!;
-      sharedPreferencesService.saveUserInfo(loggedInUser.authenticatedUser!);
+      await sharedPreferencesService
+          .saveUserInfo(loggedInUser.authenticatedUser!);
 
       emit(Registered(user: response.data!));
       return;

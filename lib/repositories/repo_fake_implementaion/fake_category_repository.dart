@@ -1,5 +1,5 @@
 import '../../data_source/logged_in_user_info.dart';
-import '../../models/entities/ViewModels/view_models.dart';
+import '../../models/ViewModels/view_models.dart';
 import '../../models/entities/entities.dart';
 import '../../data_source/fake_data_source/fake_data_source.dart';
 import '../repositories.dart';
@@ -17,7 +17,6 @@ class FakeCategoryRepository implements CategoryRepository {
     return await Future.delayed(
       Duration(seconds: delayDurationInSeconds),
       () => fakeCategoryDataSource.getCategories(
-        userToken: user.authenticatedUser!.token,
         pagingOptionsVm: pagingOptionsVm,
       ),
     );

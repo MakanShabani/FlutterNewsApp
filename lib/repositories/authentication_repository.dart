@@ -1,5 +1,5 @@
+import '../models/ViewModels/view_models.dart';
 import '../models/entities/entities.dart';
-import '../models/entities/ViewModels/view_models.dart';
 
 abstract class AuthenticationRepository {
   Future<ResponseModel<AuthenticatedUserModel>> login(

@@ -1,8 +1,8 @@
 import 'package:responsive_admin_dashboard/data_source/logged_in_user_info.dart';
 
 import '../../data_source/fake_data_source/fake_data_source.dart';
+import '../../models/ViewModels/view_models.dart';
 import '../authentication_repository.dart';
-import '../../models/entities/ViewModels/view_models.dart';
 import '../../models/entities/entities.dart';
 
 class FakeAuthenticationRepository implements AuthenticationRepository {

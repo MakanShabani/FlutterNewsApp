@@ -2,7 +2,7 @@
 
 import 'package:collection/collection.dart';
 
-import '../../models/entities/ViewModels/view_models.dart';
+import '../../models/ViewModels/view_models.dart';
 import '../../models/entities/entities.dart';
 import 'fake_database.dart';
 

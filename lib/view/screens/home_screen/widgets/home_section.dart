@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../models/ViewModels/view_models.dart';
 import '../../../../repositories/repo_fake_implementaion/fake_repositories.dart';
 import './widgets.dart';
 import '../../../../bloc/blocs.dart';
-import '../../../../models/entities/ViewModels/view_models.dart';
 
 class HomeSection extends StatefulWidget {
   const HomeSection({Key? key}) : super(key: key);
