@@ -29,13 +29,13 @@ class LoadingIndicator extends StatelessWidget {
             child: Center(
               child: SpinKitThreeBounce(
                 size: size ?? 14.0,
-                color: color ?? Colors.orange,
+                color: color ?? Theme.of(context).primaryColor,
               ),
             ),
           )
         : SpinKitThreeBounce(
             size: size ?? 14.0,
-            color: color ?? Colors.orange,
+            color: color ?? Theme.of(context).primaryColor,
           );
   }
 }

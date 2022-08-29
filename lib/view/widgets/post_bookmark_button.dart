@@ -25,7 +25,7 @@ class PostBookmarkButton extends StatelessWidget {
     return isLoading
         ? SpinKitThreeBounce(
             size: loadingSize ?? 12.0,
-            color: bookmarkedColor,
+            color: bookmarkedColor ?? Theme.of(context).primaryColor,
           )
         : IconButton(
             constraints: const BoxConstraints(),
@@ -34,7 +34,7 @@ class PostBookmarkButton extends StatelessWidget {
             icon: Icon(
               Icons.bookmark,
               color: isBoolmarked
-                  ? bookmarkedColor ?? Colors.orange
+                  ? bookmarkedColor ?? Theme.of(context).primaryColor
                   : unBookmarkedColor ?? Colors.white,
               size: 16.0,
             ));

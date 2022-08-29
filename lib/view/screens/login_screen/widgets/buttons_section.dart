@@ -27,11 +27,6 @@ class ButtonSections extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: state is LoggingIn ? null : signInOnPressed,
-              style: ElevatedButton.styleFrom(
-                  elevation: 0.0,
-                  minimumSize: const Size.fromHeight(45.0),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0))),
               child: state is LoggingIn
                   ? Align(
                       alignment: Alignment.center,
@@ -78,7 +73,7 @@ class ButtonSections extends StatelessWidget {
               height: 20.0,
             ),
             SignInButton(
-              minimumWidth: 45.0,
+              minimumHeight: 45.0,
               backgroundColor: Colors.black12,
               textColor: Colors.black54,
               borderRadious: 10.0,

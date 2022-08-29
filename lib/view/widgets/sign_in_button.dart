@@ -3,18 +3,20 @@ import 'package:flutter/material.dart';
 class SignInButton extends StatelessWidget {
   const SignInButton(
       {Key? key,
-      required this.minimumWidth,
-      required this.backgroundColor,
-      required this.textColor,
+      required this.minimumHeight,
+      this.backgroundColor,
+      this.elevation,
+      this.textColor,
       required this.borderRadious,
       required this.logoImageAsset,
       required this.text,
       required this.onPressed})
       : super(key: key);
 
-  final double minimumWidth;
-  final Color backgroundColor;
-  final Color textColor;
+  final double? elevation;
+  final double minimumHeight;
+  final Color? backgroundColor;
+  final Color? textColor;
   final double borderRadious;
   final String logoImageAsset;
   final String text;
@@ -25,11 +27,13 @@ class SignInButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-          elevation: 0.0,
-          minimumSize: Size.fromHeight(minimumWidth),
           primary: backgroundColor,
+          elevation: elevation,
+          minimumSize: Size.fromHeight(minimumHeight),
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadious))),
+              borderRadius: BorderRadius.circular(borderRadious)),
+          textStyle:
+              Theme.of(context).textTheme.button!.copyWith(color: textColor)),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10.0, 0, 40.0, 0),
         child: Row(
@@ -42,10 +46,7 @@ class SignInButton extends StatelessWidget {
             Expanded(
               child: Align(
                 alignment: Alignment.center,
-                child: Text(
-                  text,
-                  style: TextStyle(color: textColor),
-                ),
+                child: Text(text),
               ),
             ),
           ],
