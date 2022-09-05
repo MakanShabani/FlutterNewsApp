@@ -32,16 +32,16 @@ class ButtonSections extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text('Signing in'),
-                          SizedBox(
+                        children: [
+                          const Text('Signing in'),
+                          const SizedBox(
                             width: 2.0,
                           ),
                           Padding(
-                            padding: EdgeInsets.fromLTRB(0, 3.0, 0, 0),
+                            padding: const EdgeInsets.fromLTRB(0, 3.0, 0, 0),
                             child: SpinKitThreeBounce(
                               size: 12.0,
-                              color: Colors.black26,
+                              color: Theme.of(context).primaryColor,
                             ),
                           ),
                         ],
@@ -60,7 +60,6 @@ class ButtonSections extends StatelessWidget {
                 ),
                 Text(
                   'OR',
-                  style: TextStyle(color: Colors.black54),
                 ),
                 Expanded(
                     child: Divider(
@@ -72,14 +71,20 @@ class ButtonSections extends StatelessWidget {
             const SizedBox(
               height: 20.0,
             ),
-            SignInButton(
-              minimumHeight: 45.0,
-              backgroundColor: Colors.black12,
-              textColor: Colors.black54,
-              borderRadious: 10.0,
-              logoImageAsset: 'assets/images/google.png',
-              text: 'Sign in with Google',
-              onPressed: state is LoggingIn ? null : () => {},
+            BlocBuilder<ThemeCubit, ThemeState>(
+              buildWhen: (previous, current) =>
+                  current is ThemeDarkModeState ||
+                  current is ThemeLightModeState,
+              builder: (context, state) {
+                return SignInButton(
+                  backgroundColor: state is ThemeDarkModeState
+                      ? Colors.white
+                      : Colors.black12,
+                  logoImageAsset: 'assets/images/google.png',
+                  text: 'Sign in with Google',
+                  onPressed: state is LoggingIn ? null : () => {},
+                );
+              },
             ),
             const SizedBox(
               height: 20.0,
@@ -89,7 +94,6 @@ class ButtonSections extends StatelessWidget {
               children: [
                 const Text(
                   'New to Shaspeaker?',
-                  style: TextStyle(color: Colors.black54),
                 ),
                 TextButton(
                   onPressed: state is LoggingIn ? null : () => {},
