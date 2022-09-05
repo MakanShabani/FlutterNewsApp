@@ -30,6 +30,9 @@ class App extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
+              create: (context) => ThemeCubit(
+                  sharedPreferencesService: SharedPreferencesService())),
+          BlocProvider(
               lazy: false,
               create: (context) => AuthenticationBloc(
                   sharedPreferencesService: SharedPreferencesService(),
@@ -40,10 +43,16 @@ class App extends StatelessWidget {
               create: (context) => PostBookmarkCubit(
                   postRepository: context.read<FakePostReposiory>())),
         ],
-        child: MaterialApp(
-          title: 'News App',
-          theme: ThemeStyle.lightTheme(),
-          onGenerateRoute: AppRouter.generateRoute,
+        child: BlocBuilder<ThemeCubit, ThemeState>(
+          buildWhen: (previous, current) =>
+              current is ThemeDarkModeState || current is ThemeLightModeState,
+          builder: (context, state) => MaterialApp(
+            title: 'News App',
+            theme: state is ThemeDarkModeState
+                ? ThemeStyle.darkTheme()
+                : ThemeStyle.lightTheme(),
+            onGenerateRoute: AppRouter.generateRoute,
+          ),
         ),
       ),
     );

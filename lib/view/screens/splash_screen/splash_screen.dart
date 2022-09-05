@@ -16,7 +16,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2),
+
+    //initialize app theme mode according to the user's saved settings.
+    context.read<ThemeCubit>().initialize();
+
+    Future.delayed(const Duration(seconds: 3),
         () => context.read<AuthenticationBloc>().add(InitializeEvent()));
   }
 
