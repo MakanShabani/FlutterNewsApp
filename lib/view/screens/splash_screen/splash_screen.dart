@@ -29,17 +29,10 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: SafeArea(
         child: BlocListener<AuthenticationBloc, AuthenticationState>(
+          listenWhen: (previous, current) =>
+              current is LoggedIn || current is Loggedout,
           listener: (context, state) {
-            if (state is Loggedout) {
-              //go to login screen
-              Navigator.pushReplacementNamed(context, loginRoute);
-              return;
-            }
-
-            if (state is LoggedIn) {
-              //go to login screen
-              Navigator.pushReplacementNamed(context, homeRoute);
-            }
+            Navigator.pushReplacementNamed(context, homeRoute);
           },
           child: Column(
             mainAxisSize: MainAxisSize.max,
