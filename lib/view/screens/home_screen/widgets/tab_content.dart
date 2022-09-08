@@ -31,7 +31,10 @@ class _TabContentState extends State<TabContent>
         postRepository: context.read<FakePostReposiory>(),
         haowManyPostToFetchEachTime: 10,
         categoryId: widget.category?.id)
-      ..add(HomeSectionTabContentInitializeEvent());
+      ..add(HomeSectionTabContentInitializeEvent(
+          user: context.read<AuthenticationBloc>().state is LoggedIn
+              ? (context.read<AuthenticationBloc>().state as LoggedIn).user
+              : null));
   }
 
   @override
@@ -187,7 +190,10 @@ class _TabContentState extends State<TabContent>
     }
     if (_scrollController.offset ==
         _scrollController.position.maxScrollExtent) {
-      _hSTCbloc.add(HomeSectionTabContentFetchMorePostsEvent());
+      _hSTCbloc.add(HomeSectionTabContentFetchMorePostsEvent(
+          user: context.read<AuthenticationBloc>().state is LoggedIn
+              ? (context.read<AuthenticationBloc>().state as LoggedIn).user
+              : null));
     }
   }
 }

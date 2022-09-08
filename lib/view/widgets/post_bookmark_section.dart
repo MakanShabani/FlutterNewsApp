@@ -93,9 +93,12 @@ class _PostBookmarkSectionState extends State<PostBookmarkSection> {
   }
 
   void onBookmarkButtonPressed() {
-    context
-        .read<PostBookmarkCubit>()
-        .toggleBookmark(postId: widget.postID, newBookmarkValue: !isBookmarked);
+    if (context.read<AuthenticationBloc>().state is! LoggedIn) return;
+    context.read<PostBookmarkCubit>().toggleBookmark(
+          user: (context.read<AuthenticationBloc>().state as LoggedIn).user,
+          postId: widget.postID,
+          newBookmarkValue: !isBookmarked,
+        );
 
     widget.onnBookmarkButtonPressed != null
         ? widget.onPostBookmarkUpdated!(widget.postID, !isBookmarked)

@@ -8,5 +8,5 @@ abstract class AuthenticationRepository {
   Future<ResponseModel<AuthenticatedUserModel>> registerUser(
       {required UserRegisterVm registerVm});
 
-  Future<ResponseModel<void>> logout();
+  Future<ResponseModel<void>> logout({required String userToken});
 }

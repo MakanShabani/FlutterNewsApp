@@ -6,7 +6,6 @@ import 'package:meta/meta.dart';
 import '../../infrastructure/shared_preferences_service.dart';
 import '../../models/ViewModels/view_models.dart';
 import '../../models/entities/entities.dart';
-import '../../data_source/logged_in_user_info.dart';
 import '../../repositories/repositories.dart';
 
 part 'authentication_event.dart';
@@ -14,13 +13,11 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final LoggedInUserInfo loggedInUser;
   final AuthenticationRepository authenticationRepository;
   final SharedPreferencesService sharedPreferencesService;
 
   AuthenticationBloc({
     required this.authenticationRepository,
-    required this.loggedInUser,
     required this.sharedPreferencesService,
   }) : super(AuthenticationInitial()) {
     on<InitializeEvent>((event, emit) async {
@@ -31,7 +28,6 @@ class AuthenticationBloc
 
       if (user == null || user.expireAt.isBefore(DateTime.now())) {
         await sharedPreferencesService.removeUserInfo();
-        loggedInUser.authenticatedUser = null;
         emit(Loggedout());
         return;
       }
@@ -39,17 +35,15 @@ class AuthenticationBloc
       //TODO : we could contact server and
       //update user's proile , user's bookmarks etc here
 
-      loggedInUser.authenticatedUser = user;
       emit(LoggedIn(user: user));
     });
 
     on<LogoutEvent>((event, emit) async {
-      await authenticationRepository.logout();
+      await authenticationRepository.logout(userToken: event.user.token);
 
       //everything is ok
 
       //Remove user credentials to database, singleton or sharedprefrences
-      loggedInUser.authenticatedUser = null;
       await sharedPreferencesService.removeUserInfo();
 
       emit(Loggedout());
@@ -69,9 +63,7 @@ class AuthenticationBloc
       //everything is ok
 
       //Save user credentials to database, singleton or sharedprefrences
-      loggedInUser.authenticatedUser = response.data!;
-      await sharedPreferencesService
-          .saveUserInfo(loggedInUser.authenticatedUser!);
+      await sharedPreferencesService.saveUserInfo(response.data!);
 
       emit(LoggedIn(user: response.data!));
       return;
@@ -89,9 +81,7 @@ class AuthenticationBloc
       //everything is ok
 
       //Save user credentials to database, singleton or sharedprefrences
-      loggedInUser.authenticatedUser = response.data!;
-      await sharedPreferencesService
-          .saveUserInfo(loggedInUser.authenticatedUser!);
+      await sharedPreferencesService.saveUserInfo(response.data!);
 
       emit(Registered(user: response.data!));
       return;

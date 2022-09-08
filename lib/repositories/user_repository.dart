@@ -7,5 +7,6 @@ abstract class UserRepository {
 
   Future<ResponseModel<User>> getAuthor({required String authorId});
 
-  Future<ResponseModel<User>> updateMyProfile({required UserUpdateVm updateVm});
+  Future<ResponseModel<User>> updateMyProfile(
+      {required String userToken, required UserUpdateVm updateVm});
 }

@@ -6,23 +6,40 @@ abstract class PostRepository {
       {String? categoryId, required PagingOptionsVm slidePagingOptionsVm});
 
   Future<ResponseModel<List<Post>>> getPosts(
+      {required String userToken,
+      required PagingOptionsVm pagingOptionsVm,
+      String? categoryId});
+
+  Future<ResponseModel<List<Post>>> getPostsAsguest(
       {required PagingOptionsVm pagingOptionsVm, String? categoryId});
 
   Future<ResponseModel<List<Post>>> getAuthorPosts(
-      {required String userId, required PagingOptionsVm pagingOptionsVm});
+      {required String userToken,
+      required String authorId,
+      required PagingOptionsVm pagingOptionsVm});
 
-  Future<ResponseModel<Post>> getPost({required postId});
+  Future<ResponseModel<List<Post>>> getAuthorPostsAsGuest(
+      {required String authorId, required PagingOptionsVm pagingOptionsVm});
+
+  Future<ResponseModel<Post>> getPost(
+      {required String userToken, required postId});
+
+  Future<ResponseModel<Post>> getPostAsGuest({required postId});
 
   Future<ResponseModel<Post>> createPost(
-      {required PostCreationVm postCreationVm});
+      {required String userToken, required PostCreationVm postCreationVm});
 
   Future<ResponseModel<Post>> updatePost(
-      {required String postId, required PostUpdateVm postUpdateVm});
+      {required String userToken,
+      required String postId,
+      required PostUpdateVm postUpdateVm});
 
-  Future<ResponseModel<void>> deletePost({required postId});
+  Future<ResponseModel<void>> deletePost(
+      {required String userToken, required postId});
 
-  Future<ResponseModel<void>> toggleBookmark({required String postId});
+  Future<ResponseModel<void>> toggleBookmark(
+      {required String userToken, required String postId});
 
   Future<ResponseModel<List<Post>>> getBookmarkedPosts(
-      {required PagingOptionsVm pagingOptionsVm});
+      {required String userToken, required PagingOptionsVm pagingOptionsVm});
 }

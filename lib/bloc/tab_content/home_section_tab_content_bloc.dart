@@ -37,9 +37,16 @@ class HomeSectionTabContentBloc
           posts: state.posts));
 
       //get latest news
-      ResponseModel<List<Post>> postsResponse = await postRepository.getPosts(
-          categoryId: categoryId, pagingOptionsVm: state.pagingOptionsVm);
-
+      ResponseModel<List<Post>> postsResponse;
+      if (event.user != null) {
+        postsResponse = await postRepository.getPosts(
+            userToken: event.user!.token,
+            categoryId: categoryId,
+            pagingOptionsVm: state.pagingOptionsVm);
+      } else {
+        postsResponse = await postRepository.getPostsAsguest(
+            categoryId: categoryId, pagingOptionsVm: state.pagingOptionsVm);
+      }
       if (postsResponse.statusCode != 200) {
         emit(HomeSectionTabContentInitializingHasErrorState(
           error: postsResponse.error!,
@@ -77,11 +84,22 @@ class HomeSectionTabContentBloc
           ),
         ),
       );
+      ResponseModel<List<Post>> postResponse;
 
-      ResponseModel<List<Post>> postResponse = await postRepository.getPosts(
-          pagingOptionsVm: (state as HomeSectionTabContentFetchingMorePostState)
-              .fetchingPagingOptionsVm,
-          categoryId: state.categoryId);
+      if (event.user != null) {
+        postResponse = await postRepository.getPosts(
+            userToken: event.user!.token,
+            pagingOptionsVm:
+                (state as HomeSectionTabContentFetchingMorePostState)
+                    .fetchingPagingOptionsVm,
+            categoryId: state.categoryId);
+      } else {
+        postResponse = await postRepository.getPostsAsguest(
+            pagingOptionsVm:
+                (state as HomeSectionTabContentFetchingMorePostState)
+                    .fetchingPagingOptionsVm,
+            categoryId: state.categoryId);
+      }
 
       if (postResponse.statusCode != 200) {
         emit(HomeSectionTabContentFetchingMorePostHasErrorState(

@@ -15,7 +15,9 @@ class PostBookmarkCubit extends Cubit<PostBookmarkState> {
   final PostRepository postRepository;
 
   void toggleBookmark(
-      {required String postId, required bool newBookmarkValue}) async {
+      {required AuthenticatedUserModel user,
+      required String postId,
+      required bool newBookmarkValue}) async {
     if (state.currentBookmarkingPosts.contains(postId)) return;
 
     emit(PostBookmarkUpdatingPostBookmarkState(
@@ -23,8 +25,8 @@ class PostBookmarkCubit extends Cubit<PostBookmarkState> {
       currentBookmarkingPosts: state.currentBookmarkingPosts + [postId],
     ));
 
-    ResponseModel<void> updateBookmarkResponse =
-        await postRepository.toggleBookmark(postId: postId);
+    ResponseModel<void> updateBookmarkResponse = await postRepository
+        .toggleBookmark(userToken: user.token, postId: postId);
 
     if (updateBookmarkResponse.statusCode != 204) {
       // we have error in updating post's bookmark status

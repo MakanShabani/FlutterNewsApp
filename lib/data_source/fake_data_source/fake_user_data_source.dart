@@ -8,14 +8,7 @@ import 'fake_database.dart';
 class FakeUserDataSource {
   FakeDatabase fakeDatabase = FakeDatabase();
 
-  ResponseModel<User> getUser(
-      {required String userToken, required String userId}) {
-    //user token is not valid -- Unauthorized
-    if (!fakeDatabase.isUserTokenValid(token: userToken)) {
-      return ResponseModel(
-          statusCode: 401, error: fakeDatabase.unAuthorizedError);
-    }
-
+  ResponseModel<User> getUser({required String userId}) {
     User? user = fakeDatabase.users.firstWhereOrNull((u) => u.id == userId);
 
     //User not found
@@ -35,13 +28,7 @@ class FakeUserDataSource {
   }
 
   ResponseModel<List<User>> getusers(
-      {required String userToken, required PagingOptionsVm pagingOptionsVm}) {
-    //user token is not valid -- Unauthorized
-    if (!fakeDatabase.isUserTokenValid(token: userToken)) {
-      return ResponseModel(
-          statusCode: 401, error: fakeDatabase.unAuthorizedError);
-    }
-
+      {required PagingOptionsVm pagingOptionsVm}) {
     //everything is ok
     return ResponseModel(
         statusCode: 200,

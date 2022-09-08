@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_admin_dashboard/view/style.dart';
 
 import 'bloc/blocs.dart';
-import 'data_source/logged_in_user_info.dart';
 import 'infrastructure/shared_preferences_service.dart';
 import 'repositories/repo_fake_implementaion/fake_repositories.dart';
 import 'router/app_router.dart';
@@ -36,7 +35,6 @@ class App extends StatelessWidget {
               lazy: false,
               create: (context) => AuthenticationBloc(
                   sharedPreferencesService: SharedPreferencesService(),
-                  loggedInUser: LoggedInUserInfo(),
                   authenticationRepository:
                       context.read<FakeAuthenticationRepository>())),
           BlocProvider(

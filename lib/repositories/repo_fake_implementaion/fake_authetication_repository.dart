@@ -1,5 +1,3 @@
-import 'package:responsive_admin_dashboard/data_source/logged_in_user_info.dart';
-
 import '../../data_source/fake_data_source/fake_data_source.dart';
 import '../../models/ViewModels/view_models.dart';
 import '../authentication_repository.dart';
@@ -8,7 +6,6 @@ import '../../models/entities/entities.dart';
 class FakeAuthenticationRepository implements AuthenticationRepository {
   FakeAuthenticationRepository({required this.delayDurationInSeconds});
 
-  LoggedInUserInfo user = LoggedInUserInfo();
   FakeAuthenticationDataSource fakeAuthDataSource =
       FakeAuthenticationDataSource();
 
@@ -29,10 +26,8 @@ class FakeAuthenticationRepository implements AuthenticationRepository {
   }
 
   @override
-  Future<ResponseModel<void>> logout() {
-    return Future.delayed(
-        Duration(seconds: delayDurationInSeconds),
-        () => fakeAuthDataSource.logoutUser(
-            userToken: user.authenticatedUser!.token));
+  Future<ResponseModel<void>> logout({required String userToken}) {
+    return Future.delayed(Duration(seconds: delayDurationInSeconds),
+        () => fakeAuthDataSource.logoutUser(userToken: userToken));
   }
 }

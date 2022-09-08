@@ -10,26 +10,29 @@ class FakePostDataSource {
   FakeDatabase fakeDatabase = FakeDatabase();
 
   ResponseModel<List<Post>> getPosts(
-      {required String userToken,
+      {String? userToken,
       String? categoryId,
       required PagingOptionsVm pagingOptionsVm}) {
-    //user token is not valid -- Unauthorized
-    if (!fakeDatabase.isUserTokenValid(token: userToken)) {
-      return ResponseModel(
-          statusCode: 401, error: fakeDatabase.unAuthorizedError);
-    }
+    User? user;
+    if (userToken != null) {
+      //user token is not valid -- Unauthorized
+      if (!fakeDatabase.isUserTokenValid(token: userToken)) {
+        return ResponseModel(
+            statusCode: 401, error: fakeDatabase.unAuthorizedError);
+      }
 
-    User? user = fakeDatabase.users
-        .firstWhereOrNull((u) => u.id == fakeDatabase.authenticatedUser!.id);
+      user = fakeDatabase.users
+          .firstWhereOrNull((u) => u.id == fakeDatabase.authenticatedUser!.id);
 
-    //User not found
-    if (user == null) {
-      ErrorModel error = ErrorModel(
-        message: 'User not found',
-        detail: 'User not found.',
-        statusCode: 404,
-      );
-      return ResponseModel(statusCode: 404, error: error);
+      //User not found
+      if (user == null) {
+        ErrorModel error = ErrorModel(
+          message: 'User not found',
+          detail: 'User not found.',
+          statusCode: 404,
+        );
+        return ResponseModel(statusCode: 404, error: error);
+      }
     }
 
     if (categoryId != null) {
@@ -51,14 +54,16 @@ class FakePostDataSource {
 
       //check each post bookmark status and modify it accordingly
       //if user has any bookmarked posts.
-      var userBookmarkedPostTableEntry = fakeDatabase
-          .bookmarkedPostsTable.entries
-          .firstWhereOrNull((element) => element.key == user.id);
-      if (userBookmarkedPostTableEntry != null) {
-        for (var element in posts) {
-          userBookmarkedPostTableEntry.value.contains(element.id)
-              ? element.isBookmarked = true
-              : element.isBookmarked = false;
+      if (user != null) {
+        var userBookmarkedPostTableEntry = fakeDatabase
+            .bookmarkedPostsTable.entries
+            .firstWhereOrNull((element) => element.key == user!.id);
+        if (userBookmarkedPostTableEntry != null) {
+          for (var element in posts) {
+            userBookmarkedPostTableEntry.value.contains(element.id)
+                ? element.isBookmarked = true
+                : element.isBookmarked = false;
+          }
         }
       }
 
@@ -82,15 +87,7 @@ class FakePostDataSource {
   }
 
   ResponseModel<List<Post>> getSlides(
-      {required String userToken,
-      String? categoryId,
-      required PagingOptionsVm pagingOptionsVm}) {
-    //user token is not valid -- Unauthorized
-    if (!fakeDatabase.isUserTokenValid(token: userToken)) {
-      return ResponseModel(
-          statusCode: 401, error: fakeDatabase.unAuthorizedError);
-    }
-
+      {String? categoryId, required PagingOptionsVm pagingOptionsVm}) {
     if (categoryId != null) {
       //we send category posts
 
@@ -125,16 +122,23 @@ class FakePostDataSource {
   }
 
   ResponseModel<List<Post>> getAuthorPosts(
-      {required String userToken,
-      required String userId,
+      {String? userToken,
+      required String authorId,
       required PagingOptionsVm pagingOptionsVm}) {
     //user token is not valid -- Unauthorized
-    if (!fakeDatabase.isUserTokenValid(token: userToken)) {
-      return ResponseModel(
-          statusCode: 401, error: fakeDatabase.unAuthorizedError);
+    User? currentUSer;
+
+    if (userToken != null) {
+      if (!fakeDatabase.isUserTokenValid(token: userToken)) {
+        return ResponseModel(
+            statusCode: 401, error: fakeDatabase.unAuthorizedError);
+      }
+
+      currentUSer = fakeDatabase.users
+          .firstWhereOrNull((u) => u.id == fakeDatabase.authenticatedUser!.id);
     }
 
-    User? user = fakeDatabase.users.firstWhereOrNull((u) => u.id == userId);
+    User? user = fakeDatabase.users.firstWhereOrNull((u) => u.id == authorId);
 
     //User not found
     if (user == null) {
@@ -151,19 +155,22 @@ class FakePostDataSource {
 
     //get posts
     Iterable<Post> posts = fakeDatabase.posts
-        .where((p) => p.author.id == userId)
+        .where((p) => p.author.id == authorId)
         .skip(pagingOptionsVm.offset)
         .take(pagingOptionsVm.limit);
 
-    //check each post bookmark status and modify it accordingly
-    //if user has any bookmarked posts.
-    var userBookmarkedPostTableEntry = fakeDatabase.bookmarkedPostsTable.entries
-        .firstWhereOrNull((element) => element.key == user.id);
-    if (userBookmarkedPostTableEntry != null) {
-      for (var element in posts) {
-        userBookmarkedPostTableEntry.value.contains(element.id)
-            ? element.isBookmarked = true
-            : element.isBookmarked = false;
+    if (currentUSer != null) {
+      //check each post bookmark status and modify it accordingly
+      //if user has any bookmarked posts.
+      var userBookmarkedPostTableEntry = fakeDatabase
+          .bookmarkedPostsTable.entries
+          .firstWhereOrNull((element) => element.key == currentUSer!.id);
+      if (userBookmarkedPostTableEntry != null) {
+        for (var element in posts) {
+          userBookmarkedPostTableEntry.value.contains(element.id)
+              ? element.isBookmarked = true
+              : element.isBookmarked = false;
+        }
       }
     }
 
@@ -173,26 +180,28 @@ class FakePostDataSource {
     );
   }
 
-  ResponseModel<Post> getPost({required String userToken, required postId}) {
+  ResponseModel<Post> getPost({String? userToken, required postId}) {
     //user token is not valid -- Unauthorized
-    if (!fakeDatabase.isUserTokenValid(token: userToken)) {
-      return ResponseModel(
-          statusCode: 401, error: fakeDatabase.unAuthorizedError);
+    User? user;
+    if (userToken != null) {
+      if (!fakeDatabase.isUserTokenValid(token: userToken)) {
+        return ResponseModel(
+            statusCode: 401, error: fakeDatabase.unAuthorizedError);
+      }
+
+      User? user = fakeDatabase.users
+          .firstWhereOrNull((u) => u.id == fakeDatabase.authenticatedUser!.id);
+
+      //User not found
+      if (user == null) {
+        ErrorModel error = ErrorModel(
+          message: 'User not found',
+          detail: 'User not found.',
+          statusCode: 404,
+        );
+        return ResponseModel(statusCode: 404, error: error);
+      }
     }
-
-    User? user = fakeDatabase.users
-        .firstWhereOrNull((u) => u.id == fakeDatabase.authenticatedUser!.id);
-
-    //User not found
-    if (user == null) {
-      ErrorModel error = ErrorModel(
-        message: 'User not found',
-        detail: 'User not found.',
-        statusCode: 404,
-      );
-      return ResponseModel(statusCode: 404, error: error);
-    }
-
     Post? post = fakeDatabase.posts.firstWhereOrNull((p) => p.id == postId);
 
     //Post not found
@@ -208,14 +217,17 @@ class FakePostDataSource {
 
     //everything is ok
 
-    //check post bookmark status and modify it accordingly
-    //if user has any bookmarked posts.
-    var userBookmarkedPostTableEntry = fakeDatabase.bookmarkedPostsTable.entries
-        .firstWhereOrNull((element) => element.key == user.id);
-    if (userBookmarkedPostTableEntry != null) {
-      userBookmarkedPostTableEntry.value.contains(post.id)
-          ? post.isBookmarked = true
-          : post.isBookmarked = false;
+    if (user != null) {
+      //check post bookmark status and modify it accordingly
+      //if user has any bookmarked posts.
+      var userBookmarkedPostTableEntry = fakeDatabase
+          .bookmarkedPostsTable.entries
+          .firstWhereOrNull((element) => element.key == user.id);
+      if (userBookmarkedPostTableEntry != null) {
+        userBookmarkedPostTableEntry.value.contains(post.id)
+            ? post.isBookmarked = true
+            : post.isBookmarked = false;
+      }
     }
 
     return ResponseModel(statusCode: 200, data: post);
