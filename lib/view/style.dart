@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ThemeStyle {
+  static Color darkThemeAppBarBacgroundColor = Colors.black26;
+  static Color darkThemePrimaryColor = Colors.orange;
+  static double cardBorderRadious = 10.0;
+
   static ThemeData lightTheme() {
     return ThemeData(
       // Define the default brightness and colors.
@@ -8,12 +12,19 @@ class ThemeStyle {
       primarySwatch: Colors.orange,
       primaryColor: Colors.orange,
       appBarTheme: const AppBarTheme().copyWith(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.grey.shade100,
           iconTheme: const IconThemeData().copyWith(
             color: Colors.orange,
           )),
+      tabBarTheme: const TabBarTheme().copyWith(
+          labelColor: Colors.black87,
+          unselectedLabelColor: Colors.black54,
+          indicator: const BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(width: 2.0, color: Colors.orange)))),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData().copyWith(
           type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.grey.shade100,
           selectedItemColor: Colors.orange,
           unselectedItemColor: Colors.black54),
       // Define the default font family.
@@ -30,14 +41,21 @@ class ThemeStyle {
         ),
       ),
 
+      cardTheme: const CardTheme().copyWith(
+          color: Colors.grey.shade100,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(cardBorderRadious))),
+
       // Define the default `TextTheme`. Use this to specify the default
       // text styling for headlines, titles, bodies of text, and more.
       textTheme: const TextTheme(
-          headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-          headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-          bodyText2: TextStyle(fontSize: 14.0, color: Colors.black54),
-          bodyText1: TextStyle(fontSize: 14.0),
-          button: TextStyle(fontSize: 14.0, color: Colors.black54)),
+          bodyLarge: TextStyle(fontSize: 16.0, color: Colors.black54),
+          bodyMedium: TextStyle(fontSize: 14.0, color: Colors.black54),
+          bodySmall: TextStyle(fontSize: 12.0, color: Colors.black54),
+          labelLarge: TextStyle(fontSize: 22.0, color: Colors.black),
+          labelMedium: TextStyle(fontSize: 14.0, color: Colors.black),
+          labelSmall: TextStyle(fontSize: 12.0, color: Colors.black54)),
     );
   }
 
@@ -48,12 +66,19 @@ class ThemeStyle {
       primarySwatch: Colors.orange,
       primaryColor: Colors.orange,
       appBarTheme: const AppBarTheme().copyWith(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.grey.shade900,
           iconTheme: const IconThemeData().copyWith(
             color: Colors.orange,
           )),
+      tabBarTheme: const TabBarTheme().copyWith(
+          labelColor: Colors.white70,
+          unselectedLabelColor: Colors.white54,
+          indicator: const BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(width: 2.0, color: Colors.orange)))),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData().copyWith(
           type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.grey.shade900,
           selectedItemColor: Colors.orange,
           unselectedItemColor: Colors.white),
       // Define the default font family.
@@ -70,16 +95,21 @@ class ThemeStyle {
         ),
       ),
 
+      cardTheme: const CardTheme().copyWith(
+          color: Colors.grey.shade900,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(cardBorderRadious))),
+
       // Define the default `TextTheme`. Use this to specify the default
       // text styling for headlines, titles, bodies of text, and more.
       textTheme: const TextTheme(
-          headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-          headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-          bodyText2: TextStyle(fontSize: 14.0, color: Colors.white),
-          bodyText1: TextStyle(
-            fontSize: 14.0,
-          ),
-          button: TextStyle(fontSize: 14.0, color: Colors.black54)),
+          bodyLarge: TextStyle(fontSize: 16.0, color: Colors.white),
+          bodyMedium: TextStyle(fontSize: 14.0, color: Colors.white),
+          bodySmall: TextStyle(fontSize: 12.0, color: Colors.white),
+          labelLarge: TextStyle(fontSize: 22.0, color: Colors.white),
+          labelMedium: TextStyle(fontSize: 14.0, color: Colors.white),
+          labelSmall: TextStyle(fontSize: 12.0, color: Colors.white60)),
     );
   }
 }

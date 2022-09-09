@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bloc/blocs.dart';
 import '../../infrastructure/callback_functions.dart';
 import './widgest.dart';
 import '../../models/entities/entities.dart';
@@ -15,6 +17,7 @@ class PostItemInVerticalList extends StatelessWidget {
   final double? rightMargin;
   final double? topMargin;
   final double? leftMargin;
+  final Color? backgroundColor;
   final CustomeValueSetterCallback<String, bool>? onPostBookmarkPressed;
   final CustomeValueSetterCallback<String, bool>? onPostBookMarkUpdated;
 
@@ -32,6 +35,7 @@ class PostItemInVerticalList extends StatelessWidget {
   const PostItemInVerticalList({
     Key? key,
     required this.item,
+    this.backgroundColor,
     this.onPostBookmarkPressed,
     this.onPostBookMarkUpdated,
     this.borderRadious,
@@ -65,51 +69,58 @@ class PostItemInVerticalList extends StatelessWidget {
           children: [
             Container(
               height: textSectionHeight,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(borderRadious ?? 0)),
               margin: const EdgeInsets.fromLTRB(
                   textSectionLeftMargin, textSectionTopMargin, 0, 0),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  textLeftSectionPadding,
-                  textSectionTopPadding,
-                  0,
-                  textSectionBottomPadding,
-                ),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(item.title),
-                      SizedBox(
-                        height: 22.0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              '15 minutes ago',
-                              style: TextStyle(
-                                  fontSize: 12.0, color: Colors.black54),
-                            ),
-                            PostBookmarkSection(
-                              bookmarkedColor: Colors.orange,
-                              unBookmarkedColor: Colors.black54,
-                              initialBookmarkStatus: item.isBookmarked,
-                              postID: item.id,
-                              onPostBookmarkUpdated:
-                                  (postId, newBookmarkValue) =>
-                                      onPostBookmarkUpdated(
-                                          postId, newBookmarkValue),
-                              onnBookmarkButtonPressed:
-                                  (postId, newBookmarkValueToSet) =>
-                                      onPostBookMarkPressed(
-                                          postId, newBookmarkValueToSet),
-                            ),
-                          ],
+              child: Card(
+                margin: const EdgeInsets.all(0),
+                color: backgroundColor,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    textLeftSectionPadding,
+                    textSectionTopPadding,
+                    0,
+                    textSectionBottomPadding,
+                  ),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.title,
+                          style: Theme.of(context).textTheme.labelMedium,
                         ),
-                      ),
-                    ]),
+                        SizedBox(
+                          height: 22.0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '15 minutes ago',
+                                style: Theme.of(context).textTheme.labelSmall,
+                              ),
+                              PostBookmarkSection(
+                                bookmarkedColor: Colors.orange,
+                                unBookmarkedColor: context
+                                        .read<ThemeCubit>()
+                                        .state is ThemeLightModeState
+                                    ? Colors.black54
+                                    : Colors.white,
+                                initialBookmarkStatus: item.isBookmarked,
+                                postID: item.id,
+                                onPostBookmarkUpdated: (postId,
+                                        newBookmarkValue) =>
+                                    onPostBookmarkUpdated(
+                                        postId, newBookmarkValue),
+                                onnBookmarkButtonPressed:
+                                    (postId, newBookmarkValueToSet) =>
+                                        onPostBookMarkPressed(
+                                            postId, newBookmarkValueToSet),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ]),
+                ),
               ),
             ),
             CustomeImage(

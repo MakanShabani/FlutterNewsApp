@@ -106,13 +106,13 @@ class _TabContentState extends State<TabContent>
                         height: widget.category == null ? 10.0 : 0,
                       ),
                       widget.category == null
-                          ? const Padding(
-                              padding: EdgeInsets.symmetric(
+                          ? Padding(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: view_constants
                                       .screensContentsHorizontalPadding),
                               child: Text(
                                 'Latest news',
-                                style: TextStyle(fontSize: 22.0),
+                                style: Theme.of(context).textTheme.labelLarge,
                               ),
                             )
                           : const SizedBox(

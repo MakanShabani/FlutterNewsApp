@@ -78,7 +78,7 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                   footer: Container(
                     color: Colors.black54.withOpacity(0.4),
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 5.0, 0, 5.0),
+                      padding: const EdgeInsets.fromLTRB(8.0, 6.0, 0, 5.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -89,12 +89,12 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                               maxLines: 2,
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 15.0,
+                                fontSize: 16.0,
                               ),
                             ),
                           ),
                           const SizedBox(
-                            height: 5.0,
+                            height: 8.0,
                           ),
                           SizedBox(
                             height: 20.0,
@@ -128,10 +128,11 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                       ),
                     ),
                   ),
-                  child: Image.network(
+                  child: CustomeImage(
                       fit: BoxFit.fill,
                       width: double.infinity,
-                      widget.items[itemIndex].imagesUrls!.first),
+                      borderRadious: 0,
+                      imageUrl: widget.items[itemIndex].imagesUrls!.first),
                 ),
               )),
         ),
