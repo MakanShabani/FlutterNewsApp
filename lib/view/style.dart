@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ThemeStyle {
-  static Color darkThemeAppBarBacgroundColor = Colors.black26;
-  static Color darkThemePrimaryColor = Colors.orange;
   static double cardBorderRadious = 10.0;
 
   static ThemeData lightTheme() {
@@ -11,11 +9,23 @@ class ThemeStyle {
       brightness: Brightness.light,
       primarySwatch: Colors.orange,
       primaryColor: Colors.orange,
+      scaffoldBackgroundColor: Colors.grey.shade50,
       appBarTheme: const AppBarTheme().copyWith(
-          backgroundColor: Colors.grey.shade100,
+          elevation: 1,
+          backgroundColor: Colors.white,
           iconTheme: const IconThemeData().copyWith(
             color: Colors.orange,
           )),
+      switchTheme: const SwitchThemeData().copyWith(
+        thumbColor:
+            MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+        trackColor: MaterialStateProperty.resolveWith<Color>(
+            (states) => states.contains(MaterialState.selected)
+                ? Colors.orange
+                : states.contains(MaterialState.disabled)
+                    ? Colors.grey
+                    : Colors.black54),
+      ),
       tabBarTheme: const TabBarTheme().copyWith(
           labelColor: Colors.black87,
           unselectedLabelColor: Colors.black54,
@@ -24,15 +34,21 @@ class ThemeStyle {
                   bottom: BorderSide(width: 2.0, color: Colors.orange)))),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData().copyWith(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.grey.shade100,
+          backgroundColor: Colors.white,
           selectedItemColor: Colors.orange,
           unselectedItemColor: Colors.black54),
       // Define the default font family.
       fontFamily: 'Georgia',
 
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+            textStyle: const TextStyle(color: Colors.orange, fontSize: 14)),
+      ),
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           primary: Colors.orange,
+          textStyle: const TextStyle(color: Colors.black),
           elevation: 0,
           minimumSize: const Size.fromHeight(45.0),
           shape: RoundedRectangleBorder(
@@ -42,7 +58,7 @@ class ThemeStyle {
       ),
 
       cardTheme: const CardTheme().copyWith(
-          color: Colors.grey.shade100,
+          color: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(cardBorderRadious))),
@@ -70,6 +86,17 @@ class ThemeStyle {
           iconTheme: const IconThemeData().copyWith(
             color: Colors.orange,
           )),
+      switchTheme: const SwitchThemeData().copyWith(
+        thumbColor: MaterialStateProperty.resolveWith<Color>(
+            (states) => Colors.black12),
+        trackColor: MaterialStateProperty.resolveWith<Color>(
+            (states) => states.contains(MaterialState.selected)
+                ? Colors.orange
+                : states.contains(MaterialState.disabled)
+                    ? Colors.grey
+                    : Colors.white),
+      ),
+
       tabBarTheme: const TabBarTheme().copyWith(
           labelColor: Colors.white70,
           unselectedLabelColor: Colors.white54,
@@ -84,9 +111,15 @@ class ThemeStyle {
       // Define the default font family.
       fontFamily: 'Georgia',
 
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+            textStyle: const TextStyle(color: Colors.orange, fontSize: 14)),
+      ),
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           primary: Colors.orange,
+          textStyle: const TextStyle(color: Colors.white),
           elevation: 0,
           minimumSize: const Size.fromHeight(45.0),
           shape: RoundedRectangleBorder(
