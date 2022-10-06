@@ -20,9 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Text(
       'Index 2: Bookmark',
     ),
-    Text(
-      'Index 3: Settings',
-    ),
+    SettingsSection(),
   ];
 
   @override

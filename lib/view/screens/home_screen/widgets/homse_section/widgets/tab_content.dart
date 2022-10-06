@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../bloc/blocs.dart';
-import '../../../../models/entities/entities.dart';
-import '../../../../repositories/repo_fake_implementaion/fake_repositories.dart';
-import '../../../view_constants.dart' as view_constants;
-import '../../../widgets/widgest.dart';
+import '../../../../../../bloc/blocs.dart';
+import '../../../../../../models/entities/entities.dart';
+import '../../../../../../repositories/repo_fake_implementaion/fake_repositories.dart';
+import '../../../../../view_constants.dart' as view_constants;
+import '../../../../../widgets/widgest.dart';
 
 class TabContent extends StatefulWidget {
   final int categoryIndex;
@@ -86,10 +86,10 @@ class _TabContentState extends State<TabContent>
                               height: 210.0,
                               borderRadious:
                                   view_constants.circularBorderRadious,
-                              cauroselLeftPadding: view_constants
-                                  .screensContentsHorizontalPadding,
-                              cauroselRightPadding: view_constants
-                                  .screensContentsHorizontalPadding,
+                              cauroselLeftPadding:
+                                  view_constants.horizontalPadding,
+                              cauroselRightPadding:
+                                  view_constants.horizontalPadding,
                               items: state.posts.take(5).toList(),
                               onPostBookMarkUpdated: (postId,
                                       newBookmarkStatus) =>
@@ -108,8 +108,7 @@ class _TabContentState extends State<TabContent>
                       widget.category == null
                           ? Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: view_constants
-                                      .screensContentsHorizontalPadding),
+                                  horizontal: view_constants.horizontalPadding),
                               child: Text(
                                 'Latest news',
                                 style: Theme.of(context).textTheme.labelLarge,
