@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../../../bloc/blocs.dart';
 import '../../../widgets/widgest.dart';
@@ -32,18 +31,15 @@ class ButtonSections extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Signing in'),
-                          const SizedBox(
+                        children: const [
+                          Text('Signing in'),
+                          SizedBox(
                             width: 2.0,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 3.0, 0, 0),
-                            child: SpinKitThreeBounce(
-                              size: 12.0,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
+                          LoadingIndicator(
+                            hasBackground: false,
+                            topPadding: 3.0,
+                          )
                         ],
                       ),
                     )
