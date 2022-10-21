@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../bloc/blocs.dart';
+import '../../../../../widgets/widgest.dart';
 
 class FirstBox extends StatelessWidget {
   const FirstBox({Key? key}) : super(key: key);
@@ -19,14 +20,16 @@ class FirstBox extends StatelessWidget {
               return SwitchListTile(
                 value: state is ThemeDarkModeState,
                 onChanged: (_) => context.read<ThemeCubit>().toggle(),
-                title: const Text('Dark Mode'),
+                title: const SwicthTitle(
+                  text: 'Dark Mode',
+                ),
               );
             },
           ),
           SwitchListTile(
             value: true,
             onChanged: (newValue) => {},
-            title: const Text('Notifications'),
+            title: const SwicthTitle(text: 'Notifications'),
           )
         ],
       ),

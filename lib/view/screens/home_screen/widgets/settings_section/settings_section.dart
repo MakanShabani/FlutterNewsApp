@@ -10,14 +10,15 @@ class SettingsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        SliverAppBar(
-          title: const Text('Settings'),
-          centerTitle: true,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(100.0),
-            child: TextButton(
-              onPressed: () => {},
-              child: const Text('Sign In'),
+        const SliverAppBar(
+          title: Text('Settings'),
+          stretch: true,
+          pinned: true,
+          expandedHeight: 190.0,
+          flexibleSpace: FlexibleSpaceBar(
+            background: Padding(
+              padding: EdgeInsets.fromLTRB(0, 30.0, 0, 0),
+              child: UserInfoSummarySection(),
             ),
           ),
         ),
@@ -28,8 +29,8 @@ class SettingsSection extends StatelessWidget {
               child: FirstBox(),
             )
           ]),
-          itemExtent: 140.0,
-        )
+          itemExtent: 160.0,
+        ),
       ],
     );
   }
