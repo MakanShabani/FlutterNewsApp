@@ -1,2 +1,2 @@
-const double horizontalPadding = 8.0;
+const double horizontalPadding = 16.0;
 const double circularBorderRadious = 10.0;
