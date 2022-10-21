@@ -12,6 +12,11 @@ class ThemeStyle {
       scaffoldBackgroundColor: Colors.grey.shade50,
       appBarTheme: const AppBarTheme().copyWith(
           elevation: 1,
+          titleTextStyle: const TextStyle(
+            fontSize: 22.0,
+            color: Colors.black87,
+          ),
+          centerTitle: true,
           backgroundColor: Colors.white,
           iconTheme: const IconThemeData().copyWith(
             color: Colors.orange,
@@ -69,9 +74,9 @@ class ThemeStyle {
           bodyLarge: TextStyle(fontSize: 16.0, color: Colors.black54),
           bodyMedium: TextStyle(fontSize: 14.0, color: Colors.black54),
           bodySmall: TextStyle(fontSize: 12.0, color: Colors.black54),
-          labelLarge: TextStyle(fontSize: 22.0, color: Colors.black),
-          labelMedium: TextStyle(fontSize: 14.0, color: Colors.black),
-          labelSmall: TextStyle(fontSize: 12.0, color: Colors.black54)),
+          labelLarge: TextStyle(fontSize: 20.0, color: Colors.black87),
+          labelMedium: TextStyle(fontSize: 15.0, color: Colors.black87),
+          labelSmall: TextStyle(fontSize: 13.0, color: Colors.black54)),
     );
   }
 
@@ -82,7 +87,12 @@ class ThemeStyle {
       primarySwatch: Colors.orange,
       primaryColor: Colors.orange,
       appBarTheme: const AppBarTheme().copyWith(
+          centerTitle: true,
           backgroundColor: Colors.grey.shade900,
+          titleTextStyle: const TextStyle(
+            fontSize: 22.0,
+            color: Colors.white,
+          ),
           iconTheme: const IconThemeData().copyWith(
             color: Colors.orange,
           )),
@@ -137,12 +147,13 @@ class ThemeStyle {
       // Define the default `TextTheme`. Use this to specify the default
       // text styling for headlines, titles, bodies of text, and more.
       textTheme: const TextTheme(
-          bodyLarge: TextStyle(fontSize: 16.0, color: Colors.white),
-          bodyMedium: TextStyle(fontSize: 14.0, color: Colors.white),
-          bodySmall: TextStyle(fontSize: 12.0, color: Colors.white),
-          labelLarge: TextStyle(fontSize: 22.0, color: Colors.white),
-          labelMedium: TextStyle(fontSize: 14.0, color: Colors.white),
-          labelSmall: TextStyle(fontSize: 12.0, color: Colors.white60)),
+        bodyLarge: TextStyle(fontSize: 16.0, color: Colors.white),
+        bodyMedium: TextStyle(fontSize: 14.0, color: Colors.white),
+        bodySmall: TextStyle(fontSize: 12.0, color: Colors.white),
+        labelLarge: TextStyle(fontSize: 20.0, color: Colors.white),
+        labelMedium: TextStyle(fontSize: 15.0, color: Colors.white),
+        labelSmall: TextStyle(fontSize: 13.0, color: Colors.white60),
+      ),
     );
   }
 }
