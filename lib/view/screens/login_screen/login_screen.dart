@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
               deviceHeight: MediaQuery.of(context).size.height));
         }
         if (state is LoggedIn) {
-          Navigator.pushReplacementNamed(context, homeRoute);
+          Navigator.pop(context);
         }
       },
       child: Scaffold(

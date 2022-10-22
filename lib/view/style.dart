@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ThemeStyle {
-  static Color darkThemeAppBarBacgroundColor = Colors.black26;
-  static Color darkThemePrimaryColor = Colors.orange;
   static double cardBorderRadious = 10.0;
 
   static ThemeData lightTheme() {
@@ -11,11 +9,28 @@ class ThemeStyle {
       brightness: Brightness.light,
       primarySwatch: Colors.orange,
       primaryColor: Colors.orange,
+      scaffoldBackgroundColor: Colors.grey.shade50,
       appBarTheme: const AppBarTheme().copyWith(
-          backgroundColor: Colors.grey.shade100,
+          elevation: 1,
+          titleTextStyle: const TextStyle(
+            fontSize: 22.0,
+            color: Colors.black87,
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
           iconTheme: const IconThemeData().copyWith(
             color: Colors.orange,
           )),
+      switchTheme: const SwitchThemeData().copyWith(
+        thumbColor:
+            MaterialStateProperty.resolveWith<Color>((states) => Colors.white),
+        trackColor: MaterialStateProperty.resolveWith<Color>(
+            (states) => states.contains(MaterialState.selected)
+                ? Colors.orange
+                : states.contains(MaterialState.disabled)
+                    ? Colors.grey
+                    : Colors.black54),
+      ),
       tabBarTheme: const TabBarTheme().copyWith(
           labelColor: Colors.black87,
           unselectedLabelColor: Colors.black54,
@@ -24,15 +39,21 @@ class ThemeStyle {
                   bottom: BorderSide(width: 2.0, color: Colors.orange)))),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData().copyWith(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.grey.shade100,
+          backgroundColor: Colors.white,
           selectedItemColor: Colors.orange,
           unselectedItemColor: Colors.black54),
       // Define the default font family.
       fontFamily: 'Georgia',
 
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+            textStyle: const TextStyle(color: Colors.orange, fontSize: 14)),
+      ),
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           primary: Colors.orange,
+          textStyle: const TextStyle(color: Colors.black),
           elevation: 0,
           minimumSize: const Size.fromHeight(45.0),
           shape: RoundedRectangleBorder(
@@ -42,8 +63,9 @@ class ThemeStyle {
       ),
 
       cardTheme: const CardTheme().copyWith(
-          color: Colors.grey.shade100,
+          color: Colors.white,
           elevation: 0,
+          margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(cardBorderRadious))),
 
@@ -53,9 +75,9 @@ class ThemeStyle {
           bodyLarge: TextStyle(fontSize: 16.0, color: Colors.black54),
           bodyMedium: TextStyle(fontSize: 14.0, color: Colors.black54),
           bodySmall: TextStyle(fontSize: 12.0, color: Colors.black54),
-          labelLarge: TextStyle(fontSize: 22.0, color: Colors.black),
-          labelMedium: TextStyle(fontSize: 14.0, color: Colors.black),
-          labelSmall: TextStyle(fontSize: 12.0, color: Colors.black54)),
+          labelLarge: TextStyle(fontSize: 20.0, color: Colors.black87),
+          labelMedium: TextStyle(fontSize: 15.0, color: Colors.black87),
+          labelSmall: TextStyle(fontSize: 13.0, color: Colors.black54)),
     );
   }
 
@@ -66,10 +88,26 @@ class ThemeStyle {
       primarySwatch: Colors.orange,
       primaryColor: Colors.orange,
       appBarTheme: const AppBarTheme().copyWith(
+          centerTitle: true,
           backgroundColor: Colors.grey.shade900,
+          titleTextStyle: const TextStyle(
+            fontSize: 22.0,
+            color: Colors.white,
+          ),
           iconTheme: const IconThemeData().copyWith(
             color: Colors.orange,
           )),
+      switchTheme: const SwitchThemeData().copyWith(
+        thumbColor: MaterialStateProperty.resolveWith<Color>(
+            (states) => Colors.black12),
+        trackColor: MaterialStateProperty.resolveWith<Color>(
+            (states) => states.contains(MaterialState.selected)
+                ? Colors.orange
+                : states.contains(MaterialState.disabled)
+                    ? Colors.grey
+                    : Colors.white),
+      ),
+
       tabBarTheme: const TabBarTheme().copyWith(
           labelColor: Colors.white70,
           unselectedLabelColor: Colors.white54,
@@ -84,9 +122,15 @@ class ThemeStyle {
       // Define the default font family.
       fontFamily: 'Georgia',
 
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+            textStyle: const TextStyle(color: Colors.orange, fontSize: 14)),
+      ),
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           primary: Colors.orange,
+          textStyle: const TextStyle(color: Colors.white),
           elevation: 0,
           minimumSize: const Size.fromHeight(45.0),
           shape: RoundedRectangleBorder(
@@ -97,6 +141,7 @@ class ThemeStyle {
 
       cardTheme: const CardTheme().copyWith(
           color: Colors.grey.shade900,
+          margin: EdgeInsets.zero,
           elevation: 0,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(cardBorderRadious))),
@@ -104,12 +149,13 @@ class ThemeStyle {
       // Define the default `TextTheme`. Use this to specify the default
       // text styling for headlines, titles, bodies of text, and more.
       textTheme: const TextTheme(
-          bodyLarge: TextStyle(fontSize: 16.0, color: Colors.white),
-          bodyMedium: TextStyle(fontSize: 14.0, color: Colors.white),
-          bodySmall: TextStyle(fontSize: 12.0, color: Colors.white),
-          labelLarge: TextStyle(fontSize: 22.0, color: Colors.white),
-          labelMedium: TextStyle(fontSize: 14.0, color: Colors.white),
-          labelSmall: TextStyle(fontSize: 12.0, color: Colors.white60)),
+        bodyLarge: TextStyle(fontSize: 16.0, color: Colors.white),
+        bodyMedium: TextStyle(fontSize: 14.0, color: Colors.white),
+        bodySmall: TextStyle(fontSize: 12.0, color: Colors.white),
+        labelLarge: TextStyle(fontSize: 20.0, color: Colors.white),
+        labelMedium: TextStyle(fontSize: 15.0, color: Colors.white),
+        labelSmall: TextStyle(fontSize: 13.0, color: Colors.white60),
+      ),
     );
   }
 }

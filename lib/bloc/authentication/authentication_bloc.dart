@@ -39,6 +39,7 @@ class AuthenticationBloc
     });
 
     on<LogoutEvent>((event, emit) async {
+      emit(LoggingOut(user: event.user));
       await authenticationRepository.logout(userToken: event.user.token);
 
       //everything is ok

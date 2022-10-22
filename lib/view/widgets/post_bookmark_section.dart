@@ -93,7 +93,12 @@ class _PostBookmarkSectionState extends State<PostBookmarkSection> {
   }
 
   void onBookmarkButtonPressed() {
-    if (context.read<AuthenticationBloc>().state is! LoggedIn) return;
+    if (context.read<AuthenticationBloc>().state is! LoggedIn) {
+      //TODO:
+      //Show a snackbar or a dialog to notify user that they have to login first
+      //in order to use this feature.
+      return;
+    }
     context.read<PostBookmarkCubit>().toggleBookmark(
           user: (context.read<AuthenticationBloc>().state as LoggedIn).user,
           postId: widget.postID,

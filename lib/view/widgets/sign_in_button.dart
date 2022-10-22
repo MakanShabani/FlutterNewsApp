@@ -27,16 +27,15 @@ class SignInButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-          primary: backgroundColor,
-          elevation: elevation,
-          minimumSize:
-              minimumHeight != null ? Size.fromHeight(minimumHeight!) : null,
-          shape: borderRadious != null
-              ? RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderRadious!))
-              : null,
-          textStyle:
-              Theme.of(context).textTheme.button!.copyWith(color: textColor)),
+        primary: backgroundColor,
+        elevation: elevation,
+        minimumSize:
+            minimumHeight != null ? Size.fromHeight(minimumHeight!) : null,
+        shape: borderRadious != null
+            ? RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(borderRadious!))
+            : null,
+      ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10.0, 0, 40.0, 0),
         child: Row(

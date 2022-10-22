@@ -11,6 +11,11 @@ class AuthenticationInitializingState extends AuthenticationState {}
 
 class Loggedout extends AuthenticationState {}
 
+class LoggingOut extends AuthenticationState {
+  final AuthenticatedUserModel user;
+  const LoggingOut({required this.user});
+}
+
 class LoggingIn extends AuthenticationState {}
 
 class Registering extends AuthenticationState {}

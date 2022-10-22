@@ -8,6 +8,10 @@ class LoadingIndicator extends StatelessWidget {
   final double? backgroundBoxWidth;
   final double? backgroundHeight;
   final bool hasBackground;
+  final double? leftPadding;
+  final double? rightPadding;
+  final double? topPadding;
+  final double? bottomPadding;
 
   const LoadingIndicator(
       {Key? key,
@@ -16,6 +20,10 @@ class LoadingIndicator extends StatelessWidget {
       this.backgroundColor,
       this.backgroundBoxWidth,
       this.backgroundHeight,
+      this.bottomPadding,
+      this.leftPadding,
+      this.rightPadding,
+      this.topPadding,
       required this.hasBackground})
       : super(key: key);
 
@@ -27,15 +35,23 @@ class LoadingIndicator extends StatelessWidget {
             height: backgroundHeight,
             color: backgroundColor,
             child: Center(
-              child: SpinKitThreeBounce(
-                size: size ?? 14.0,
-                color: color ?? Theme.of(context).primaryColor,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(leftPadding ?? 0, topPadding ?? 0,
+                    rightPadding ?? 0, bottomPadding ?? 0),
+                child: SpinKitThreeBounce(
+                  size: size ?? 12.0,
+                  color: color ?? Theme.of(context).primaryColor,
+                ),
               ),
             ),
           )
-        : SpinKitThreeBounce(
-            size: size ?? 14.0,
-            color: color ?? Theme.of(context).primaryColor,
+        : Padding(
+            padding: EdgeInsets.fromLTRB(leftPadding ?? 0, topPadding ?? 0,
+                rightPadding ?? 0, bottomPadding ?? 0),
+            child: SpinKitThreeBounce(
+              size: size ?? 12.0,
+              color: color ?? Theme.of(context).primaryColor,
+            ),
           );
   }
 }

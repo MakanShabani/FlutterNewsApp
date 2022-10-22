@@ -24,9 +24,9 @@ class PostsListSection extends StatelessWidget {
           childCount: items.length,
           (context, index) => PostItemInVerticalList(
                 topPadding: 15,
-                rightPadding: view_constants.screensContentsHorizontalPadding,
+                rightPadding: view_constants.screenHorizontalPadding,
                 bottoMargin: 10.0,
-                leftPadding: view_constants.screensContentsHorizontalPadding,
+                leftPadding: view_constants.screenHorizontalPadding,
                 borderRadious: view_constants.circularBorderRadious,
                 item: items[index],
                 onPostBookMarkUpdated: (postId, newBookmarkValue) =>
