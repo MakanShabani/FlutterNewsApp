@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SwicthTitle extends StatelessWidget {
-  const SwicthTitle({Key? key, required this.text, this.style, this.fontSize})
+class OptionTitle extends StatelessWidget {
+  const OptionTitle({Key? key, required this.text, this.style, this.fontSize})
       : super(key: key);
 
   final String text;
