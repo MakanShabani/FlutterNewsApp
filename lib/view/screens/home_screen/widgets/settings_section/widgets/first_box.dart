@@ -24,7 +24,6 @@ class FirstBox extends StatelessWidget {
                 trailing: SizedBox(
                   width: 40.0,
                   child: Switch(
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     value: state is ThemeDarkModeState,
                     onChanged: (_) => context.read<ThemeCubit>().toggle(),
                   ),
