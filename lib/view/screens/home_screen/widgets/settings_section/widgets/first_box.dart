@@ -17,19 +17,30 @@ class FirstBox extends StatelessWidget {
             buildWhen: (previous, current) =>
                 current is ThemeDarkModeState || current is ThemeLightModeState,
             builder: (context, state) {
-              return SwitchListTile(
-                value: state is ThemeDarkModeState,
-                onChanged: (_) => context.read<ThemeCubit>().toggle(),
-                title: const SwicthTitle(
+              return ListTile(
+                title: const OptionTitle(
                   text: 'Dark Mode',
+                ),
+                trailing: SizedBox(
+                  width: 40.0,
+                  child: Switch(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    value: state is ThemeDarkModeState,
+                    onChanged: (_) => context.read<ThemeCubit>().toggle(),
+                  ),
                 ),
               );
             },
           ),
-          SwitchListTile(
-            value: true,
-            onChanged: (newValue) => {},
-            title: const SwicthTitle(text: 'Notifications'),
+          ListTile(
+            title: const OptionTitle(text: 'Notifications'),
+            trailing: SizedBox(
+              width: 40.0,
+              child: Switch(
+                value: false,
+                onChanged: (_) => {},
+              ),
+            ),
           )
         ],
       ),
