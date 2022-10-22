@@ -22,14 +22,25 @@ class SettingsSection extends StatelessWidget {
             ),
           ),
         ),
-        SliverFixedExtentList(
+        SliverList(
           delegate: SliverChildListDelegate([
+            const SizedBox(
+              height: 20.0,
+            ),
             const Padding(
-              padding: EdgeInsets.all(view_constants.horizontalPadding),
+              padding: EdgeInsets.symmetric(
+                  horizontal: view_constants.horizontalPadding),
               child: FirstBox(),
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: view_constants.horizontalPadding),
+              child: SecondBox(),
             )
           ]),
-          itemExtent: 160.0,
         ),
       ],
     );
