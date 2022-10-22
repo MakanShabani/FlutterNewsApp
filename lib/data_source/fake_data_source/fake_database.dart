@@ -55,8 +55,10 @@ class FakeDatabase {
         firstName: 'admin',
         lastName: 'admin',
         age: 20,
-        email: 'aadmin@gmail.com',
+        email: 'admin@gmail.com',
         password: 'a',
+        imageUrl:
+            'https://resize-elle.ladmedia.fr/rcrop/1024,1024/img/var/plain_site/storage/images/people/la-vie-des-people/news/brad-pitt-en-fauteuil-roulant-une-photo-inquiete-ses-fans-3924809/94792543-1-fre-FR/Brad-Pitt-en-fauteuil-roulant-une-photo-inquiete-ses-fans.jpg',
         role: UserRole.chiefEditor,
         status: UserStatus.active));
 
