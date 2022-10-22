@@ -13,8 +13,8 @@ class UserInfoSummarySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(view_constants.horizontalPadding, 20.0,
-          view_constants.horizontalPadding, 0),
+      padding: const EdgeInsets.fromLTRB(view_constants.screenHorizontalPadding,
+          20.0, view_constants.screenHorizontalPadding, 0),
       child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         buildWhen: (previous, current) =>
             current is LoggedIn ||

@@ -87,9 +87,9 @@ class _TabContentState extends State<TabContent>
                               borderRadious:
                                   view_constants.circularBorderRadious,
                               cauroselLeftPadding:
-                                  view_constants.horizontalPadding,
+                                  view_constants.screenHorizontalPadding,
                               cauroselRightPadding:
-                                  view_constants.horizontalPadding,
+                                  view_constants.screenHorizontalPadding,
                               items: state.posts.take(5).toList(),
                               onPostBookMarkUpdated: (postId,
                                       newBookmarkStatus) =>
@@ -108,7 +108,8 @@ class _TabContentState extends State<TabContent>
                       widget.category == null
                           ? Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: view_constants.horizontalPadding),
+                                  horizontal:
+                                      view_constants.screenHorizontalPadding),
                               child: Text(
                                 'Latest news',
                                 style: Theme.of(context).textTheme.labelLarge,
