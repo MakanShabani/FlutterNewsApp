@@ -141,6 +141,7 @@ class ThemeStyle {
 
       cardTheme: const CardTheme().copyWith(
           color: Colors.grey.shade900,
+          margin: EdgeInsets.zero,
           elevation: 0,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(cardBorderRadious))),
