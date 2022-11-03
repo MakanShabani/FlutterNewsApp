@@ -17,9 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Text(
       'Index 1: Search',
     ),
-    Text(
-      'Index 2: Bookmark',
-    ),
+    BookmarkSection(),
     SettingsSection(),
   ];
 
