@@ -53,7 +53,8 @@ class ThemeStyle {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           primary: Colors.orange,
-          textStyle: const TextStyle(color: Colors.black),
+          onPrimary: Colors.white,
+          textStyle: const TextStyle(),
           elevation: 0,
           minimumSize: const Size.fromHeight(45.0),
           shape: RoundedRectangleBorder(
@@ -130,7 +131,8 @@ class ThemeStyle {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           primary: Colors.orange,
-          textStyle: const TextStyle(color: Colors.white),
+          onPrimary: Colors.white,
+          textStyle: const TextStyle(),
           elevation: 0,
           minimumSize: const Size.fromHeight(45.0),
           shape: RoundedRectangleBorder(
