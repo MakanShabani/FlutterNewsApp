@@ -7,26 +7,39 @@ import '../view_constants.dart' as view_constants;
 class PostsListSection extends StatelessWidget {
   const PostsListSection({
     Key? key,
-    this.onPostBookmarkPressed,
     required this.items,
+    this.itemHeight,
+    this.spaceBetweenItems,
+    this.onPostBookmarkPressed,
     this.onPostBookMarkUpdated,
+    this.itemLeftMargin,
+    this.itemRightMargin,
+    this.itemTopMargin,
   }) : super(key: key);
 
   final CustomeValueSetterCallback<String, bool>? onPostBookMarkUpdated;
   final CustomeValueSetterCallback<String, bool>? onPostBookmarkPressed;
 
+  final double? itemHeight;
+  final double? spaceBetweenItems;
+  final double? itemLeftMargin;
+  final double? itemRightMargin;
+  final double? itemTopMargin;
   final List<Post> items;
 
   @override
   Widget build(BuildContext context) {
-    return SliverList(
+    return SliverFixedExtentList(
+      itemExtent: itemHeight ?? 160.0,
       delegate: SliverChildBuilderDelegate(
           childCount: items.length,
           (context, index) => PostItemInVerticalList(
-                topPadding: 15,
-                rightPadding: view_constants.screenHorizontalPadding,
-                bottoMargin: 10.0,
-                leftPadding: view_constants.screenHorizontalPadding,
+                itemHeight: itemHeight ?? 160,
+                rightMargin:
+                    itemRightMargin ?? view_constants.screenHorizontalPadding,
+                bottoMargin: spaceBetweenItems ?? 20.0,
+                leftMargin:
+                    itemLeftMargin ?? view_constants.screenHorizontalPadding,
                 borderRadious: view_constants.circularBorderRadious,
                 item: items[index],
                 onPostBookMarkUpdated: (postId, newBookmarkValue) =>
