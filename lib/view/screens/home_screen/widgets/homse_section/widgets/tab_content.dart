@@ -21,17 +21,17 @@ class TabContent extends StatefulWidget {
 class _TabContentState extends State<TabContent>
     with AutomaticKeepAliveClientMixin {
   late ScrollController _scrollController;
-  late HomeSectionTabContentBloc _hSTCbloc;
+  late PostsListBloc _hSTCbloc;
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(scrollListenrer);
-    _hSTCbloc = HomeSectionTabContentBloc(
+    _hSTCbloc = PostsListBloc(
         postRepository: context.read<FakePostReposiory>(),
         haowManyPostToFetchEachTime: 10,
         categoryId: widget.category?.id)
-      ..add(HomeSectionTabContentInitializeEvent(
+      ..add(PostsListInitializeEvent(
           user: context.read<AuthenticationBloc>().state is LoggedIn
               ? (context.read<AuthenticationBloc>().state as LoggedIn).user
               : null));
@@ -54,13 +54,13 @@ class _TabContentState extends State<TabContent>
 
     return BlocProvider(
       create: (context) => _hSTCbloc,
-      child: BlocBuilder<HomeSectionTabContentBloc, HomeSectionTabContentState>(
+      child: BlocBuilder<PostsListBloc, PostsListState>(
         buildWhen: (previous, current) =>
-            current is HomeSectionTabContentInitializingHasErrorState ||
-            current is HomeSectionTabContentInitializingState ||
-            current is HomeSectionTabContentInitializingSuccessfullState,
+            current is PostsListInitializingHasErrorState ||
+            current is PostsListInitializingState ||
+            current is PostsListInitializingSuccessfulState,
         builder: (context, state) {
-          if (state is HomeSectionTabContentInitializingHasErrorState) {
+          if (state is PostsListInitializingHasErrorState) {
             //show error
 
             return Center(
@@ -70,7 +70,7 @@ class _TabContentState extends State<TabContent>
             );
           }
 
-          if (state is HomeSectionTabContentInitializingSuccessfullState) {
+          if (state is PostsListInitializingSuccessfulState) {
             //show contents
             return CustomScrollView(
                 controller: _scrollController,
@@ -91,10 +91,10 @@ class _TabContentState extends State<TabContent>
                               cauroselRightPadding:
                                   view_constants.screenHorizontalPadding,
                               items: state.posts.take(5).toList(),
-                              onPostBookMarkUpdated: (postId,
-                                      newBookmarkStatus) =>
-                                  context.read<HomeSectionTabContentBloc>().add(
-                                      HomeSectionTabContentUpdatePostBookmarkEvent(
+                              onPostBookMarkUpdated:
+                                  (postId, newBookmarkStatus) => context
+                                      .read<PostsListBloc>()
+                                      .add(PostsListUpdatePostBookmarkEvent(
                                           postId: postId,
                                           newBookmarkStatus:
                                               newBookmarkStatus)),
@@ -123,34 +123,30 @@ class _TabContentState extends State<TabContent>
                       ),
                     ]),
                   ),
-                  BlocBuilder<HomeSectionTabContentBloc,
-                      HomeSectionTabContentState>(
-                    buildWhen: (previous, current) => current
-                        is HomeSectionTabContentFetchingMorePostSuccessfullState,
+                  BlocBuilder<PostsListBloc, PostsListState>(
+                    buildWhen: (previous, current) =>
+                        current is PostsListFetchingMorePostSuccessfulState,
                     builder: (context, state) {
                       return PostsListSection(
                         items: state.posts,
                         onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
-                            context.read<HomeSectionTabContentBloc>().add(
-                                  HomeSectionTabContentUpdatePostBookmarkEvent(
+                            context.read<PostsListBloc>().add(
+                                  PostsListUpdatePostBookmarkEvent(
                                       postId: postId,
                                       newBookmarkStatus: newBookmarkStatus),
                                 ),
                       );
                     },
                   ),
-                  BlocBuilder<HomeSectionTabContentBloc,
-                      HomeSectionTabContentState>(
+                  BlocBuilder<PostsListBloc, PostsListState>(
                     buildWhen: (previous, current) =>
-                        current is HomeSectionTabContentFetchingMorePostState ||
-                        current
-                            is HomeSectionTabContentFetchingMorePostSuccessfullState ||
-                        current
-                            is HomeSectionTabContentFetchingMorePostHasErrorState,
+                        current is PostsListFetchingMorePostState ||
+                        current is PostsListFetchingMorePostSuccessfulState ||
+                        current is PostsListFetchingMorePostHasErrorState,
                     builder: (context, state) {
                       return SliverFixedExtentList(
                           delegate: SliverChildListDelegate.fixed([
-                            state is HomeSectionTabContentFetchingMorePostState
+                            state is PostsListFetchingMorePostState
                                 ? const LoadingIndicator(
                                     hasBackground: true,
                                     backgroundHeight: 20.0,
@@ -177,20 +173,18 @@ class _TabContentState extends State<TabContent>
   }
 
   void scrollListenrer() {
-    if (_hSTCbloc.state is! HomeSectionTabContentInitializingSuccessfullState &&
-        _hSTCbloc.state
-            is! HomeSectionTabContentFetchingMorePostSuccessfullState &&
-        _hSTCbloc.state
-            is! HomeSectionTabContentFetchingMorePostHasErrorState) {
+    if (_hSTCbloc.state is! PostsListInitializingSuccessfulState &&
+        _hSTCbloc.state is! PostsListFetchingMorePostSuccessfulState &&
+        _hSTCbloc.state is! PostsListFetchingMorePostHasErrorState) {
       return;
     }
 
-    if (_hSTCbloc.state is HomeSectionTabContentFetchingMorePostState) {
+    if (_hSTCbloc.state is PostsListFetchingMorePostState) {
       return;
     }
     if (_scrollController.offset ==
         _scrollController.position.maxScrollExtent) {
-      _hSTCbloc.add(HomeSectionTabContentFetchMorePostsEvent(
+      _hSTCbloc.add(PostsListFetchMorePostsEvent(
           user: context.read<AuthenticationBloc>().state is LoggedIn
               ? (context.read<AuthenticationBloc>().state as LoggedIn).user
               : null));

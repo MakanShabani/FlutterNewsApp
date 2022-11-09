@@ -9,29 +9,28 @@ import 'package:collection/collection.dart';
 
 import '../../repositories/repositories.dart';
 
-part 'home_section_tab_content_event.dart';
-part 'home_section_tab_content_state.dart';
+part 'posts_list_event.dart';
+part 'posts_list_state.dart';
 
-class HomeSectionTabContentBloc
-    extends Bloc<HomeSectionTabContentEvent, HomeSectionTabContentState> {
+class PostsListBloc extends Bloc<PostsListEvent, PostsListState> {
   final PostRepository postRepository;
   final int haowManyPostToFetchEachTime;
   final String? categoryId;
 
-  HomeSectionTabContentBloc({
+  PostsListBloc({
     required this.postRepository,
     required this.haowManyPostToFetchEachTime,
     this.categoryId,
   }) : super(
-          HomeSectionTabContentInitial(
+          PostsListInitial(
             posts: List.empty(),
             pagingOptionsVm:
                 PagingOptionsVm(offset: 0, limit: haowManyPostToFetchEachTime),
           ),
         ) {
-    on<HomeSectionTabContentInitializeEvent>((event, emit) async {
+    on<PostsListInitializeEvent>((event, emit) async {
       //Fetch Posts For The First Time
-      emit(HomeSectionTabContentInitializingState(
+      emit(PostsListInitializingState(
           categoryId: categoryId,
           pagingOptionsVm: state.pagingOptionsVm,
           posts: state.posts));
@@ -48,7 +47,7 @@ class HomeSectionTabContentBloc
             categoryId: categoryId, pagingOptionsVm: state.pagingOptionsVm);
       }
       if (postsResponse.statusCode != 200) {
-        emit(HomeSectionTabContentInitializingHasErrorState(
+        emit(PostsListInitializingHasErrorState(
           error: postsResponse.error!,
           categoryId: categoryId,
           posts: state.posts,
@@ -57,7 +56,7 @@ class HomeSectionTabContentBloc
       }
       //everything is ok
 
-      emit(HomeSectionTabContentInitializingSuccessfullState(
+      emit(PostsListInitializingSuccessfulState(
         categoryId: categoryId,
         posts: postsResponse.data!,
         pagingOptionsVm: state.pagingOptionsVm,
@@ -66,15 +65,15 @@ class HomeSectionTabContentBloc
     });
 
     //Fetch More Post
-    on<HomeSectionTabContentFetchMorePostsEvent>((event, emit) async {
-      if (state is HomeSectionTabContentInitial ||
-          state is HomeSectionTabContentInitializingState ||
-          state is HomeSectionTabContentInitializingHasErrorState) {
+    on<PostsListFetchMorePostsEvent>((event, emit) async {
+      if (state is PostsListInitial ||
+          state is PostsListInitializingState ||
+          state is PostsListInitializingHasErrorState) {
         return;
       }
 
       emit(
-        HomeSectionTabContentFetchingMorePostState(
+        PostsListFetchingMorePostState(
           categoryId: categoryId,
           posts: state.posts,
           pagingOptionsVm: state.pagingOptionsVm,
@@ -89,42 +88,39 @@ class HomeSectionTabContentBloc
       if (event.user != null) {
         postResponse = await postRepository.getPosts(
             userToken: event.user!.token,
-            pagingOptionsVm:
-                (state as HomeSectionTabContentFetchingMorePostState)
-                    .fetchingPagingOptionsVm,
+            pagingOptionsVm: (state as PostsListFetchingMorePostState)
+                .fetchingPagingOptionsVm,
             categoryId: state.categoryId);
       } else {
         postResponse = await postRepository.getPostsAsguest(
-            pagingOptionsVm:
-                (state as HomeSectionTabContentFetchingMorePostState)
-                    .fetchingPagingOptionsVm,
+            pagingOptionsVm: (state as PostsListFetchingMorePostState)
+                .fetchingPagingOptionsVm,
             categoryId: state.categoryId);
       }
 
       if (postResponse.statusCode != 200) {
-        emit(HomeSectionTabContentFetchingMorePostHasErrorState(
+        emit(PostsListFetchingMorePostHasErrorState(
           error: postResponse.error!,
           categoryId: state.categoryId,
           posts: state.posts,
           pagingOptionsVm: state.pagingOptionsVm,
           errorPagingOptionsVm:
-              (state as HomeSectionTabContentFetchingMorePostState)
-                  .fetchingPagingOptionsVm,
+              (state as PostsListFetchingMorePostState).fetchingPagingOptionsVm,
         ));
       }
 
       //everything is ok
 
-      emit(HomeSectionTabContentFetchingMorePostSuccessfullState(
+      emit(PostsListFetchingMorePostSuccessfulState(
           categoryId: state.categoryId,
           posts: state.posts + postResponse.data!,
-          pagingOptionsVm: (state as HomeSectionTabContentFetchingMorePostState)
+          pagingOptionsVm: (state as PostsListFetchingMorePostState)
               .fetchingPagingOptionsVm));
 
       return;
     });
 
-    on<HomeSectionTabContentUpdatePostBookmarkEvent>((event, emit) async {
+    on<PostsListUpdatePostBookmarkEvent>((event, emit) async {
       state.posts.firstWhereOrNull((p) => p.id == event.postId)?.isBookmarked =
           event.newBookmarkStatus;
 
