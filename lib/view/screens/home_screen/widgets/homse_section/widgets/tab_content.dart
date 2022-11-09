@@ -21,13 +21,13 @@ class TabContent extends StatefulWidget {
 class _TabContentState extends State<TabContent>
     with AutomaticKeepAliveClientMixin {
   late ScrollController _scrollController;
-  late PostsListBloc _hSTCbloc;
+  late PostsListBloc postListsBloc;
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(scrollListenrer);
-    _hSTCbloc = PostsListBloc(
+    postListsBloc = PostsListBloc(
         postRepository: context.read<FakePostReposiory>(),
         haowManyPostToFetchEachTime: 10,
         categoryId: widget.category?.id)
@@ -39,7 +39,7 @@ class _TabContentState extends State<TabContent>
 
   @override
   void dispose() {
-    _hSTCbloc.close();
+    postListsBloc.close();
     _scrollController.removeListener(scrollListenrer);
     super.dispose();
   }
@@ -53,7 +53,7 @@ class _TabContentState extends State<TabContent>
     super.build(context);
 
     return BlocProvider(
-      create: (context) => _hSTCbloc,
+      create: (context) => postListsBloc,
       child: BlocBuilder<PostsListBloc, PostsListState>(
         buildWhen: (previous, current) =>
             current is PostsListInitializingHasErrorState ||
@@ -173,18 +173,18 @@ class _TabContentState extends State<TabContent>
   }
 
   void scrollListenrer() {
-    if (_hSTCbloc.state is! PostsListInitializingSuccessfulState &&
-        _hSTCbloc.state is! PostsListFetchingMorePostSuccessfulState &&
-        _hSTCbloc.state is! PostsListFetchingMorePostHasErrorState) {
+    if (postListsBloc.state is! PostsListInitializingSuccessfulState &&
+        postListsBloc.state is! PostsListFetchingMorePostSuccessfulState &&
+        postListsBloc.state is! PostsListFetchingMorePostHasErrorState) {
       return;
     }
 
-    if (_hSTCbloc.state is PostsListFetchingMorePostState) {
+    if (postListsBloc.state is PostsListFetchingMorePostState) {
       return;
     }
     if (_scrollController.offset ==
         _scrollController.position.maxScrollExtent) {
-      _hSTCbloc.add(PostsListFetchMorePostsEvent(
+      postListsBloc.add(PostsListFetchMorePostsEvent(
           user: context.read<AuthenticationBloc>().state is LoggedIn
               ? (context.read<AuthenticationBloc>().state as LoggedIn).user
               : null));
