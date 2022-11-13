@@ -7,11 +7,23 @@ import '../../../../../router/route_names.dart';
 import '../../../../view_constants.dart';
 import '../../../../widgets/widgest.dart';
 
-class BookmarkSection extends StatelessWidget {
+class BookmarkSection extends StatefulWidget {
   const BookmarkSection({Key? key}) : super(key: key);
 
   @override
+  State<BookmarkSection> createState() => _BookmarkSectionState();
+}
+
+class _BookmarkSectionState extends State<BookmarkSection>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    //Notice the super-call here.
+    super.build(context);
+
     return CustomScrollView(
       slivers: [
         const SliverAppBar(
