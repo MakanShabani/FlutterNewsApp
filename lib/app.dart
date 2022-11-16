@@ -40,16 +40,34 @@ class App extends StatelessWidget {
           BlocProvider(
               create: (context) => PostBookmarkCubit(
                   postRepository: context.read<FakePostReposiory>())),
+          BlocProvider(
+              create: (context) => BookmarkedPostsListCubit(
+                  haowManyPostToFetchEachTime: 10,
+                  postRepository: context.read<FakePostReposiory>())),
         ],
-        child: BlocBuilder<ThemeCubit, ThemeState>(
-          buildWhen: (previous, current) =>
-              current is ThemeDarkModeState || current is ThemeLightModeState,
-          builder: (context, state) => MaterialApp(
-            title: 'News App',
-            theme: state is ThemeDarkModeState
-                ? ThemeStyle.darkTheme()
-                : ThemeStyle.lightTheme(),
-            onGenerateRoute: AppRouter.generateRoute,
+        child: MultiBlocListener(
+          listeners: [
+            //fetch user bookmarked posts after first login
+            BlocListener<AuthenticationBloc, AuthenticationState>(
+              listener: (context, state) => state is LoggedIn &&
+                      context.read<BookmarkedPostsListCubit>().state
+                          is BookmarkedPostsListInitial
+                  ? context
+                      .read<BookmarkedPostsListCubit>()
+                      .fetch(userToken: state.user.token)
+                  : null,
+            ),
+          ],
+          child: BlocBuilder<ThemeCubit, ThemeState>(
+            buildWhen: (previous, current) =>
+                current is ThemeDarkModeState || current is ThemeLightModeState,
+            builder: (context, state) => MaterialApp(
+              title: 'News App',
+              theme: state is ThemeDarkModeState
+                  ? ThemeStyle.darkTheme()
+                  : ThemeStyle.lightTheme(),
+              onGenerateRoute: AppRouter.generateRoute,
+            ),
           ),
         ),
       ),
