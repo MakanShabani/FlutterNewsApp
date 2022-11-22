@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_admin_dashboard/bloc/posts_list_notifire_cubit/posts_list_notifire_cubit.dart';
 
 import '../../../../../../bloc/blocs.dart';
 import '../../../../../../models/entities/entities.dart';
@@ -53,104 +54,139 @@ class _TabContentState extends State<TabContent>
     //Notice the super-call here.
     super.build(context);
 
-    return BlocProvider(
-        create: (context) => postListsCubit,
-        child: CustomScrollView(
-          controller: _scrollController,
-          scrollDirection: Axis.vertical,
-          slivers: [
-            //Caurosel
-            BlocBuilder<PostsListCubit, PostsListCubitState>(
-              buildWhen: (previous, current) =>
-                  current is PostsListCubitFetchedSuccessfully &&
-                  current.lastLoadedPagingOptionsVm.offset == 0,
-              builder: (context, state) {
-                if (state is PostsListCubitFetchedSuccessfully) {
-                  return caouroselSection(
-                      state.newDownloadedPosts.take(5).toList());
-                }
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => postListsCubit,
+          ),
+          BlocProvider(create: (context) => PostsListNotifireCubit())
+        ],
+        child: BlocListener<PostsListCubit, PostsListCubitState>(
+          listenWhen: (previous, current) =>
+              (current is PostsListCubitFetchedSuccessfully &&
+                  current.lastLoadedPagingOptionsVm.offset > 0 &&
+                  current.newDownloadedPosts.isNotEmpty) ||
+              (current is PostsListCubitFetching &&
+                  current.toLoadPagingOptionsVm.offset > 0),
+          listener: (context, state) {
+            if (state is PostsListCubitFetching) {
+              if (_scrollController.offset ==
+                  _scrollController.position.maxScrollExtent) {
+                _scrollController.animateTo(
+                    _scrollController.position.maxScrollExtent + 50,
+                    duration: const Duration(microseconds: 1),
+                    curve: Curves.easeIn);
+              }
+            } else if (state is PostsListCubitFetchedSuccessfully) {
+              context
+                  .read<PostsListNotifireCubit>()
+                  .insertPosts(state.newDownloadedPosts);
 
-                //initial state
-                return const SliverToBoxAdapter();
-              },
-            ),
-
-            //Posts List Header
-            BlocBuilder<PostsListCubit, PostsListCubitState>(
+              if (_scrollController.offset ==
+                  _scrollController.position.maxScrollExtent) {
+                _scrollController.animateTo(_scrollController.offset + 170,
+                    duration: const Duration(milliseconds: 800),
+                    curve: Curves.easeInBack);
+              }
+            }
+          },
+          child: CustomScrollView(
+            controller: _scrollController,
+            scrollDirection: Axis.vertical,
+            slivers: [
+              //Caurosel
+              BlocBuilder<PostsListCubit, PostsListCubitState>(
                 buildWhen: (previous, current) =>
                     current is PostsListCubitFetchedSuccessfully &&
                     current.lastLoadedPagingOptionsVm.offset == 0,
                 builder: (context, state) {
                   if (state is PostsListCubitFetchedSuccessfully) {
-                    return postsListSectionHeader();
+                    return caouroselSection(
+                        state.newDownloadedPosts.take(5).toList());
                   }
 
                   //initial state
                   return const SliverToBoxAdapter();
-                }),
+                },
+              ),
 
-            //Posts List
-            BlocBuilder<PostsListCubit, PostsListCubitState>(
-                buildWhen: (previous, current) =>
-                    (current is PostsListCubitFetching &&
-                        isThisFirstFetching(current)) ||
-                    (current is PostsListCubitFetchedSuccessfully &&
-                        current.lastLoadedPagingOptionsVm.offset == 0) ||
-                    (current is PostsListCubitFetchingHasError &&
-                        isThisFirtFetchingError(current)),
-                builder: (context, state) {
-                  if (state is PostsListCubitFetching) {
-                    return const SliverFillRemaining(
-                      child: Center(
-                        child: Text('First Loading'),
-                      ),
-                    );
-                  }
+              //Posts List Header
+              BlocBuilder<PostsListCubit, PostsListCubitState>(
+                  buildWhen: (previous, current) =>
+                      current is PostsListCubitFetchedSuccessfully &&
+                      current.lastLoadedPagingOptionsVm.offset == 0,
+                  builder: (context, state) {
+                    if (state is PostsListCubitFetchedSuccessfully) {
+                      return postsListSectionHeader();
+                    }
 
-                  if (state is PostsListCubitFetchedSuccessfully) {
-                    return PostsListSection(
-                      items: postListsCubit.allPostsFetchedSuccessfully(state),
-                      onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
-                          (postId, newBookmarkStatus) => postListsCubit
-                              .updatePostBookmarkStatusWithoutChangingState(
-                                  postId, newBookmarkStatus),
-                    );
-                  }
+                    //initial state
+                    return const SliverToBoxAdapter();
+                  }),
 
-                  if (state is PostsListCubitFetchingHasError) {
-                    return const SliverFillRemaining(
-                      child: Center(
-                        child: Text('Error in first Fetching'),
-                      ),
-                    );
-                  }
+              //Posts List
+              BlocBuilder<PostsListCubit, PostsListCubitState>(
+                  buildWhen: (previous, current) =>
+                      (current is PostsListCubitFetching &&
+                          isThisFirstFetching(current)) ||
+                      (current is PostsListCubitFetchedSuccessfully &&
+                          current.lastLoadedPagingOptionsVm.offset == 0) ||
+                      (current is PostsListCubitFetchingHasError &&
+                          isThisFirtFetchingError(current)),
+                  builder: (context, state) {
+                    if (state is PostsListCubitFetching) {
+                      return const SliverFillRemaining(
+                        child: Center(
+                          child: Text('First Loading'),
+                        ),
+                      );
+                    }
+                    if (state is PostsListCubitFetchedSuccessfully) {
+                      return PostsListSection(
+                        items:
+                            postListsCubit.allPostsFetchedSuccessfully(state),
+                        onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
+                            (postId, newBookmarkStatus) => postListsCubit
+                                .updatePostBookmarkStatusWithoutChangingState(
+                                    postId, newBookmarkStatus),
+                      );
+                    }
 
-                  //init state
-                  return const SliverToBoxAdapter();
-                }),
+                    if (state is PostsListCubitFetchingHasError) {
+                      return const SliverFillRemaining(
+                        child: Center(
+                          child: Text('Error in first Fetching'),
+                        ),
+                      );
+                    }
 
-            //Show loading indicator at the end of the list
-            BlocBuilder<PostsListCubit, PostsListCubitState>(
-                buildWhen: (previous, current) =>
-                    (current is PostsListCubitFetching &&
-                        !isThisFirstFetching(current)) ||
-                    current is PostsListCubitFetchedSuccessfully ||
-                    current is PostsListCubitFetchingHasError,
-                builder: (context, state) {
-                  if (state is PostsListCubitFetching) {
-                    return const SliverFixedExtentList(
-                        delegate: SliverChildListDelegate.fixed([
-                          LoadingIndicator(
-                            hasBackground: true,
-                            backgroundHeight: 20.0,
-                          )
-                        ]),
-                        itemExtent: 20.0);
-                  }
-                  //init state
-                  return const SliverToBoxAdapter();
-                }),
-          ],
+                    //init state
+                    return const SliverToBoxAdapter();
+                  }),
+
+              //Show loading indicator at the end of the list
+              BlocBuilder<PostsListCubit, PostsListCubitState>(
+                  buildWhen: (previous, current) =>
+                      (current is PostsListCubitFetching &&
+                          !isThisFirstFetching(current)) ||
+                      current is PostsListCubitFetchedSuccessfully ||
+                      current is PostsListCubitFetchingHasError,
+                  builder: (context, state) {
+                    if (state is PostsListCubitFetching) {
+                      return const SliverFixedExtentList(
+                          delegate: SliverChildListDelegate.fixed([
+                            LoadingIndicator(
+                              hasBackground: true,
+                              backgroundHeight: 20.0,
+                            )
+                          ]),
+                          itemExtent: 50.0);
+                    }
+                    //init state
+                    return const SliverToBoxAdapter();
+                  }),
+            ],
+          ),
         ));
   }
 
@@ -226,12 +262,10 @@ class _TabContentState extends State<TabContent>
   }
 
   bool isThisFirstFetching(PostsListCubitFetching state) {
-    return state.lastLoadedPagingOptionsVm == null ||
-        state.lastLoadedPagingOptionsVm!.offset == 0;
+    return state.lastLoadedPagingOptionsVm == null;
   }
 
   bool isThisFirtFetchingError(PostsListCubitFetchingHasError state) {
-    return state.lastLoadedPagingOptionsVm == null ||
-        state.lastLoadedPagingOptionsVm!.offset == 0;
+    return state.lastLoadedPagingOptionsVm == null;
   }
 }
