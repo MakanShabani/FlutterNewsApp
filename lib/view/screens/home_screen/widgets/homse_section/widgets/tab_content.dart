@@ -21,25 +21,26 @@ class TabContent extends StatefulWidget {
 class _TabContentState extends State<TabContent>
     with AutomaticKeepAliveClientMixin {
   late ScrollController _scrollController;
-  late PostsListBloc postListsBloc;
+  late PostsListCubit postListsCubit;
+
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(scrollListenrer);
-    postListsBloc = PostsListBloc(
-        postRepository: context.read<FakePostReposiory>(),
-        haowManyPostToFetchEachTime: 10,
-        categoryId: widget.category?.id)
-      ..add(PostsListInitializeEvent(
-          user: context.read<AuthenticationBloc>().state is LoggedIn
-              ? (context.read<AuthenticationBloc>().state as LoggedIn).user
-              : null));
+    postListsCubit = PostsListCubit(
+      postRepository: context.read<FakePostReposiory>(),
+      haowManyPostToFetchEachTime: 10,
+    )..fetch(
+        context.read<AuthenticationBloc>().state is LoggedIn
+            ? (context.read<AuthenticationBloc>().state as LoggedIn).user.token
+            : null,
+        widget.category?.id);
   }
 
   @override
   void dispose() {
-    postListsBloc.close();
+    postListsCubit.close();
     _scrollController.removeListener(scrollListenrer);
     super.dispose();
   }
@@ -53,141 +54,184 @@ class _TabContentState extends State<TabContent>
     super.build(context);
 
     return BlocProvider(
-      create: (context) => postListsBloc,
-      child: BlocBuilder<PostsListBloc, PostsListState>(
-        buildWhen: (previous, current) =>
-            current is PostsListInitializingHasErrorState ||
-            current is PostsListInitializingState ||
-            current is PostsListInitializingSuccessfulState,
-        builder: (context, state) {
-          if (state is PostsListInitializingHasErrorState) {
-            //show error
+        create: (context) => postListsCubit,
+        child: CustomScrollView(
+          controller: _scrollController,
+          scrollDirection: Axis.vertical,
+          slivers: [
+            //Caurosel
+            BlocBuilder<PostsListCubit, PostsListCubitState>(
+              buildWhen: (previous, current) =>
+                  current is PostsListCubitFetchedSuccessfully &&
+                  current.lastLoadedPagingOptionsVm.offset == 0,
+              builder: (context, state) {
+                if (state is PostsListCubitFetchedSuccessfully) {
+                  return caouroselSection(
+                      state.newDownloadedPosts.take(5).toList());
+                }
 
-            return Center(
-              child: Text(
-                state.error.message,
-              ),
-            );
-          }
-
-          if (state is PostsListInitializingSuccessfulState) {
-            //show contents
-            return CustomScrollView(
-                controller: _scrollController,
-                scrollDirection: Axis.vertical,
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildListDelegate([
-                      const SizedBox(
-                        height: 15.0,
-                      ),
-                      widget.category == null
-                          ? PostCarouselWithIndicator(
-                              height: 210.0,
-                              borderRadious:
-                                  view_constants.circularBorderRadious,
-                              cauroselLeftPadding:
-                                  view_constants.screenHorizontalPadding,
-                              cauroselRightPadding:
-                                  view_constants.screenHorizontalPadding,
-                              items: state.posts.take(5).toList(),
-                              onPostBookMarkUpdated:
-                                  (postId, newBookmarkStatus) => context
-                                      .read<PostsListBloc>()
-                                      .add(PostsListUpdatePostBookmarkEvent(
-                                          postId: postId,
-                                          newBookmarkStatus:
-                                              newBookmarkStatus)),
-                            )
-                          : const SizedBox(
-                              height: 0,
-                            ),
-                      SizedBox(
-                        height: widget.category == null ? 10.0 : 0,
-                      ),
-                      widget.category == null
-                          ? Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal:
-                                      view_constants.screenHorizontalPadding),
-                              child: Text(
-                                'Latest news',
-                                style: Theme.of(context).textTheme.labelLarge,
-                              ),
-                            )
-                          : const SizedBox(
-                              height: 0,
-                            ),
-                      SizedBox(
-                        height: widget.category == null ? 15.0 : 0,
-                      ),
-                    ]),
-                  ),
-                  BlocBuilder<PostsListBloc, PostsListState>(
-                    buildWhen: (previous, current) =>
-                        current is PostsListFetchingMorePostSuccessfulState,
-                    builder: (context, state) {
-                      return PostsListSection(
-                        items: state.posts,
-                        onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
-                            context.read<PostsListBloc>().add(
-                                  PostsListUpdatePostBookmarkEvent(
-                                      postId: postId,
-                                      newBookmarkStatus: newBookmarkStatus),
-                                ),
-                      );
-                    },
-                  ),
-                  BlocBuilder<PostsListBloc, PostsListState>(
-                    buildWhen: (previous, current) =>
-                        current is PostsListFetchingMorePostState ||
-                        current is PostsListFetchingMorePostSuccessfulState ||
-                        current is PostsListFetchingMorePostHasErrorState,
-                    builder: (context, state) {
-                      return SliverFixedExtentList(
-                          delegate: SliverChildListDelegate.fixed([
-                            state is PostsListFetchingMorePostState
-                                ? const LoadingIndicator(
-                                    hasBackground: true,
-                                    backgroundHeight: 20.0,
-                                  )
-                                : const SizedBox(
-                                    height: 20.0,
-                                  )
-                          ]),
-                          itemExtent: 20.0);
-                    },
-                  )
-                ]);
-          }
-
-          //show loading
-          return const Center(
-            child: Text(
-              'loading',
+                //initial state
+                return const SliverToBoxAdapter();
+              },
             ),
-          );
-        },
+
+            //Posts List Header
+            BlocBuilder<PostsListCubit, PostsListCubitState>(
+                buildWhen: (previous, current) =>
+                    current is PostsListCubitFetchedSuccessfully &&
+                    current.lastLoadedPagingOptionsVm.offset == 0,
+                builder: (context, state) {
+                  if (state is PostsListCubitFetchedSuccessfully) {
+                    return postsListSectionHeader();
+                  }
+
+                  //initial state
+                  return const SliverToBoxAdapter();
+                }),
+
+            //Posts List
+            BlocBuilder<PostsListCubit, PostsListCubitState>(
+                buildWhen: (previous, current) =>
+                    (current is PostsListCubitFetching &&
+                        isThisFirstFetching(current)) ||
+                    (current is PostsListCubitFetchedSuccessfully &&
+                        current.lastLoadedPagingOptionsVm.offset == 0) ||
+                    (current is PostsListCubitFetchingHasError &&
+                        isThisFirtFetchingError(current)),
+                builder: (context, state) {
+                  if (state is PostsListCubitFetching) {
+                    return const SliverFillRemaining(
+                      child: Center(
+                        child: Text('First Loading'),
+                      ),
+                    );
+                  }
+
+                  if (state is PostsListCubitFetchedSuccessfully) {
+                    return PostsListSection(
+                      items: postListsCubit.allPostsFetchedSuccessfully(state),
+                      onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
+                          (postId, newBookmarkStatus) => postListsCubit
+                              .updatePostBookmarkStatusWithoutChangingState(
+                                  postId, newBookmarkStatus),
+                    );
+                  }
+
+                  if (state is PostsListCubitFetchingHasError) {
+                    return const SliverFillRemaining(
+                      child: Center(
+                        child: Text('Error in first Fetching'),
+                      ),
+                    );
+                  }
+
+                  //init state
+                  return const SliverToBoxAdapter();
+                }),
+
+            //Show loading indicator at the end of the list
+            BlocBuilder<PostsListCubit, PostsListCubitState>(
+                buildWhen: (previous, current) =>
+                    (current is PostsListCubitFetching &&
+                        !isThisFirstFetching(current)) ||
+                    current is PostsListCubitFetchedSuccessfully ||
+                    current is PostsListCubitFetchingHasError,
+                builder: (context, state) {
+                  if (state is PostsListCubitFetching) {
+                    return const SliverFixedExtentList(
+                        delegate: SliverChildListDelegate.fixed([
+                          LoadingIndicator(
+                            hasBackground: true,
+                            backgroundHeight: 20.0,
+                          )
+                        ]),
+                        itemExtent: 20.0);
+                  }
+                  //init state
+                  return const SliverToBoxAdapter();
+                }),
+          ],
+        ));
+  }
+
+// const SizedBox(
+//           height: 15.0,
+//         ),
+
+  SliverList postsListSectionHeader() {
+    return SliverList(
+        delegate: SliverChildListDelegate([
+      SizedBox(
+        height: widget.category == null ? 10.0 : 0,
       ),
+      widget.category == null
+          ? Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: view_constants.screenHorizontalPadding),
+              child: Text(
+                'Latest news',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+            )
+          : const SizedBox(
+              height: 0,
+            ),
+      SizedBox(
+        height: widget.category == null ? 15.0 : 0,
+      ),
+    ]));
+  }
+
+  SliverToBoxAdapter caouroselSection(List<Post> posts) {
+    return SliverToBoxAdapter(
+      child: widget.category == null
+          ? PostCarouselWithIndicator(
+              height: 210.0,
+              borderRadious: view_constants.circularBorderRadious,
+              cauroselLeftPadding: view_constants.screenHorizontalPadding,
+              cauroselRightPadding: view_constants.screenHorizontalPadding,
+              items: posts,
+              onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
+                  postListsCubit.updatePostBookmarkStatusWithoutChangingState(
+                      postId, newBookmarkStatus),
+            )
+          : const SizedBox(
+              height: 0,
+            ),
     );
   }
 
   void scrollListenrer() {
-    if (postListsBloc.state is! PostsListInitializingSuccessfulState &&
-        postListsBloc.state is! PostsListFetchingMorePostSuccessfulState &&
-        postListsBloc.state is! PostsListFetchingMorePostHasErrorState) {
+    if (postListsCubit.state is! PostsListCubitFetchedSuccessfully &&
+        !(postListsCubit.state is PostsListCubitFetchingHasError &&
+            isThisFirtFetchingError(
+                (postListsCubit.state as PostsListCubitFetchingHasError)))) {
       return;
     }
 
-    if (postListsBloc.state is PostsListFetchingMorePostState) {
+    if (postListsCubit.state is PostsListCubitFetching) {
       return;
     }
+
     if (_scrollController.offset ==
         _scrollController.position.maxScrollExtent) {
-      postListsBloc.add(PostsListFetchMorePostsEvent(
-          user: context.read<AuthenticationBloc>().state is LoggedIn
-              ? (context.read<AuthenticationBloc>().state as LoggedIn).user
-              : null));
+      postListsCubit.fetch(
+          context.read<AuthenticationBloc>().state is LoggedIn
+              ? (context.read<AuthenticationBloc>().state as LoggedIn)
+                  .user
+                  .token
+              : null,
+          widget.category?.id);
     }
+  }
+
+  bool isThisFirstFetching(PostsListCubitFetching state) {
+    return state.lastLoadedPagingOptionsVm == null ||
+        state.lastLoadedPagingOptionsVm!.offset == 0;
+  }
+
+  bool isThisFirtFetchingError(PostsListCubitFetchingHasError state) {
+    return state.lastLoadedPagingOptionsVm == null ||
+        state.lastLoadedPagingOptionsVm!.offset == 0;
   }
 }
