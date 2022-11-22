@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_admin_dashboard/bloc/posts_list_notifire_cubit/posts_list_notifire_cubit.dart';
 import '../../../../infrastructure/callback_functions.dart';
 import '../../../../models/entities/entities.dart';
 import './widgest.dart';
@@ -28,15 +30,16 @@ class PostsListSection extends StatefulWidget {
   final List<Post> items;
 
   @override
-  State<PostsListSection> createState() => _PostsListSectionState();
+  State<PostsListSection> createState() => PostsListSectionState();
 }
 
-class _PostsListSectionState extends State<PostsListSection> {
+class PostsListSectionState extends State<PostsListSection> {
   /// Will used to access the Animated list
-  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+  final GlobalKey<SliverAnimatedListState> _listKey =
+      GlobalKey<SliverAnimatedListState>();
 
   /// This holds the items
-  List<Post> _items = [];
+  late List<Post> _items;
 
   @override
   void initState() {
@@ -47,27 +50,34 @@ class _PostsListSectionState extends State<PostsListSection> {
 
   @override
   Widget build(BuildContext context) {
-    return SliverAnimatedList(
-      key: listKey,
-      initialItemCount: widget.items.length,
-      itemBuilder: (context, index, animation) => SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(-1, 0),
-          end: const Offset(0, 0),
-        ).animate(animation),
-        child: PostItemInVerticalList(
-          itemHeight: widget.itemHeight ?? 160,
-          rightMargin:
-              widget.itemRightMargin ?? view_constants.screenHorizontalPadding,
-          bottoMargin: widget.spaceBetweenItems ?? 20.0,
-          leftMargin:
-              widget.itemLeftMargin ?? view_constants.screenHorizontalPadding,
-          borderRadious: view_constants.circularBorderRadious,
-          item: widget.items[index],
-          onPostBookMarkUpdated: (postId, newBookmarkValue) =>
-              onPostBookmarkUpdated(index, postId, newBookmarkValue),
-          onPostBookmarkPressed: (postId, newBookmarkStatusToSet) =>
-              onPostBookMarkPressed(postId, newBookmarkStatusToSet),
+    return BlocListener<PostsListNotifireCubit, PostsListNotifireCubitState>(
+      listener: (context, state) {
+        if (state is PostsListNotifireCubitInsertPosts) {
+          _insertMultipleItems(state.posts);
+        }
+      },
+      child: SliverAnimatedList(
+        key: _listKey,
+        initialItemCount: widget.items.length,
+        itemBuilder: (context, index, animation) => SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1, 0),
+            end: const Offset(0, 0),
+          ).animate(animation),
+          child: PostItemInVerticalList(
+            itemHeight: widget.itemHeight ?? 160,
+            rightMargin: widget.itemRightMargin ??
+                view_constants.screenHorizontalPadding,
+            bottoMargin: widget.spaceBetweenItems ?? 20.0,
+            leftMargin:
+                widget.itemLeftMargin ?? view_constants.screenHorizontalPadding,
+            borderRadious: view_constants.circularBorderRadious,
+            item: _items[index],
+            onPostBookMarkUpdated: (postId, newBookmarkValue) =>
+                onPostBookmarkUpdated(index, postId, newBookmarkValue),
+            onPostBookmarkPressed: (postId, newBookmarkStatusToSet) =>
+                onPostBookMarkPressed(postId, newBookmarkStatusToSet),
+          ),
         ),
       ),
     );
@@ -90,14 +100,35 @@ class _PostsListSectionState extends State<PostsListSection> {
         : null;
   }
 
-  void insertItem(Post post) {
-    listKey.currentState?.insertItem(_items.length - 1,
-        duration: const Duration(milliseconds: 500));
-    _items = [post, ..._items];
+  void _insertSingleItem(Post item) {
+    int insertIndex = _items.length;
+    _items.insert(insertIndex, item);
+    _listKey.currentState
+        ?.insertItem(insertIndex, duration: const Duration(milliseconds: 500));
+  }
+
+  void _insertMultipleItems(List<Post> newItems) {
+    int insertIndex = _items.length;
+    _items = _items + newItems;
+    // This is a bit of a hack because currentState doesn't have
+    // an insertAll() method.
+    for (int offset = 0; offset < newItems.length; offset++) {
+      _listKey.currentState?.insertItem(insertIndex + offset,
+          duration: const Duration(seconds: 1));
+    }
+  }
+
+  void insertItem(List<Post> newPosts) {
+    int insertIndex = _items.length - 1;
+    for (int offset = 0; offset < _items.length + newPosts.length; offset++) {
+      _listKey.currentState?.insertItem(insertIndex + offset,
+          duration: const Duration(milliseconds: 500));
+      _items = _items + newPosts;
+    }
   }
 
   void removeItem(index) {
-    listKey.currentState?.removeItem(
+    _listKey.currentState?.removeItem(
         index,
         (_, animation) => SlideTransition(
               position: Tween<Offset>(
