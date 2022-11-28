@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../bloc/blocs.dart';
-import '../../../../../router/route_names.dart';
-import '../../../../view_constants.dart';
-import '../../../../widgets/widgest.dart';
+import '../../../../common_widgets/common_widgest.dart';
+import '../../../../infrastructure/constants.dart/constants.dart';
+import '../../../../router/route_names.dart';
+import '../../../authentication/presentation/blocs/authentication_cubit.dart';
+import 'blocs/posts_list_blocs.dart';
 
 class BookmarkSection extends StatefulWidget {
   const BookmarkSection({Key? key}) : super(key: key);
@@ -30,9 +31,9 @@ class _BookmarkSectionState extends State<BookmarkSection>
           stretch: true,
           pinned: true,
         ),
-        BlocBuilder<AuthenticationBloc, AuthenticationState>(
+        BlocBuilder<AuthenticationCubit, AuthenticationState>(
             builder: (context, state) {
-          if (state is LoggedIn) {
+          if (state is AuthenticationLoggedIn) {
             //Show user's bookmarks
             return BlocBuilder<BookmarkedPostsListCubit,
                 BookmarkedPostsListState>(

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_admin_dashboard/src/features/posts/application/posts_services.dart';
 
 import 'src/features/authentication/application/authentication_services.dart';
 import 'src/features/authentication/data/repositories/authentciation_repositories.dart';
 import 'src/features/authentication/presentation/authentication_presentations.dart';
-import 'src/features/posts/application/posts_services.dart';
 import 'src/features/posts/data/data_sources/fake_posts_data_source.dart';
 import 'src/features/posts/data/repositories/posts_repositories.dart';
 import 'src/features/posts/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
+import 'src/features/posts/presentation/posts_list/blocs/posts_list_blocs.dart';
 import 'src/features/posts_category/data/data_sources/fake_post_category_data_source.dart';
 import 'src/features/posts_category/data/repositories/post_category_repositories.dart';
 import 'src/features/settings/application/settings_services.dart';
@@ -53,13 +54,14 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
               create: (context) => PostBookmarkCubit(
-                  postRepository: context.read<FakePostReposiory>())),
+                  postService: PostService(
+                      postRepository: context.read<FakePostReposiory>()))),
         ],
         child: MultiBlocListener(
           listeners: [
             //fetch user bookmarked posts after first login
-            BlocListener<AuthenticationBloc, AuthenticationState>(
-              listener: (context, state) => state is LoggedIn &&
+            BlocListener<AuthenticationCubit, AuthenticationState>(
+              listener: (context, state) => state is AuthenticationLoggedIn &&
                       context.read<BookmarkedPostsListCubit>().state
                           is BookmarkedPostsListInitial
                   ? context
