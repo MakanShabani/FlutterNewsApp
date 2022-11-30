@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 import '../../../../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../../../../../infrastructure/shared_models/shared_model.dart';
 import '../../../application/posts_services.dart';
+import '../../../domain/posts_models.dart';
 part 'post_bookmark_state.dart';
 
 class PostBookmarkCubit extends Cubit<PostBookmarkState> {
@@ -17,24 +18,24 @@ class PostBookmarkCubit extends Cubit<PostBookmarkState> {
 
   void toggleBookmark(
       {required String userToken,
-      required String postId,
+      required Post post,
       required bool newBookmarkValue}) async {
-    if (state.currentBookmarkingPosts.contains(postId)) return;
+    if (state.currentBookmarkingPosts.contains(post.id)) return;
 
     emit(PostBookmarkUpdatingPostBookmarkState(
-      postId: postId,
-      currentBookmarkingPosts: state.currentBookmarkingPosts + [postId],
+      post: post,
+      currentBookmarkingPosts: state.currentBookmarkingPosts + [post.id],
     ));
 
     ResponseDTO<void> updateBookmarkResponse = await _postService
-        .togglePostBookmarkSatus(userToken: userToken, postId: postId);
+        .togglePostBookmarkSatus(userToken: userToken, postId: post.id);
 
     if (updateBookmarkResponse.statusCode != 204) {
       // we have error in updating post's bookmark status
 
       emit(PostBookmarkUpdateHasErrorState(
-        currentBookmarkingPosts: state.currentBookmarkingPosts..remove(postId),
-        postId: postId,
+        currentBookmarkingPosts: state.currentBookmarkingPosts..remove(post.id),
+        post: post,
         error: updateBookmarkResponse.error!,
       ));
 
@@ -42,8 +43,8 @@ class PostBookmarkCubit extends Cubit<PostBookmarkState> {
     }
 
     emit(PostBookmarkUpdatedSuccessfullyState(
-      currentBookmarkingPosts: state.currentBookmarkingPosts..remove(postId),
-      postId: postId,
+      currentBookmarkingPosts: state.currentBookmarkingPosts..remove(post.id),
+      post: post,
       newBookmarkValue: newBookmarkValue,
     ));
   }

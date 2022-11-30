@@ -4,13 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/utils/utils.dart';
 import '../../../authentication/presentation/blocs/authentication_cubit.dart';
+import '../../domain/posts_models.dart';
 import 'post_bookmark_cubit/post_bookmark_cubit.dart';
 
 class PostBookmarkButton extends StatefulWidget {
   const PostBookmarkButton({
     Key? key,
     required this.initialBookmarkStatus,
-    required this.postID,
+    required this.post,
     this.bookmarkedColor,
     this.unBookmarkedColor,
     this.loadingSize,
@@ -18,7 +19,7 @@ class PostBookmarkButton extends StatefulWidget {
     this.onnBookmarkButtonPressed,
   }) : super(key: key);
 
-  final String postID;
+  final Post post;
   final bool initialBookmarkStatus;
   final Color? bookmarkedColor;
   final Color? unBookmarkedColor;
@@ -43,16 +44,16 @@ class _PostBookmarkButtonState extends State<PostBookmarkButton> {
   Widget build(BuildContext context) {
     return BlocConsumer<PostBookmarkCubit, PostBookmarkState>(
       listenWhen: (previous, current) =>
-          whenListenToPostBookCubitStates(widget.postID, current),
-      listener: (context, state) => onPostBookmarkUpdated(widget.postID,
+          whenListenToPostBookCubitStates(widget.post.id, current),
+      listener: (context, state) => onPostBookmarkUpdated(widget.post.id,
           (state as PostBookmarkUpdatedSuccessfullyState).newBookmarkValue),
       buildWhen: (previous, current) =>
-          whenPostItemShouldWidgetRebuild(widget.postID, current),
+          whenPostItemShouldWidgetRebuild(widget.post.id, current),
       builder: (context, state) {
         return BookmarkButton(
           unBookmarkedColor: widget.unBookmarkedColor,
           bookmarkedColor: widget.bookmarkedColor,
-          isLoading: isItemBookmarking(widget.postID, state),
+          isLoading: isItemBookmarking(widget.post.id, state),
           isBoolmarked: isBookmarked,
           onPressed: onBookmarkButtonPressed,
         );
@@ -62,25 +63,26 @@ class _PostBookmarkButtonState extends State<PostBookmarkButton> {
 
   bool whenListenToPostBookCubitStates(String postId, PostBookmarkState state) {
     return state is PostBookmarkUpdatedSuccessfullyState &&
-        state.postId == postId;
+        state.post == postId;
   }
 
   bool whenPostItemShouldWidgetRebuild(String postId, PostBookmarkState state) {
     return (state is PostBookmarkUpdatingPostBookmarkState &&
-            state.postId == postId) ||
+            state.post.id == postId) ||
         (state is PostBookmarkUpdatedSuccessfullyState &&
-            state.postId == postId) ||
-        (state is PostBookmarkUpdateHasErrorState && state.postId == postId);
+            state.post.id == postId) ||
+        (state is PostBookmarkUpdateHasErrorState && state.post.id == postId);
   }
 
   bool isItemBookmarking(String postId, PostBookmarkState state) {
     return state is PostBookmarkUpdatingPostBookmarkState &&
-            state.postId == postId
+            state.post.id == postId
         ? true
         : state is PostBookmarkUpdatedSuccessfullyState &&
-                state.postId == postId
+                state.post.id == postId
             ? false
-            : state is PostBookmarkUpdateHasErrorState && state.postId == postId
+            : state is PostBookmarkUpdateHasErrorState &&
+                    state.post.id == postId
                 ? false
                 : state.currentBookmarkingPosts.contains(postId);
   }
@@ -105,12 +107,12 @@ class _PostBookmarkButtonState extends State<PostBookmarkButton> {
                   as AuthenticationLoggedIn)
               .user
               .token,
-          postId: widget.postID,
+          post: widget.post,
           newBookmarkValue: !isBookmarked,
         );
 
     widget.onnBookmarkButtonPressed != null
-        ? widget.onPostBookmarkUpdated!(widget.postID, !isBookmarked)
+        ? widget.onPostBookmarkUpdated!(widget.post.id, !isBookmarked)
         : null;
   }
 }

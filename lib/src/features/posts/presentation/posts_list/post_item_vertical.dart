@@ -104,7 +104,7 @@ class PostItemInVerticalList extends StatelessWidget {
                                   ? Colors.black54
                                   : Colors.white,
                               initialBookmarkStatus: item.isBookmarked,
-                              postID: item.id,
+                              post: item,
                               onPostBookmarkUpdated:
                                   (postId, newBookmarkValue) =>
                                       onPostBookmarkUpdated(

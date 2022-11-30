@@ -112,7 +112,7 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                                   unBookmarkedColor: Colors.white70,
                                   initialBookmarkStatus:
                                       widget.items[itemIndex].isBookmarked,
-                                  postID: widget.items[itemIndex].id,
+                                  post: widget.items[itemIndex],
                                   onPostBookmarkUpdated: (postId,
                                           newBookmarkValue) =>
                                       onPostBookmarkUpdated(
