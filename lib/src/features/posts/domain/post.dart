@@ -59,7 +59,7 @@ class Post extends Entity {
     data['summary'] = summary;
     data['content'] = content;
     data['category'] = category;
-    data['status'] = status;
+    data['status'] = status.index;
     data['is_bookmarked'] = isBookmarked;
     data['author'] = author;
     data['images_urls'] = imagesUrls;
