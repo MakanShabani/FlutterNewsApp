@@ -61,8 +61,8 @@ class User extends Entity {
     data['age'] = age;
     data['phone'] = phone;
     data['image_url'] = imageUrl;
-    data['role'] = role;
-    data['status'] = status;
+    data['role'] = role.index;
+    data['status'] = status.index;
     return data;
   }
 
