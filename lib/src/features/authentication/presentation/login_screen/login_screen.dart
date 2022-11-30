@@ -29,9 +29,11 @@ class _LoginScreenState extends State<LoginScreen> {
               isFloating: false,
               isTop: false,
               deviceHeight: MediaQuery.of(context).size.height));
+          return;
         }
         if (state is AuthenticationLoggedIn) {
           Navigator.pop(context);
+          return;
         }
       },
       child: Scaffold(
