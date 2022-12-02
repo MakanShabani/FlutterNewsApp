@@ -8,7 +8,6 @@ import 'src/features/authentication/presentation/authentication_presentations.da
 import 'src/features/posts/data/data_sources/fake_posts_data_source.dart';
 import 'src/features/posts/data/repositories/posts_repositories.dart';
 import 'src/features/posts/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
-import 'src/features/posts/presentation/posts_list/blocs/posts_list_blocs.dart';
 import 'src/features/posts_category/data/data_sources/fake_post_category_data_source.dart';
 import 'src/features/posts_category/data/repositories/post_category_repositories.dart';
 import 'src/features/settings/application/settings_services.dart';
@@ -57,29 +56,15 @@ class App extends StatelessWidget {
                   postService: PostService(
                       postRepository: context.read<FakePostReposiory>()))),
         ],
-        child: MultiBlocListener(
-          listeners: [
-            //fetch user bookmarked posts after first login
-            BlocListener<AuthenticationCubit, AuthenticationState>(
-              listener: (context, state) => state is AuthenticationLoggedIn &&
-                      context.read<BookmarkedPostsListCubit>().state
-                          is BookmarkedPostsListInitial
-                  ? context
-                      .read<BookmarkedPostsListCubit>()
-                      .fetch(userToken: state.user.token)
-                  : null,
-            ),
-          ],
-          child: BlocBuilder<ThemeCubit, ThemeState>(
-            buildWhen: (previous, current) =>
-                current is ThemeDarkModeState || current is ThemeLightModeState,
-            builder: (context, state) => MaterialApp(
-              title: 'News App',
-              theme: state is ThemeDarkModeState
-                  ? ThemeStyle.darkTheme()
-                  : ThemeStyle.lightTheme(),
-              onGenerateRoute: AppRouter.generateRoute,
-            ),
+        child: BlocBuilder<ThemeCubit, ThemeState>(
+          buildWhen: (previous, current) =>
+              current is ThemeDarkModeState || current is ThemeLightModeState,
+          builder: (context, state) => MaterialApp(
+            title: 'News App',
+            theme: state is ThemeDarkModeState
+                ? ThemeStyle.darkTheme()
+                : ThemeStyle.lightTheme(),
+            onGenerateRoute: AppRouter.generateRoute,
           ),
         ),
       ),

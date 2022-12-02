@@ -42,7 +42,8 @@ class _TabContentState extends State<TabContent>
                 .user
                 .token
             : null,
-        widget.category?.id);
+        widget.category?.id,
+        null);
   }
 
   @override
@@ -264,7 +265,8 @@ class _TabContentState extends State<TabContent>
                   .user
                   .token
               : null,
-          widget.category?.id);
+          widget.category?.id,
+          null);
     }
   }
 

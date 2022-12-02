@@ -22,7 +22,8 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
   final PostsListService _postsListService;
   final int haowManyPostFetchEachTime;
 
-  void fetch(String? userToken, String? categoryId) async {
+  void fetch(String? userToken, String? categoryId,
+      bool? loadOnlyBookmarkedPosts) async {
     List<Post>? currentPosts;
     PagingOptionsDTO? lastFetchedPagingOptionsVm;
     PagingOptionsDTO toFetchPagingOptionsVm;
@@ -65,11 +66,22 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
     ));
 
     //load posts
-    ResponseDTO<List<Post>> fetchingPostsResponse =
-        await _postsListService.getPosts(
-            pagingOptionsDTO: toFetchPagingOptionsVm,
-            userToken: userToken,
-            categoryId: categoryId);
+    ResponseDTO<List<Post>> fetchingPostsResponse;
+
+    //fetch only user bookmarked post or all posts
+    if (loadOnlyBookmarkedPosts != null &&
+        loadOnlyBookmarkedPosts &&
+        userToken != null) {
+      //fetch user bookmarked posts
+      fetchingPostsResponse = await _postsListService.getUserBookmarkedPosts(
+          userToken: userToken, pagingOptionsDTO: toFetchPagingOptionsVm);
+    } else {
+      //fetch all posts(including user bookmarked posts)
+      fetchingPostsResponse = await _postsListService.getPosts(
+          pagingOptionsDTO: toFetchPagingOptionsVm,
+          userToken: userToken,
+          categoryId: categoryId);
+    }
 
     if (fetchingPostsResponse.statusCode != 200) {
       emit(PostsListCubitFetchingHasError(
