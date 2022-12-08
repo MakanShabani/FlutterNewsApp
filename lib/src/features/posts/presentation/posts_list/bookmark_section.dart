@@ -5,6 +5,9 @@ import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/constants.dart/constants.dart';
 import '../../../../router/route_names.dart';
 import '../../../authentication/presentation/blocs/authentication_cubit.dart';
+import '../../application/posts_list_service.dart';
+import '../../data/repositories/posts_repositories.dart';
+import '../post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import 'blocs/posts_list_blocs.dart';
 
 class BookmarkSection extends StatefulWidget {
@@ -16,6 +19,15 @@ class BookmarkSection extends StatefulWidget {
 
 class _BookmarkSectionState extends State<BookmarkSection>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(scrollListenrer);
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -24,71 +36,195 @@ class _BookmarkSectionState extends State<BookmarkSection>
     //Notice the super-call here.
     super.build(context);
 
-    return CustomScrollView(
-      slivers: [
-        const SliverAppBar(
-          title: Text('Bookmarks'),
-          stretch: true,
-          pinned: true,
-        ),
-        BlocBuilder<AuthenticationCubit, AuthenticationState>(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (context) => PostsListCubit(
+                postsListService: PostsListService(
+                    postRepository: context.read<FakePostReposiory>()),
+                haowManyPostFetchEachTime: 10)),
+        BlocProvider(
+          create: (context) => PostsListNotifireCubit(),
+        )
+      ],
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<AuthenticationCubit, AuthenticationState>(
+            listenWhen: (previous, current) =>
+                current is AuthenticationLoggedIn,
+            listener: (context, state) {
+              if (state is AuthenticationLoggedIn) {
+                context
+                    .read<PostsListCubit>()
+                    .fetch(state.user.token, null, true);
+              }
+            },
+          ),
+          BlocListener<PostBookmarkCubit, PostBookmarkState>(
+            listenWhen: (previous, current) =>
+                current is PostBookmarkUpdatedSuccessfullyState,
+            listener: (context, state) {
+              if (state is PostBookmarkUpdatedSuccessfullyState) {
+                if (state.newBookmarkValue) {
+                  //add the porst to actual list of posts in state
+                  context
+                      .read<PostsListCubit>()
+                      .updatePostBookmarkStatusWithoutChangingState(
+                          state.post.id, state.newBookmarkValue);
+                  //update animatedList list if its posts
+                  context
+                      .read<PostsListNotifireCubit>()
+                      .insertPosts([state.post]);
+                } else {
+                  //add the porst to actual list of posts in state
+                  context
+                      .read<PostsListCubit>()
+                      .updatePostBookmarkStatusWithoutChangingState(
+                          state.post.id, state.newBookmarkValue);
+
+                  //update animatedList list if its posts
+                  context
+                      .read<PostsListNotifireCubit>()
+                      .removePost(state.post.id);
+                }
+              }
+            },
+          )
+        ],
+        child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
             builder: (context, state) {
           if (state is AuthenticationLoggedIn) {
             //Show user's bookmarks
-            return BlocBuilder<BookmarkedPostsListCubit,
-                BookmarkedPostsListState>(
-              builder: (context, state) {
-                if (state is BookmarkedPostsListFetchingSuccessful) {
-                  return PostsListSection(items: state.posts);
-                } else if (state is BookmarkedPostsListFetchingHasError) {
-                  //we show error (bnner/snackbar) with list of previous fetched-posts
-                  if (state.previousLoadedPosts != null) {
-                    return PostsListSection(items: state.previousLoadedPosts!);
-                  }
-                  //first fetching has ended with error. there is no posts has been fetched yet to display
-                  //so we show error widget(in the center of page or as dialog)
-                  return const SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Center(
-                        child: Text('First fetching has ended with error')),
-                  );
-                } else if (state is BookmarkedPostsListFetching) {
-                  if (state.previousLoadedPosts != null) {
-                    //we show loading indicator at the end of the previously fetched-posts
-                    return PostsListSection(items: state.previousLoadedPosts!);
-                  }
-                  //this first fetching. there is no posts has been fetched yet to display
-                  //so we show loading indicator widget(in the center of page or as dialog)
-                  return const SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Center(child: Text('First fetching Loading')),
-                  );
-                }
 
-                //Initial State
-                return const SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(child: Text('Initia State -- First Fetching')),
-                );
-              },
-            );
+            return CustomScrollView(controller: _scrollController, slivers: [
+              const SliverAppBar(
+                title: Text('Bookmarks'),
+                stretch: true,
+                pinned: true,
+              ),
+              //Posts List
+              BlocBuilder<PostsListCubit, PostsListCubitState>(
+                  buildWhen: (previous, current) =>
+                      (current is PostsListCubitFetching &&
+                          isThisFirstFetching(current)) ||
+                      (current is PostsListCubitFetchedSuccessfully &&
+                          current.previousPosts.isEmpty) ||
+                      (current is PostsListCubitFetchingHasError &&
+                          isThisFirtFetchingError(current)),
+                  builder: (context, state) {
+                    if (state is PostsListCubitFetching) {
+                      return const SliverFillRemaining(
+                        child: Center(
+                          child: Text('First Loading'),
+                        ),
+                      );
+                    }
+                    if (state is PostsListCubitFetchedSuccessfully) {
+                      return PostsListSection(
+                        items: context.read<PostsListCubit>().allPosts(),
+                        onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
+                            (postId, newBookmarkStatus) => context
+                                .read<PostsListCubit>()
+                                .updatePostBookmarkStatusWithoutChangingState(
+                                    postId, newBookmarkStatus),
+                      );
+                    }
+
+                    if (state is PostsListCubitFetchingHasError) {
+                      return const SliverFillRemaining(
+                        child: Center(
+                          child: Text('Error in first Fetching'),
+                        ),
+                      );
+                    }
+
+                    //init state
+                    return const SliverToBoxAdapter();
+                  }),
+
+              //Show loading indicator at the end of the list
+              BlocBuilder<PostsListCubit, PostsListCubitState>(
+                  buildWhen: (previous, current) =>
+                      (current is PostsListCubitFetching &&
+                          !isThisFirstFetching(current)) ||
+                      current is PostsListCubitFetchedSuccessfully ||
+                      current is PostsListCubitFetchingHasError,
+                  builder: (context, state) {
+                    if (state is PostsListCubitFetching) {
+                      return const SliverFixedExtentList(
+                          delegate: SliverChildListDelegate.fixed([
+                            LoadingIndicator(
+                              hasBackground: true,
+                              backgroundHeight: 20.0,
+                            )
+                          ]),
+                          itemExtent: 50.0);
+                    }
+                    //init state
+                    return const SliverToBoxAdapter();
+                  })
+            ]);
           } else {
             //Show warning widget that user must be signed in to use bookmark section
-
-            return SliverFillRemaining(
-              hasScrollBody: false,
-              child: Padding(
-                padding:
-                    const EdgeInsets.fromLTRB(0, 0, 0, screenBottomPadding),
-                child: NotSigenIn(
-                  onActionClicked: () =>
-                      Navigator.pushNamed(context, loginRoute),
+            return CustomScrollView(
+              slivers: [
+                const SliverAppBar(
+                  title: Text('Bookmarks'),
+                  stretch: true,
+                  pinned: true,
                 ),
-              ),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.fromLTRB(0, 0, 0, screenBottomPadding),
+                    child: NotSigenIn(
+                      onActionClicked: () =>
+                          Navigator.pushNamed(context, loginRoute),
+                    ),
+                  ),
+                )
+              ],
             );
           }
         }),
-      ],
+      ),
     );
+  }
+
+  bool isThisFirstFetching(PostsListCubitFetching state) {
+    return state.currentPosts.isEmpty;
+  }
+
+  bool isThisFirtFetchingError(PostsListCubitFetchingHasError state) {
+    return state.currentPosts.isEmpty;
+  }
+
+  void scrollListenrer() {
+    if (context.read<PostsListCubit>().state
+            is! PostsListCubitFetchedSuccessfully &&
+        !(context.read<PostsListCubit>().state
+                is PostsListCubitFetchingHasError &&
+            isThisFirtFetchingError((context.read<PostsListCubit>().state
+                as PostsListCubitFetchingHasError)))) {
+      return;
+    }
+
+    if (context.read<PostsListCubit>().state is PostsListCubitFetching) {
+      return;
+    }
+
+    if (_scrollController.offset ==
+        _scrollController.position.maxScrollExtent) {
+      context.read<PostsListCubit>().fetch(
+          context.read<AuthenticationCubit>().state is AuthenticationLoggedIn
+              ? (context.read<AuthenticationCubit>().state
+                      as AuthenticationLoggedIn)
+                  .user
+                  .token
+              : null,
+          null,
+          true);
+    }
   }
 }

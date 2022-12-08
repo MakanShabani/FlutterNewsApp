@@ -71,7 +71,7 @@ class _TabContentState extends State<TabContent>
         child: BlocListener<PostsListCubit, PostsListCubitState>(
           listenWhen: (previous, current) =>
               (current is PostsListCubitFetchedSuccessfully &&
-                  current.lastLoadedPagingOptionsVm.offset > 0 &&
+                  current.previousPosts.isNotEmpty &&
                   current.newDownloadedPosts.isNotEmpty) ||
               (current is PostsListCubitFetching &&
                   current.toLoadPagingOptionsVm.offset > 0),
@@ -105,7 +105,7 @@ class _TabContentState extends State<TabContent>
               BlocBuilder<PostsListCubit, PostsListCubitState>(
                 buildWhen: (previous, current) =>
                     current is PostsListCubitFetchedSuccessfully &&
-                    current.lastLoadedPagingOptionsVm.offset == 0,
+                    current.previousPosts.isEmpty,
                 builder: (context, state) {
                   if (state is PostsListCubitFetchedSuccessfully) {
                     return caouroselSection(
@@ -121,7 +121,7 @@ class _TabContentState extends State<TabContent>
               BlocBuilder<PostsListCubit, PostsListCubitState>(
                   buildWhen: (previous, current) =>
                       current is PostsListCubitFetchedSuccessfully &&
-                      current.lastLoadedPagingOptionsVm.offset == 0,
+                      current.previousPosts.isEmpty,
                   builder: (context, state) {
                     if (state is PostsListCubitFetchedSuccessfully) {
                       return postsListSectionHeader();
@@ -137,7 +137,7 @@ class _TabContentState extends State<TabContent>
                       (current is PostsListCubitFetching &&
                           isThisFirstFetching(current)) ||
                       (current is PostsListCubitFetchedSuccessfully &&
-                          current.lastLoadedPagingOptionsVm.offset == 0) ||
+                          current.previousPosts.isEmpty) ||
                       (current is PostsListCubitFetchingHasError &&
                           isThisFirtFetchingError(current)),
                   builder: (context, state) {
@@ -150,8 +150,7 @@ class _TabContentState extends State<TabContent>
                     }
                     if (state is PostsListCubitFetchedSuccessfully) {
                       return PostsListSection(
-                        items:
-                            postListsCubit.allPostsFetchedSuccessfully(state),
+                        items: postListsCubit.allPosts(),
                         onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
                             (postId, newBookmarkStatus) => postListsCubit
                                 .updatePostBookmarkStatusWithoutChangingState(
@@ -271,10 +270,10 @@ class _TabContentState extends State<TabContent>
   }
 
   bool isThisFirstFetching(PostsListCubitFetching state) {
-    return state.lastLoadedPagingOptionsVm == null;
+    return state.currentPosts.isEmpty;
   }
 
   bool isThisFirtFetchingError(PostsListCubitFetchingHasError state) {
-    return state.lastLoadedPagingOptionsVm == null;
+    return state.currentPosts.isEmpty;
   }
 }
