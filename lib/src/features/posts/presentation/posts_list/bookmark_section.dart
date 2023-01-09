@@ -108,9 +108,9 @@ class _BookmarkSectionState extends State<BookmarkSection>
                       (current is PostsListCubitFetching &&
                           isThisFirstFetching(current)) ||
                       (current is PostsListCubitFetchedSuccessfully &&
-                          current.previousPosts.isEmpty) ||
+                          current.posts.isEmpty) ||
                       (current is PostsListCubitFetchingHasError &&
-                          isThisFirtFetchingError(current)),
+                          isThisFirstFetching(current)),
                   builder: (context, state) {
                     if (state is PostsListCubitFetching) {
                       return const SliverFillRemaining(
@@ -121,7 +121,7 @@ class _BookmarkSectionState extends State<BookmarkSection>
                     }
                     if (state is PostsListCubitFetchedSuccessfully) {
                       return PostsListSection(
-                        items: context.read<PostsListCubit>().allPosts(),
+                        items: state.posts,
                         onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
                             (postId, newBookmarkStatus) => context
                                 .read<PostsListCubit>()
@@ -192,12 +192,8 @@ class _BookmarkSectionState extends State<BookmarkSection>
     );
   }
 
-  bool isThisFirstFetching(PostsListCubitFetching state) {
-    return state.currentPosts.isEmpty;
-  }
-
-  bool isThisFirtFetchingError(PostsListCubitFetchingHasError state) {
-    return state.currentPosts.isEmpty;
+  bool isThisFirstFetching(PostsListCubitState state) {
+    return state.posts.isEmpty;
   }
 
   void scrollListenrer() {
@@ -205,8 +201,7 @@ class _BookmarkSectionState extends State<BookmarkSection>
             is! PostsListCubitFetchedSuccessfully &&
         !(context.read<PostsListCubit>().state
                 is PostsListCubitFetchingHasError &&
-            isThisFirtFetchingError((context.read<PostsListCubit>().state
-                as PostsListCubitFetchingHasError)))) {
+            isThisFirstFetching((context.read<PostsListCubit>().state)))) {
       return;
     }
 

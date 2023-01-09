@@ -71,8 +71,7 @@ class _TabContentState extends State<TabContent>
         child: BlocListener<PostsListCubit, PostsListCubitState>(
           listenWhen: (previous, current) =>
               (current is PostsListCubitFetchedSuccessfully &&
-                  current.previousPosts.isNotEmpty &&
-                  current.newDownloadedPosts.isNotEmpty) ||
+                  current.posts.isNotEmpty) ||
               (current is PostsListCubitFetching &&
                   current.toLoadPagingOptionsVm.offset > 0),
           listener: (context, state) {
@@ -85,9 +84,9 @@ class _TabContentState extends State<TabContent>
                     curve: Curves.easeIn);
               }
             } else if (state is PostsListCubitFetchedSuccessfully) {
-              context
-                  .read<PostsListNotifireCubit>()
-                  .insertPosts(state.newDownloadedPosts);
+              context.read<PostsListNotifireCubit>().insertPosts(state.posts
+                  .skip(state.lastLoadedPagingOptionsDto.offset)
+                  .toList());
 
               if (_scrollController.offset ==
                   _scrollController.position.maxScrollExtent) {
@@ -105,11 +104,10 @@ class _TabContentState extends State<TabContent>
               BlocBuilder<PostsListCubit, PostsListCubitState>(
                 buildWhen: (previous, current) =>
                     current is PostsListCubitFetchedSuccessfully &&
-                    current.previousPosts.isEmpty,
+                    current.posts.isNotEmpty,
                 builder: (context, state) {
                   if (state is PostsListCubitFetchedSuccessfully) {
-                    return caouroselSection(
-                        state.newDownloadedPosts.take(5).toList());
+                    return caouroselSection(state.posts.take(5).toList());
                   }
 
                   //initial state
@@ -121,7 +119,7 @@ class _TabContentState extends State<TabContent>
               BlocBuilder<PostsListCubit, PostsListCubitState>(
                   buildWhen: (previous, current) =>
                       current is PostsListCubitFetchedSuccessfully &&
-                      current.previousPosts.isEmpty,
+                      current.posts.isNotEmpty,
                   builder: (context, state) {
                     if (state is PostsListCubitFetchedSuccessfully) {
                       return postsListSectionHeader();
@@ -136,10 +134,9 @@ class _TabContentState extends State<TabContent>
                   buildWhen: (previous, current) =>
                       (current is PostsListCubitFetching &&
                           isThisFirstFetching(current)) ||
-                      (current is PostsListCubitFetchedSuccessfully &&
-                          current.previousPosts.isEmpty) ||
+                      current is PostsListCubitFetchedSuccessfully ||
                       (current is PostsListCubitFetchingHasError &&
-                          isThisFirtFetchingError(current)),
+                          isThisFirstFetching(current)),
                   builder: (context, state) {
                     if (state is PostsListCubitFetching) {
                       return const SliverFillRemaining(
@@ -150,7 +147,7 @@ class _TabContentState extends State<TabContent>
                     }
                     if (state is PostsListCubitFetchedSuccessfully) {
                       return PostsListSection(
-                        items: postListsCubit.allPosts(),
+                        items: state.posts,
                         onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
                             (postId, newBookmarkStatus) => postListsCubit
                                 .updatePostBookmarkStatusWithoutChangingState(
@@ -246,8 +243,7 @@ class _TabContentState extends State<TabContent>
   void scrollListenrer() {
     if (postListsCubit.state is! PostsListCubitFetchedSuccessfully &&
         !(postListsCubit.state is PostsListCubitFetchingHasError &&
-            isThisFirtFetchingError(
-                (postListsCubit.state as PostsListCubitFetchingHasError)))) {
+            isThisFirstFetching((postListsCubit.state)))) {
       return;
     }
 
@@ -269,11 +265,7 @@ class _TabContentState extends State<TabContent>
     }
   }
 
-  bool isThisFirstFetching(PostsListCubitFetching state) {
-    return state.currentPosts.isEmpty;
-  }
-
-  bool isThisFirtFetchingError(PostsListCubitFetchingHasError state) {
-    return state.currentPosts.isEmpty;
+  bool isThisFirstFetching(PostsListCubitState state) {
+    return state.posts.isEmpty;
   }
 }
