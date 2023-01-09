@@ -63,7 +63,7 @@ class _PostBookmarkButtonState extends State<PostBookmarkButton> {
 
   bool whenListenToPostBookCubitStates(String postId, PostBookmarkState state) {
     return state is PostBookmarkUpdatedSuccessfullyState &&
-        state.post == postId;
+        state.post.id == postId;
   }
 
   bool whenPostItemShouldWidgetRebuild(String postId, PostBookmarkState state) {
