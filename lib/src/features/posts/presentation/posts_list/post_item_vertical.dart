@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/utils/utils.dart';
-import '../../../settings/presentation/blocs/settings_blocs.dart';
-import '../../domain/posts_models.dart';
+import '../../../settings/presentation/blocs/theme_cubit/theme_cubit.dart';
+import '../../domain/post.dart';
 import '../post_bookmark_button/post_bookmark_button.dart';
 
 class PostItemInVerticalList extends StatelessWidget {
@@ -16,8 +16,8 @@ class PostItemInVerticalList extends StatelessWidget {
   final double? leftMargin;
   final Color? backgroundColor;
   final double? itemHeight;
-  final CustomeValueSetterCallback<String, bool>? onPostBookmarkPressed;
-  final CustomeValueSetterCallback<String, bool>? onPostBookMarkUpdated;
+  final CustomeValueSetterCallback<Post, bool>? onPostBookmarkPressed;
+  final CustomeValueSetterCallback<Post, bool>? onPostBookMarkUpdated;
 
   static double _imageHeight = 0;
   static double _itemFinalHeight = 0;
@@ -135,22 +135,22 @@ class PostItemInVerticalList extends StatelessWidget {
 
   //we use this fuction to update post's bookmark value locally
   //if onPostBookMarkUpdated CallBack is provided the the post's bookmark will be updated in the parent widegt's post lists too.
-  void onPostBookmarkUpdated(String postId, bool newBookmarkStatus) {
+  void onPostBookmarkUpdated(Post post, bool newBookmarkStatus) {
     //update local list
     item.isBookmarked = newBookmarkStatus;
 
     //update parent widget's list
     if (onPostBookMarkUpdated != null) {
-      onPostBookMarkUpdated!(postId, newBookmarkStatus);
+      onPostBookMarkUpdated!(post, newBookmarkStatus);
     }
   }
 
   // we use this function to do stuff when bookmark button is pressed
   //if onPostBookmarkPressed is provided , parent widget's demands as function will be call
-  void onPostBookMarkPressed(String postId, bool newBookmarkStatusToSet) {
+  void onPostBookMarkPressed(Post post, bool newBookmarkStatusToSet) {
     //call parent widget's function
     if (onPostBookmarkPressed != null) {
-      onPostBookmarkPressed!(postId, newBookmarkStatusToSet);
+      onPostBookmarkPressed!(post, newBookmarkStatusToSet);
     }
   }
 }

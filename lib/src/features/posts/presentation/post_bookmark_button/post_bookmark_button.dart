@@ -25,8 +25,8 @@ class PostBookmarkButton extends StatefulWidget {
   final Color? unBookmarkedColor;
   final double? loadingSize;
 
-  final CustomeValueSetterCallback<String, bool>? onPostBookmarkUpdated;
-  final CustomeValueSetterCallback<String, bool>? onnBookmarkButtonPressed;
+  final CustomeValueSetterCallback<Post, bool>? onPostBookmarkUpdated;
+  final CustomeValueSetterCallback<Post, bool>? onnBookmarkButtonPressed;
   @override
   State<PostBookmarkButton> createState() => _PostBookmarkButtonState();
 }
@@ -45,7 +45,7 @@ class _PostBookmarkButtonState extends State<PostBookmarkButton> {
     return BlocConsumer<PostBookmarkCubit, PostBookmarkState>(
       listenWhen: (previous, current) =>
           whenListenToPostBookCubitStates(widget.post.id, current),
-      listener: (context, state) => onPostBookmarkUpdated(widget.post.id,
+      listener: (context, state) => onPostBookmarkUpdated(widget.post,
           (state as PostBookmarkUpdatedSuccessfullyState).newBookmarkValue),
       buildWhen: (previous, current) =>
           whenPostItemShouldWidgetRebuild(widget.post.id, current),
@@ -87,7 +87,7 @@ class _PostBookmarkButtonState extends State<PostBookmarkButton> {
                 : state.currentBookmarkingPosts.contains(postId);
   }
 
-  void onPostBookmarkUpdated(String postId, bool newBookmarkStatus) {
+  void onPostBookmarkUpdated(Post postId, bool newBookmarkStatus) {
     isBookmarked = newBookmarkStatus;
 
     widget.onPostBookmarkUpdated != null
@@ -112,7 +112,7 @@ class _PostBookmarkButtonState extends State<PostBookmarkButton> {
         );
 
     widget.onnBookmarkButtonPressed != null
-        ? widget.onPostBookmarkUpdated!(widget.post.id, !isBookmarked)
+        ? widget.onPostBookmarkUpdated!(widget.post, !isBookmarked)
         : null;
   }
 }
