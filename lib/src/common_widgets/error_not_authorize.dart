@@ -2,20 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../infrastructure/constants.dart/text_constants.dart';
 
-class NotSigenIn extends StatelessWidget {
-  const NotSigenIn({
+class ErrorNotAuthorize extends StatelessWidget {
+  const ErrorNotAuthorize({
     Key? key,
     this.primaryColor,
-    this.icon,
-    this.iconColor,
     this.title,
     this.subtitle,
     this.actionText,
     this.onActionClicked,
   }) : super(key: key);
-  final IconData? icon;
   final Color? primaryColor;
-  final Color? iconColor;
   final String? title;
   final String? subtitle;
   final String? actionText;
@@ -36,7 +32,7 @@ class NotSigenIn extends StatelessWidget {
           height: 20.0,
         ),
         Text(
-          title ?? notSignedInTitle,
+          title ?? error_401,
           style: Theme.of(context).textTheme.labelMedium,
         ),
         const SizedBox(
@@ -45,7 +41,7 @@ class NotSigenIn extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50.0),
           child: Text(
-            subtitle ?? notSignedInSubtitle,
+            subtitle ?? error401Subtitle,
             maxLines: 3,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelSmall,
