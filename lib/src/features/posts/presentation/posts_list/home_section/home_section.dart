@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'tab_content.dart';
-import '../../../posts_category/application/post_category_service.dart';
-import '../../../posts_category/data/repositories/post_category_repositories.dart';
-import '../../../posts_category/presentation/blocs/post_category_cubit.dart';
+import '../tab_content.dart';
+import '../../../../posts_category/application/post_category_service.dart';
+import '../../../../posts_category/data/repositories/post_category_repositories.dart';
+import '../../../../posts_category/presentation/blocs/post_category_cubit.dart';
+import 'tab_bar_cubit/tab_bar_cubit.dart';
 
 class HomeSection extends StatefulWidget {
   const HomeSection({Key? key}) : super(key: key);
@@ -38,6 +39,7 @@ class _HomeSectionState extends State<HomeSection>
 
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => TabBarCubit()..hideTabBar()),
         BlocProvider(
           create: (context) => PostCategoryCubit(
             postCategoryService: PostCategoryService(
@@ -88,25 +90,35 @@ class _HomeSectionState extends State<HomeSection>
             //For index == 0 :: tabs[index:0] == 'All News'  and  For index >= 1 :: tabs[index] == state.categories[index -1]
             return Scaffold(
               appBar: AppBar(
-                leading: const Icon(Icons.logo_dev),
-                bottom: TabBar(
-                  isScrollable: true,
-                  controller: _tabController,
-                  tabs: List<Widget>.generate(
-                      context
-                              .read<PostCategoryCubit>()
-                              .allDownloadedPostCategorieS(state)
-                              .length +
-                          1,
-                      (index) => Tab(
-                          text: index == 0
-                              ? 'All News'
-                              : context
-                                  .read<PostCategoryCubit>()
-                                  .allDownloadedPostCategorieS(state)
-                                  .elementAt(index - 1)
-                                  .title)),
-                ),
+                leading: context.watch<TabBarCubit>().state is TabBarShow
+                    ? const Icon(Icons.logo_dev)
+                    : null,
+                title: context.watch<TabBarCubit>().state is! TabBarShow
+                    ? const Text('Home')
+                    : null,
+                bottom: context.watch<TabBarCubit>().state is TabBarShow
+                    ? TabBar(
+                        isScrollable: true,
+                        controller: _tabController,
+                        tabs: List<Widget>.generate(
+                            context
+                                    .read<PostCategoryCubit>()
+                                    .allDownloadedPostCategorieS(state)
+                                    .length +
+                                1,
+                            (index) => Tab(
+                                text: index == 0
+                                    ? 'All News'
+                                    : context
+                                        .read<PostCategoryCubit>()
+                                        .allDownloadedPostCategorieS(state)
+                                        .elementAt(index - 1)
+                                        .title)),
+                      )
+                    : const PreferredSize(
+                        preferredSize: Size.fromHeight(0.0),
+                        child: SizedBox(height: 0.0),
+                      ),
               ),
               body: TabBarView(
                   controller: _tabController,

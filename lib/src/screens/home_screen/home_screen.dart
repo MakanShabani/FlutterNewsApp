@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../features/posts/presentation/posts_list/bookmark_section.dart';
-import '../../features/posts/presentation/posts_list/home_section.dart';
+import '../../features/posts/presentation/posts_list/home_section/home_section.dart';
 import '../../features/settings/presentation/settings_section.dart';
 import 'bottom_navigation.dart';
 
