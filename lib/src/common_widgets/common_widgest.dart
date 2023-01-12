@@ -8,4 +8,4 @@ export './option_title.dart';
 export 'error_internal.dart';
 export './error_not_authorize.dart';
 export './bookmark_button.dart';
-export './infinite_animated_list/infinite_animated_list_.dart';
+export './sliver_infinite_animated_list/sliver_infinite_animated_list_.dart';
