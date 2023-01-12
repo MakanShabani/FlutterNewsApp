@@ -56,7 +56,7 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
 
     if (fetchingPostsResponse.statusCode != 200) {
       emit(PostsListCubitFetchingHasError(
-          toLoadPagingOptionsVm:
+          failedLoadPagingOptionsVm:
               (state as PostsListCubitFetching).toLoadPagingOptionsVm,
           posts: state.posts,
           categoryId: categoryId,
@@ -82,8 +82,8 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
   }
 
   void updatePostBookmarkStatusWithoutChangingState(
-      String postId, bool newBookmarkStatus) {
-    state.posts.firstWhereOrNull((p) => p.id == postId)?.isBookmarked =
+      Post post, bool newBookmarkStatus) {
+    state.posts.firstWhereOrNull((p) => p.id == post.id)?.isBookmarked =
         newBookmarkStatus;
     return;
   }

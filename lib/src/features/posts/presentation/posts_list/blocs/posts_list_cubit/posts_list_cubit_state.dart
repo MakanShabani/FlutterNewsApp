@@ -32,12 +32,12 @@ class PostsListCubitFetchedSuccessfully extends PostsListCubitState {
 }
 
 class PostsListCubitFetchingHasError extends PostsListCubitState {
-  final PagingOptionsDTO toLoadPagingOptionsVm;
+  final PagingOptionsDTO failedLoadPagingOptionsVm;
   final ErrorModel error;
 
   const PostsListCubitFetchingHasError({
     required super.posts,
-    required this.toLoadPagingOptionsVm,
+    required this.failedLoadPagingOptionsVm,
     super.categoryId,
     required this.error,
   });
