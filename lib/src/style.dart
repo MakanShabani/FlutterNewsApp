@@ -88,6 +88,10 @@ class ThemeStyle {
       brightness: Brightness.dark,
       primarySwatch: Colors.orange,
       primaryColor: Colors.orange,
+      snackBarTheme: const SnackBarThemeData().copyWith(
+        contentTextStyle:
+            const TextStyle(fontSize: 14.0, color: Colors.black87),
+      ),
       appBarTheme: const AppBarTheme().copyWith(
           centerTitle: true,
           backgroundColor: Colors.grey.shade900,
