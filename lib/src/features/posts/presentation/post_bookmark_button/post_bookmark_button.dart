@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
+import 'package:responsive_admin_dashboard/src/router/route_names.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/utils/utils.dart';
@@ -16,7 +18,6 @@ class PostBookmarkButton extends StatefulWidget {
     this.unBookmarkedColor,
     this.loadingSize,
     this.onPostBookmarkUpdated,
-    this.onnBookmarkButtonPressed,
   }) : super(key: key);
 
   final Post post;
@@ -26,7 +27,6 @@ class PostBookmarkButton extends StatefulWidget {
   final double? loadingSize;
 
   final CustomeValueSetterCallback<Post, bool>? onPostBookmarkUpdated;
-  final CustomeValueSetterCallback<Post, bool>? onnBookmarkButtonPressed;
   @override
   State<PostBookmarkButton> createState() => _PostBookmarkButtonState();
 }
@@ -97,9 +97,21 @@ class _PostBookmarkButtonState extends State<PostBookmarkButton> {
 
   void onBookmarkButtonPressed() {
     if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
-      //TODO:
       //Show a snackbar or a dialog to notify user that they have to login first
       //in order to use this feature.
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        appSnackBar(
+          context: context,
+          message: error401SnackBar,
+          action: () {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            Navigator.pushNamed(context, loginRoute);
+          },
+          actionLabel: 'Sign in',
+        ),
+      );
+
       return;
     }
     context.read<PostBookmarkCubit>().toggleBookmark(
@@ -110,9 +122,5 @@ class _PostBookmarkButtonState extends State<PostBookmarkButton> {
           post: widget.post,
           newBookmarkValue: !isBookmarked,
         );
-
-    widget.onnBookmarkButtonPressed != null
-        ? widget.onPostBookmarkUpdated!(widget.post, !isBookmarked)
-        : null;
   }
 }
