@@ -32,7 +32,7 @@ class ErrorNotAuthorize extends StatelessWidget {
           height: 20.0,
         ),
         Text(
-          title ?? error_401,
+          title ?? error401,
           style: Theme.of(context).textTheme.labelMedium,
         ),
         const SizedBox(

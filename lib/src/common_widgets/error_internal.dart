@@ -32,7 +32,7 @@ class ErrorInternal extends StatelessWidget {
           height: 20.0,
         ),
         Text(
-          title ?? error_500,
+          title ?? error500,
           style: Theme.of(context).textTheme.labelMedium,
         ),
         const SizedBox(
