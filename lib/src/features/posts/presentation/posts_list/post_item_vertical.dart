@@ -109,10 +109,6 @@ class PostItemInVerticalList extends StatelessWidget {
                                   (postId, newBookmarkValue) =>
                                       onPostBookmarkUpdated(
                                           postId, newBookmarkValue),
-                              onnBookmarkButtonPressed:
-                                  (postId, newBookmarkValueToSet) =>
-                                      onPostBookMarkPressed(
-                                          postId, newBookmarkValueToSet),
                             ),
                           ],
                         ),
@@ -142,15 +138,6 @@ class PostItemInVerticalList extends StatelessWidget {
     //update parent widget's list
     if (onPostBookMarkUpdated != null) {
       onPostBookMarkUpdated!(post, newBookmarkStatus);
-    }
-  }
-
-  // we use this function to do stuff when bookmark button is pressed
-  //if onPostBookmarkPressed is provided , parent widget's demands as function will be call
-  void onPostBookMarkPressed(Post post, bool newBookmarkStatusToSet) {
-    //call parent widget's function
-    if (onPostBookmarkPressed != null) {
-      onPostBookmarkPressed!(post, newBookmarkStatusToSet);
     }
   }
 }

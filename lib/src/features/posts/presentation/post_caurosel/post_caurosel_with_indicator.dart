@@ -119,11 +119,6 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                                           itemIndex,
                                           widget.items[itemIndex],
                                           newBookmarkValue),
-                                  onnBookmarkButtonPressed:
-                                      (postId, newBookmarkValueToSet) =>
-                                          onPostBookMarkPressed(
-                                              widget.items[itemIndex],
-                                              newBookmarkValueToSet),
                                 )
                               ],
                             ),
