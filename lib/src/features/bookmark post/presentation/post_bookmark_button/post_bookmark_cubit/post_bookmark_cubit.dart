@@ -5,16 +5,16 @@ import 'package:meta/meta.dart';
 
 import '../../../../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../../../../../infrastructure/shared_models/shared_model.dart';
-import '../../../application/posts_services.dart';
-import '../../../domain/posts_models.dart';
+import '../../../../posts/domain/posts_models.dart';
+import '../../../application/bookmark_service.dart';
 part 'post_bookmark_state.dart';
 
 class PostBookmarkCubit extends Cubit<PostBookmarkState> {
-  PostBookmarkCubit({required PostService postService})
-      : _postService = postService,
+  PostBookmarkCubit({required BookmarkService bookmarkService})
+      : _bookmarkService = bookmarkService,
         super(PostBookmarkInitialState(currentBookmarkingPosts: List.empty()));
 
-  final PostService _postService;
+  final BookmarkService _bookmarkService;
 
   void toggleBookmark(
       {required String userToken,
@@ -27,7 +27,7 @@ class PostBookmarkCubit extends Cubit<PostBookmarkState> {
       currentBookmarkingPosts: state.currentBookmarkingPosts + [post.id],
     ));
 
-    ResponseDTO<void> updateBookmarkResponse = await _postService
+    ResponseDTO<void> updateBookmarkResponse = await _bookmarkService
         .togglePostBookmarkSatus(userToken: userToken, postId: post.id);
 
     if (updateBookmarkResponse.statusCode != 204) {

@@ -6,7 +6,7 @@ import 'package:responsive_admin_dashboard/src/router/route_names.dart';
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/utils/utils.dart';
 import '../../../authentication/presentation/blocs/authentication_cubit.dart';
-import '../../domain/posts_models.dart';
+import '../../../posts/domain/posts_models.dart';
 import 'post_bookmark_cubit/post_bookmark_cubit.dart';
 
 class PostBookmarkButton extends StatefulWidget {

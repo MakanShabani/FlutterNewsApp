@@ -7,9 +7,9 @@ import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/constants.dart/constants.dart';
+import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import '../../../posts_category/domain/post_category_models.dart';
 import '../../domain/posts_models.dart';
-import '../post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import 'blocs/posts_list_blocs.dart';
 
 class TabContent extends StatefulWidget {

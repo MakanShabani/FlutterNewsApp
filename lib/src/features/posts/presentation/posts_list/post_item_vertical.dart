@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/utils/utils.dart';
+import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_button.dart';
 import '../../../settings/presentation/blocs/theme_cubit/theme_cubit.dart';
 import '../../domain/post.dart';
-import '../post_bookmark_button/post_bookmark_button.dart';
 
 class PostItemInVerticalList extends StatelessWidget {
   final Post item;

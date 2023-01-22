@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/utils/utils.dart';
+import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_button.dart';
 import '../../domain/posts_models.dart';
-import '../post_bookmark_button/post_bookmark_button.dart';
 
 class PostCarouselWithIndicator extends StatefulWidget {
   final double height;

@@ -23,9 +23,6 @@ abstract class PostsRepository {
 
   Future<ResponseDTO<Post>> getPostAsGuest({required postId});
 
-  Future<ResponseDTO<void>> toggleBookmark(
-      {required String userToken, required String postId});
-
   Future<ResponseDTO<List<Post>>> getBookmarkedPosts(
       {required String userToken, required PagingOptionsDTO pagingOptionsDTO});
 }
