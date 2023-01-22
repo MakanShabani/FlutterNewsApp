@@ -13,7 +13,6 @@ class SliverInfiniteAnimatedList extends StatefulWidget {
     required this.items,
     required this.itemLayout,
     required this.loadingLayout,
-    required this.errorLayout,
     this.scrollDirection,
     this.itemHeight,
     this.spaceBetweenItems,
@@ -31,7 +30,6 @@ class SliverInfiniteAnimatedList extends StatefulWidget {
   final Axis? scrollDirection;
   final ListItemLayout itemLayout;
   final Widget loadingLayout;
-  final Widget errorLayout;
 
   @override
   State<SliverInfiniteAnimatedList> createState() =>
@@ -97,11 +95,9 @@ class SliverInfiniteAnimatedListState
               return SliverToBoxAdapter(
                 child: state is ListNotifireCubitShowLoading
                     ? widget.loadingLayout
-                    : state is ListNotifireCubitShowError
-                        ? widget.errorLayout
-                        : const SizedBox(
-                            height: 0,
-                          ),
+                    : const SizedBox(
+                        height: 0,
+                      ),
               );
             },
           )

@@ -115,6 +115,25 @@ class _TabContentState extends State<TabContent>
                     duration: const Duration(milliseconds: 800),
                     curve: Curves.easeInBack);
               }
+            } else if (state is PostsListCubitFetchingHasError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                appSnackBar(
+                  context: context,
+                  message: state.error.message,
+                  actionLabel: 'try again',
+                  action: () => _postListsCubit.fetch(
+                      context.read<AuthenticationCubit>().state
+                              is AuthenticationLoggedIn
+                          ? (context.read<AuthenticationCubit>().state
+                                  as AuthenticationLoggedIn)
+                              .user
+                              .token
+                          : null,
+                      widget.category?.id,
+                      null),
+                ),
+              );
+              return;
             }
           },
           child: CustomScrollView(
@@ -193,7 +212,6 @@ class _TabContentState extends State<TabContent>
                             backgroundHeight: 20.0,
                           ),
                         ),
-                        errorLayout: const Text('error'),
                       );
                     }
 
