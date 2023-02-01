@@ -80,16 +80,7 @@ class _BookmarkSectionState extends State<BookmarkSection>
                   context: context,
                   message: state.error.message,
                   actionLabel: 'try again',
-                  action: () => _postsListCubit.fetch(
-                      context.read<AuthenticationCubit>().state
-                              is AuthenticationLoggedIn
-                          ? (context.read<AuthenticationCubit>().state
-                                  as AuthenticationLoggedIn)
-                              .user
-                              .token
-                          : null,
-                      null,
-                      true),
+                  action: () => _fetchPosts(),
                 ),
               );
               return;
@@ -112,7 +103,28 @@ class _BookmarkSectionState extends State<BookmarkSection>
               return;
             }
           },
-          child: Container(),
+          child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
+            buildWhen: (previous, current) =>
+                current is AuthenticationLoggedIn ||
+                current is AuthenticationLoggedout,
+            builder: (context, state) {
+              if (state is AuthenticationLoggedIn) {
+                //show the bookmark lists
+                return mainContents();
+              }
+
+              if (state is AuthenticationLoggedout) {
+                //show 403 error
+                return ErrorNotAuthorize(
+                  onActionClicked: () =>
+                      Navigator.pushNamed(context, loginRoute),
+                );
+              }
+
+              //defualt widgets
+              return Container();
+            },
+          ),
         ));
   }
 
@@ -126,12 +138,12 @@ class _BookmarkSectionState extends State<BookmarkSection>
       if (_scrollController.offset ==
           _scrollController.position.maxScrollExtent) {
         //fetch new posts
-        fetchPosts();
+        _fetchPosts();
       }
     }
   }
 
-  void fetchPosts() {
+  void _fetchPosts() {
     if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
       ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
         context: context,
@@ -147,5 +159,13 @@ class _BookmarkSectionState extends State<BookmarkSection>
             .token,
         null,
         true);
+  }
+
+  Widget mainContents() {
+    return CustomScrollView(
+      controller: _scrollController,
+      scrollDirection: Axis.vertical,
+      slivers: [],
+    );
   }
 }
