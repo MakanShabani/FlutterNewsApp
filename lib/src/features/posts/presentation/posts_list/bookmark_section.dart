@@ -61,12 +61,59 @@ class _BookmarkSectionState extends State<BookmarkSection>
     super.build(context);
 
     return MultiBlocProvider(
-      providers: [
-        BlocProvider.value(value: _postsListCubit),
-        BlocProvider.value(value: _postslistNotifireCubit),
-      ],
-      child: Container(),
-    );
+        providers: [
+          BlocProvider.value(value: _postsListCubit),
+          BlocProvider.value(value: _postslistNotifireCubit),
+        ],
+        child: BlocListener<PostsListCubit, PostsListCubitState>(
+          listenWhen: (previous, current) =>
+              (current is PostsListCubitFetchingHasError &&
+                  current.failedLoadPagingOptionsVm.offset == 0) ||
+              (current is PostsListCubitFetching &&
+                  current.toLoadPagingOptionsVm.offset > 0),
+          listener: (context, state) {
+            if (state is PostsListCubitFetchingHasError) {
+              //show snackbar when fetching ends with an error
+              //for initial fetch we show an error widget in the screen >> go to the blocbuilder section
+              ScaffoldMessenger.of(context).showSnackBar(
+                appSnackBar(
+                  context: context,
+                  message: state.error.message,
+                  actionLabel: 'try again',
+                  action: () => _postsListCubit.fetch(
+                      context.read<AuthenticationCubit>().state
+                              is AuthenticationLoggedIn
+                          ? (context.read<AuthenticationCubit>().state
+                                  as AuthenticationLoggedIn)
+                              .user
+                              .token
+                          : null,
+                      null,
+                      true),
+                ),
+              );
+              return;
+            }
+
+            if (state is PostsListCubitFetching) {
+              //notify the list widget to show the loading indicator at the end of the list.
+              //for initial fetch we show the loading in the center of the screen. >> go to the blocbuilder section
+
+              _postslistNotifireCubit.showLoading();
+
+              //smooth scroll to the loading indicator if we are at the end of the list
+              if (_scrollController.offset ==
+                  _scrollController.position.maxScrollExtent) {
+                _scrollController.animateTo(
+                    _scrollController.position.maxScrollExtent + 50,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeIn);
+              }
+              return;
+            }
+          },
+          child: Container(),
+        ));
   }
 
   void scrollListenrer() {
