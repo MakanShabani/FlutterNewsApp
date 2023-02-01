@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_admin_dashboard/src/features/bookmark%20post/data/data_sources/fake_bookmark_data_source.dart';
 import 'src/features/bookmark%20post/application/bookmark_service.dart';
 import 'src/features/bookmark%20post/data/repositories/fake_bookmark_repository.dart';
 
@@ -38,6 +39,11 @@ class App extends StatelessWidget {
                 delayDurationInSeconds: 1,
                 fakePostCategoryDataSource:
                     FakePostCategoryDataSource(fakeDatabase: FakeDatabase()))),
+        RepositoryProvider(
+          create: (context) => FakeBookmarkReposiory(
+              toggleBookmarkDelay: 5,
+              fakeBookmarkDataSource: FakeBookmarkDataSource()),
+        )
       ],
       child: MultiBlocProvider(
         providers: [
