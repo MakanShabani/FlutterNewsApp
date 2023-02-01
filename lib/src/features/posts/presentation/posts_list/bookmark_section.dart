@@ -4,8 +4,10 @@ import 'package:responsive_admin_dashboard/src/common_widgets/common_widgest.dar
 import 'package:responsive_admin_dashboard/src/features/authentication/presentation/authentication_presentations.dart';
 import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
 import 'package:responsive_admin_dashboard/src/router/route_names.dart';
+import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import '../../application/posts_list_service.dart';
 import '../../data/repositories/fake_posts_list_repository.dart';
+import '../../domain/posts_models.dart';
 import 'blocs/posts_list_blocs.dart';
 
 class BookmarkSection extends StatefulWidget {
@@ -161,11 +163,81 @@ class _BookmarkSectionState extends State<BookmarkSection>
         true);
   }
 
+  //we use this fuction to update post's bookmark value locally
+  void onPostBookmarkUpdated(int index, Post post, bool newBookmarkStatus) {
+    _postsListCubit.updatePostBookmarkStatusWithoutChangingState(
+        post, newBookmarkStatus);
+    _postslistNotifireCubit.modifyItem(
+        index, post..isBookmarked = newBookmarkStatus, false);
+  }
+
   Widget mainContents() {
     return CustomScrollView(
       controller: _scrollController,
       scrollDirection: Axis.vertical,
-      slivers: [],
+      slivers: [
+        //Appbar section
+        const SliverAppBar(
+          centerTitle: true,
+          title: Text('Bookmarks'),
+        ),
+
+        //Posts list section
+        BlocBuilder<PostsListCubit, PostsListCubitState>(
+          buildWhen: (previous, current) =>
+              (current is PostsListCubitFetchedSuccessfully &&
+                  current.lastLoadedPagingOptionsDto.offset == 0) ||
+              (current is PostsListCubitFetchingHasError &&
+                  current.failedLoadPagingOptionsVm.offset == 0) ||
+              (current is PostsListCubitFetching &&
+                  current.toLoadPagingOptionsVm.offset == 0),
+          builder: (context, state) {
+            if (state is PostsListCubitFetching) {
+              //show the loading indicator for the inital fetch
+              return const SliverFillRemaining(
+                child: Center(
+                  child: LoadingIndicator(hasBackground: false),
+                ),
+              );
+            }
+
+            if (state is PostsListCubitFetchingHasError) {
+              //show the error widget for the inital fetch
+              //TODO:: show appropriate error with respect to the error code
+              return ErrorInternal(
+                onActionClicked: () => _fetchPosts(),
+              );
+            }
+
+            if (state is PostsListCubitFetchedSuccessfully) {
+              return SliverInfiniteAnimatedList(
+                items: state.posts,
+                itemLayout: (item, index) => PostItemInVerticalList(
+                  itemHeight: 160,
+                  rightMargin: screenHorizontalPadding,
+                  bottoMargin: 20.0,
+                  leftMargin: screenHorizontalPadding,
+                  borderRadious: circularBorderRadious,
+                  item: item as Post,
+                  onPostBookMarkUpdated: (postId, newBookmarkValue) =>
+                      onPostBookmarkUpdated(index, postId, newBookmarkValue),
+                ),
+                loadingLayout: const SizedBox(
+                  height: 50.0,
+                  child: LoadingIndicator(
+                    hasBackground: true,
+                    backgroundHeight: 20.0,
+                  ),
+                ),
+              );
+            }
+
+            //default view
+            //TODO:: add empty list widget here
+            return Container();
+          },
+        )
+      ],
     );
   }
 }
