@@ -117,10 +117,18 @@ class _BookmarkSectionState extends State<BookmarkSection>
 
               if (state is AuthenticationLoggedout) {
                 //show 403 error
-                return ErrorNotAuthorize(
-                  onActionClicked: () =>
-                      Navigator.pushNamed(context, loginRoute),
-                );
+                return CustomScrollView(slivers: [
+                  const SliverAppBar(
+                    title: Text('Bookmarks'),
+                  ),
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: ErrorNotAuthorize(
+                      onActionClicked: () =>
+                          Navigator.pushNamed(context, loginRoute),
+                    ),
+                  ),
+                ]);
               }
 
               //defualt widgets
