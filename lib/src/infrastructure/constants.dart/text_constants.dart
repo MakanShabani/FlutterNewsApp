@@ -10,3 +10,6 @@ const errorFetching = 'Sorry, something went wrong';
 const bookmarkListsEmpty = "Looks Like You Haven't Bookmarked Any Post Yet";
 const bookmarkListsEmptySubtitle =
     'Try bookmark some posts to see them here, or just refresh the page to update the list';
+
+const noMorePostsToFetchSnackBar = 'There are no more posts to fetch';
+const noMoreBookmarkToFetch = 'You have no more bookmarks';

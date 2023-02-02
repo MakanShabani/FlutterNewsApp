@@ -70,11 +70,37 @@ class _BookmarkSectionState extends State<BookmarkSection>
         ],
         child: BlocListener<PostsListCubit, PostsListCubitState>(
           listenWhen: (previous, current) =>
+              (current is PostsListCubitFetchedSuccessfully &&
+                  current.lastLoadedPagingOptionsDto.offset > 0) ||
               (current is PostsListCubitFetchingHasError &&
                   current.failedLoadPagingOptionsVm.offset == 0) ||
               (current is PostsListCubitFetching &&
                   current.toLoadPagingOptionsVm.offset > 0),
           listener: (context, state) {
+            if (state is PostsListCubitFetchedSuccessfully) {
+              //After First successful fetch
+              //notify SliverInfiniteAnimatedList to show new posts
+              List<Post> newPosts = state.posts
+                  .skip(state.lastLoadedPagingOptionsDto.offset)
+                  .toList();
+              _postslistNotifireCubit.insertItems(newPosts);
+
+              if (newPosts.isNotEmpty) {
+                if (_scrollController.offset ==
+                    _scrollController.position.maxScrollExtent) {
+                  _scrollController.animateTo(_scrollController.offset + 100,
+                      duration: const Duration(milliseconds: 800),
+                      curve: Curves.easeInBack);
+                }
+              } else {
+                //if there is no new posts, we show a snackbar
+                ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+                    context: context, message: noMoreBookmarkToFetch));
+              }
+
+              return;
+            }
+
             if (state is PostsListCubitFetchingHasError) {
               //show snackbar when fetching ends with an error
               //for initial fetch we show an error widget in the screen >> go to the blocbuilder section
@@ -215,9 +241,11 @@ class _BookmarkSectionState extends State<BookmarkSection>
               //show the error widget for the inital fetch
               //TODO:: show appropriate error with respect to the error code
               return SliverToBoxAdapter(
-                child: ErrorInternal(
-                  onActionClicked: () => _fetchPosts(),
-                ),
+                child: state.error.statusCode == 401
+                    ? ErrorNotAuthorize(onActionClicked: () => _fetchPosts())
+                    : ErrorInternal(
+                        onActionClicked: () => _fetchPosts(),
+                      ),
               );
             }
 
@@ -253,7 +281,9 @@ class _BookmarkSectionState extends State<BookmarkSection>
             }
 
             //default view
-            return Container();
+            return SliverToBoxAdapter(
+              child: Container(),
+            );
           },
         )
       ],
