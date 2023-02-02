@@ -6,3 +6,7 @@ const error500 = "Its's Not Your Fault, It's On Us";
 const error500Subtitle =
     'Sorry, we are expericencing some trouble currently, please try again later';
 const errorFetching = 'Sorry, something went wrong';
+
+const bookmarkListsEmpty = "Looks Like You Haven't Bookmarked Any Post Yet";
+const bookmarkListsEmptySubtitle =
+    'Try bookmark some posts to see them here, or just refresh the page to update the list';

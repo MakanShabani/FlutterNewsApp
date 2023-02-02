@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_admin_dashboard/src/common_widgets/common_widgest.dart';
 import 'package:responsive_admin_dashboard/src/features/authentication/presentation/authentication_presentations.dart';
+import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts_list/empty_posts_list.dart';
 import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
 import 'package:responsive_admin_dashboard/src/router/route_names.dart';
 import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
@@ -203,6 +204,7 @@ class _BookmarkSectionState extends State<BookmarkSection>
             if (state is PostsListCubitFetching) {
               //show the loading indicator for the inital fetch
               return const SliverFillRemaining(
+                hasScrollBody: false,
                 child: Center(
                   child: LoadingIndicator(hasBackground: false),
                 ),
@@ -212,36 +214,45 @@ class _BookmarkSectionState extends State<BookmarkSection>
             if (state is PostsListCubitFetchingHasError) {
               //show the error widget for the inital fetch
               //TODO:: show appropriate error with respect to the error code
-              return ErrorInternal(
-                onActionClicked: () => _fetchPosts(),
+              return SliverToBoxAdapter(
+                child: ErrorInternal(
+                  onActionClicked: () => _fetchPosts(),
+                ),
               );
             }
 
             if (state is PostsListCubitFetchedSuccessfully) {
-              return SliverInfiniteAnimatedList(
-                items: state.posts,
-                itemLayout: (item, index) => PostItemInVerticalList(
-                  itemHeight: 160,
-                  rightMargin: screenHorizontalPadding,
-                  bottoMargin: 20.0,
-                  leftMargin: screenHorizontalPadding,
-                  borderRadious: circularBorderRadious,
-                  item: item as Post,
-                  onPostBookMarkUpdated: (postId, newBookmarkValue) =>
-                      onPostBookmarkUpdated(index, postId, newBookmarkValue),
-                ),
-                loadingLayout: const SizedBox(
-                  height: 50.0,
-                  child: LoadingIndicator(
-                    hasBackground: true,
-                    backgroundHeight: 20.0,
-                  ),
-                ),
-              );
+              return state.posts.isNotEmpty
+                  ? SliverInfiniteAnimatedList(
+                      items: state.posts,
+                      itemLayout: (item, index) => PostItemInVerticalList(
+                        itemHeight: 160,
+                        rightMargin: screenHorizontalPadding,
+                        bottoMargin: 20.0,
+                        leftMargin: screenHorizontalPadding,
+                        borderRadious: circularBorderRadious,
+                        item: item as Post,
+                        onPostBookMarkUpdated: (postId, newBookmarkValue) =>
+                            onPostBookmarkUpdated(
+                                index, postId, newBookmarkValue),
+                      ),
+                      loadingLayout: const SizedBox(
+                        height: 50.0,
+                        child: LoadingIndicator(
+                          hasBackground: true,
+                          backgroundHeight: 20.0,
+                        ),
+                      ),
+                    )
+                  : SliverToBoxAdapter(
+                      child: EmptyPostsList(
+                        onActionClicked: () => _fetchPosts(),
+                      ),
+                    );
+              ;
             }
 
             //default view
-            //TODO:: add empty list widget here
             return Container();
           },
         )
