@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
               message: state.error.message,
               isFloating: false,
               isTop: false,
-              deviceHeight: MediaQuery.of(context).size.height));
+              context: context));
           return;
         }
         if (state is AuthenticationLoggedIn) {

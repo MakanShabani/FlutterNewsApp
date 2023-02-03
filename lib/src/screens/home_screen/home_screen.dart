@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../features/posts/presentation/posts_list/home_section.dart';
+import '../../features/posts/presentation/posts_list/bookmark_section.dart';
+import '../../features/posts/presentation/posts_list/home_section/home_section.dart';
 import '../../features/settings/presentation/settings_section.dart';
 import 'bottom_navigation.dart';
 
@@ -19,9 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Text(
       'Index 1: Search',
     ),
-    Text(
-      'Index 2: Bookmark',
-    ),
+    BookmarkSection(),
     SettingsSection(),
   ];
 

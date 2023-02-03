@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
 
-import '../infrastructure/constants.dart/text_constants.dart';
-
-class NotSigenIn extends StatelessWidget {
-  const NotSigenIn({
+class EmptyPostsList extends StatelessWidget {
+  const EmptyPostsList({
     Key? key,
     this.primaryColor,
-    this.icon,
-    this.iconColor,
     this.title,
     this.subtitle,
     this.actionText,
     this.onActionClicked,
   }) : super(key: key);
-  final IconData? icon;
   final Color? primaryColor;
-  final Color? iconColor;
   final String? title;
   final String? subtitle;
   final String? actionText;
@@ -28,7 +23,7 @@ class NotSigenIn extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Image.asset(
-          'assets/images/error_401.png',
+          'assets/images/error_empty_list.png',
           width: double.infinity,
           height: 300.0,
         ),
@@ -36,7 +31,7 @@ class NotSigenIn extends StatelessWidget {
           height: 20.0,
         ),
         Text(
-          title ?? notSignedInTitle,
+          title ?? bookmarkListsEmpty,
           style: Theme.of(context).textTheme.labelMedium,
         ),
         const SizedBox(
@@ -45,7 +40,7 @@ class NotSigenIn extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50.0),
           child: Text(
-            subtitle ?? notSignedInSubtitle,
+            subtitle ?? bookmarkListsEmptySubtitle,
             maxLines: 3,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelSmall,
@@ -58,7 +53,7 @@ class NotSigenIn extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 45.0),
           child: ElevatedButton(
             onPressed: onActionClicked,
-            child: Text(actionText ?? 'Sign In'),
+            child: Text(actionText ?? 'Refresh'),
           ),
         ),
       ],

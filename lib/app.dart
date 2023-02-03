@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_admin_dashboard/src/features/bookmark%20post/data/data_sources/fake_bookmark_data_source.dart';
+import 'src/features/bookmark%20post/application/bookmark_service.dart';
+import 'src/features/bookmark%20post/data/repositories/fake_bookmark_repository.dart';
 
 import 'src/features/authentication/application/authentication_services.dart';
 import 'src/features/authentication/data/repositories/authentciation_repositories.dart';
 import 'src/features/authentication/presentation/authentication_presentations.dart';
-import 'src/features/posts/application/posts_services.dart';
+import 'src/features/bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import 'src/features/posts/data/data_sources/fake_posts_data_source.dart';
 import 'src/features/posts/data/repositories/posts_repositories.dart';
-import 'src/features/posts/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import 'src/features/posts_category/data/data_sources/fake_post_category_data_source.dart';
 import 'src/features/posts_category/data/repositories/post_category_repositories.dart';
 import 'src/features/settings/application/settings_services.dart';
@@ -37,6 +39,11 @@ class App extends StatelessWidget {
                 delayDurationInSeconds: 1,
                 fakePostCategoryDataSource:
                     FakePostCategoryDataSource(fakeDatabase: FakeDatabase()))),
+        RepositoryProvider(
+          create: (context) => FakeBookmarkReposiory(
+              toggleBookmarkDelay: 5,
+              fakeBookmarkDataSource: FakeBookmarkDataSource()),
+        )
       ],
       child: MultiBlocProvider(
         providers: [
@@ -53,8 +60,9 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
               create: (context) => PostBookmarkCubit(
-                  postService: PostService(
-                      postRepository: context.read<FakePostReposiory>()))),
+                  bookmarkService: BookmarkService(
+                      bookmarkRepository:
+                          context.read<FakeBookmarkReposiory>()))),
         ],
         child: BlocBuilder<ThemeCubit, ThemeState>(
           buildWhen: (previous, current) =>

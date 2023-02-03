@@ -64,18 +64,6 @@ class FakePostReposiory implements PostsRepository {
   }
 
   @override
-  Future<ResponseDTO<void>> toggleBookmark(
-      {required String userToken, required String postId}) async {
-    return await Future.delayed(
-      Duration(seconds: toggleBookmarkDelay),
-      () => _fakePostDataSource.toggleBookmarkPost(
-        userToken: userToken,
-        postId: postId,
-      ),
-    );
-  }
-
-  @override
   Future<ResponseDTO<List<Post>>> getAuthorPostsAsGuest(
       {required String authorId,
       required PagingOptionsDTO pagingOptionsDTO}) async {

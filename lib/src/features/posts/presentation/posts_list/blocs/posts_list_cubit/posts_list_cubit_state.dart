@@ -1,50 +1,64 @@
 part of 'posts_list_cubit.dart';
 
 @immutable
-abstract class PostsListCubitState {}
+abstract class PostsListCubitState {
+  const PostsListCubitState({this.categoryId, required this.posts});
+  final String? categoryId;
+  final List<Post> posts;
+}
 
-class PostsListCubitInitial extends PostsListCubitState {}
+class PostsListCubitInitial extends PostsListCubitState {
+  const PostsListCubitInitial({required super.posts, super.categoryId});
+}
 
 class PostsListCubitFetching extends PostsListCubitState {
-  final List<Post>? currentPosts;
-  final PagingOptionsDTO? lastLoadedPagingOptionsVm;
   final PagingOptionsDTO toLoadPagingOptionsVm;
-  final String? categoryId;
 
-  PostsListCubitFetching({
-    this.currentPosts,
-    this.lastLoadedPagingOptionsVm,
+  const PostsListCubitFetching({
+    required super.posts,
     required this.toLoadPagingOptionsVm,
-    this.categoryId,
+    super.categoryId,
   });
 }
 
 class PostsListCubitFetchedSuccessfully extends PostsListCubitState {
-  final List<Post>? previousPosts;
-  final List<Post> newDownloadedPosts;
-  final PagingOptionsDTO lastLoadedPagingOptionsVm;
-  final String? categoryId;
+  final PagingOptionsDTO lastLoadedPagingOptionsDto;
 
-  PostsListCubitFetchedSuccessfully({
-    required this.previousPosts,
-    required this.newDownloadedPosts,
-    required this.lastLoadedPagingOptionsVm,
-    this.categoryId,
+  const PostsListCubitFetchedSuccessfully({
+    required super.posts,
+    required this.lastLoadedPagingOptionsDto,
+    super.categoryId,
   });
 }
 
 class PostsListCubitFetchingHasError extends PostsListCubitState {
-  final List<Post>? currentPosts;
-  final PagingOptionsDTO? lastLoadedPagingOptionsVm;
-  final PagingOptionsDTO toLoadPagingOptionsVm;
-  final String? categoryId;
+  final PagingOptionsDTO failedLoadPagingOptionsVm;
   final ErrorModel error;
 
-  PostsListCubitFetchingHasError({
-    this.currentPosts,
-    this.lastLoadedPagingOptionsVm,
-    required this.toLoadPagingOptionsVm,
-    this.categoryId,
+  const PostsListCubitFetchingHasError({
+    required super.posts,
+    required this.failedLoadPagingOptionsVm,
+    super.categoryId,
     required this.error,
+  });
+}
+
+class PostsListCubitPostHasBeenRemoved extends PostsListCubitState {
+  final Post removedPost;
+
+  const PostsListCubitPostHasBeenRemoved({
+    required super.posts,
+    required this.removedPost,
+    super.categoryId,
+  });
+}
+
+class PostsListCubitPostHasBeenAdded extends PostsListCubitState {
+  final Post addedPost;
+
+  const PostsListCubitPostHasBeenAdded({
+    required super.posts,
+    required this.addedPost,
+    super.categoryId,
   });
 }

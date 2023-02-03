@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_admin_dashboard/src/features/authentication/presentation/authentication_presentations.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/application/posts_services.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/data/repositories/posts_repositories.dart';
+import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts_list/home_section/tab_bar_cubit/tab_bar_cubit.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/constants.dart/constants.dart';
+import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import '../../../posts_category/domain/post_category_models.dart';
 import '../../domain/posts_models.dart';
 import 'blocs/posts_list_blocs.dart';
@@ -24,14 +26,15 @@ class TabContent extends StatefulWidget {
 class _TabContentState extends State<TabContent>
     with AutomaticKeepAliveClientMixin {
   late ScrollController _scrollController;
-  late PostsListCubit postListsCubit;
-
+  late PostsListCubit _postListsCubit;
+  late ListNotifireCubit<Post> _postsListNotifireCubit;
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(scrollListenrer);
-    postListsCubit = PostsListCubit(
+    _postsListNotifireCubit = ListNotifireCubit();
+    _postListsCubit = PostsListCubit(
       postsListService:
           PostsListService(postRepository: context.read<FakePostReposiory>()),
       haowManyPostFetchEachTime: 10,
@@ -42,12 +45,14 @@ class _TabContentState extends State<TabContent>
                 .user
                 .token
             : null,
-        widget.category?.id);
+        widget.category?.id,
+        null);
   }
 
   @override
   void dispose() {
-    postListsCubit.close();
+    _postsListNotifireCubit.close();
+    _postListsCubit.close();
     _scrollController.removeListener(scrollListenrer);
     super.dispose();
   }
@@ -62,38 +67,73 @@ class _TabContentState extends State<TabContent>
 
     return MultiBlocProvider(
         providers: [
-          BlocProvider(
-            create: (context) => postListsCubit,
+          BlocProvider.value(
+            value: _postListsCubit,
           ),
-          BlocProvider(create: (context) => PostsListNotifireCubit())
+          BlocProvider.value(value: _postsListNotifireCubit),
         ],
         child: BlocListener<PostsListCubit, PostsListCubitState>(
+          //listen to the fetching process after the first fetch
           listenWhen: (previous, current) =>
-              (current is PostsListCubitFetchedSuccessfully &&
-                  current.lastLoadedPagingOptionsVm.offset > 0 &&
-                  current.newDownloadedPosts.isNotEmpty) ||
+              current is PostsListCubitFetchedSuccessfully ||
               (current is PostsListCubitFetching &&
-                  current.toLoadPagingOptionsVm.offset > 0),
+                  current.toLoadPagingOptionsVm.offset > 0) ||
+              (current is PostsListCubitFetchingHasError &&
+                  current.failedLoadPagingOptionsVm.offset > 0),
           listener: (context, state) {
             if (state is PostsListCubitFetching) {
+              //tell the InifiniteAnimatedList widget to show loading indicator at the end of it
+              _postsListNotifireCubit.showLoading();
+
+              //smooth scroll to the loading indicator if we are at the end of the list
               if (_scrollController.offset ==
                   _scrollController.position.maxScrollExtent) {
                 _scrollController.animateTo(
                     _scrollController.position.maxScrollExtent + 50,
-                    duration: const Duration(microseconds: 1),
+                    duration: const Duration(milliseconds: 300),
                     curve: Curves.easeIn);
               }
             } else if (state is PostsListCubitFetchedSuccessfully) {
-              context
-                  .read<PostsListNotifireCubit>()
-                  .insertPosts(state.newDownloadedPosts);
+              if (state.lastLoadedPagingOptionsDto.offset == 0) {
+                //first fetch was successful
+                //we notify HomeSection's Appbar to show post's category tabbar instead of Home title
+                context.read<TabBarCubit>().showTabBar();
+                return;
+              }
+
+              //After First successful fetch
+              //Todo: if there is no new posts >> show realted snackbar
+              List<Post> newPosts = state.posts
+                  .skip(state.lastLoadedPagingOptionsDto.offset)
+                  .toList();
+              _postsListNotifireCubit.insertItems(newPosts);
 
               if (_scrollController.offset ==
-                  _scrollController.position.maxScrollExtent) {
-                _scrollController.animateTo(_scrollController.offset + 170,
+                      _scrollController.position.maxScrollExtent &&
+                  newPosts.isNotEmpty) {
+                _scrollController.animateTo(_scrollController.offset + 100,
                     duration: const Duration(milliseconds: 800),
                     curve: Curves.easeInBack);
               }
+            } else if (state is PostsListCubitFetchingHasError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                appSnackBar(
+                  context: context,
+                  message: state.error.message,
+                  actionLabel: 'try again',
+                  action: () => _postListsCubit.fetch(
+                      context.read<AuthenticationCubit>().state
+                              is AuthenticationLoggedIn
+                          ? (context.read<AuthenticationCubit>().state
+                                  as AuthenticationLoggedIn)
+                              .user
+                              .token
+                          : null,
+                      widget.category?.id,
+                      null),
+                ),
+              );
+              return;
             }
           },
           child: CustomScrollView(
@@ -104,11 +144,10 @@ class _TabContentState extends State<TabContent>
               BlocBuilder<PostsListCubit, PostsListCubitState>(
                 buildWhen: (previous, current) =>
                     current is PostsListCubitFetchedSuccessfully &&
-                    current.lastLoadedPagingOptionsVm.offset == 0,
+                    current.lastLoadedPagingOptionsDto.offset == 0,
                 builder: (context, state) {
                   if (state is PostsListCubitFetchedSuccessfully) {
-                    return caouroselSection(
-                        state.newDownloadedPosts.take(5).toList());
+                    return caouroselSection(state.posts.take(5).toList());
                   }
 
                   //initial state
@@ -120,7 +159,7 @@ class _TabContentState extends State<TabContent>
               BlocBuilder<PostsListCubit, PostsListCubitState>(
                   buildWhen: (previous, current) =>
                       current is PostsListCubitFetchedSuccessfully &&
-                      current.lastLoadedPagingOptionsVm.offset == 0,
+                      current.posts.isNotEmpty,
                   builder: (context, state) {
                     if (state is PostsListCubitFetchedSuccessfully) {
                       return postsListSectionHeader();
@@ -132,13 +171,14 @@ class _TabContentState extends State<TabContent>
 
               //Posts List
               BlocBuilder<PostsListCubit, PostsListCubitState>(
+                  //only rebuild widget for first fetch
                   buildWhen: (previous, current) =>
                       (current is PostsListCubitFetching &&
-                          isThisFirstFetching(current)) ||
+                          current.toLoadPagingOptionsVm.offset == 0) ||
                       (current is PostsListCubitFetchedSuccessfully &&
-                          current.lastLoadedPagingOptionsVm.offset == 0) ||
+                          current.lastLoadedPagingOptionsDto.offset == 0) ||
                       (current is PostsListCubitFetchingHasError &&
-                          isThisFirtFetchingError(current)),
+                          current.failedLoadPagingOptionsVm.offset == 0),
                   builder: (context, state) {
                     if (state is PostsListCubitFetching) {
                       return const SliverFillRemaining(
@@ -148,46 +188,41 @@ class _TabContentState extends State<TabContent>
                       );
                     }
                     if (state is PostsListCubitFetchedSuccessfully) {
-                      return PostsListSection(
-                        items:
-                            postListsCubit.allPostsFetchedSuccessfully(state),
-                        onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
-                            (postId, newBookmarkStatus) => postListsCubit
-                                .updatePostBookmarkStatusWithoutChangingState(
-                                    postId, newBookmarkStatus),
-                      );
-                    }
-
-                    if (state is PostsListCubitFetchingHasError) {
-                      return const SliverFillRemaining(
-                        child: Center(
-                          child: Text('Error in first Fetching'),
+                      return SliverInfiniteAnimatedList<Post>(
+                        items: state.posts,
+                        itemLayout: (item, index) => PostItemInVerticalList(
+                          itemHeight: 160,
+                          rightMargin: screenHorizontalPadding,
+                          bottoMargin: 20.0,
+                          leftMargin: screenHorizontalPadding,
+                          borderRadious: circularBorderRadious,
+                          item: item,
+                          onPostBookMarkUpdated: (postId, newBookmarkValue) =>
+                              onPostBookmarkUpdated(
+                                  index, postId, newBookmarkValue),
+                          onPostBookmarkPressed:
+                              (post, newBookmarkStatusToSet) =>
+                                  onPostBookMarkPressed(
+                                      post, newBookmarkStatusToSet),
+                        ),
+                        loadingLayout: const SizedBox(
+                          height: 50.0,
+                          child: LoadingIndicator(
+                            hasBackground: true,
+                            backgroundHeight: 20.0,
+                          ),
                         ),
                       );
                     }
 
-                    //init state
-                    return const SliverToBoxAdapter();
-                  }),
-
-              //Show loading indicator at the end of the list
-              BlocBuilder<PostsListCubit, PostsListCubitState>(
-                  buildWhen: (previous, current) =>
-                      (current is PostsListCubitFetching &&
-                          !isThisFirstFetching(current)) ||
-                      current is PostsListCubitFetchedSuccessfully ||
-                      current is PostsListCubitFetchingHasError,
-                  builder: (context, state) {
-                    if (state is PostsListCubitFetching) {
-                      return const SliverFixedExtentList(
-                          delegate: SliverChildListDelegate.fixed([
-                            LoadingIndicator(
-                              hasBackground: true,
-                              backgroundHeight: 20.0,
-                            )
-                          ]),
-                          itemExtent: 50.0);
+                    //First fetch Error
+                    if (state is PostsListCubitFetchingHasError) {
+                      return SliverToBoxAdapter(
+                          child: ErrorInternal(
+                        onActionClicked: fetchPosts,
+                      ));
                     }
+
                     //init state
                     return const SliverToBoxAdapter();
                   }),
@@ -233,9 +268,9 @@ class _TabContentState extends State<TabContent>
               cauroselLeftPadding: screenHorizontalPadding,
               cauroselRightPadding: screenHorizontalPadding,
               items: posts,
-              onPostBookMarkUpdated: (postId, newBookmarkStatus) =>
-                  postListsCubit.updatePostBookmarkStatusWithoutChangingState(
-                      postId, newBookmarkStatus),
+              onPostBookMarkUpdated: (post, newBookmarkStatus) =>
+                  _postListsCubit.updatePostBookmarkStatusWithoutChangingState(
+                      post, newBookmarkStatus),
             )
           : const SizedBox(
               height: 0,
@@ -244,35 +279,55 @@ class _TabContentState extends State<TabContent>
   }
 
   void scrollListenrer() {
-    if (postListsCubit.state is! PostsListCubitFetchedSuccessfully &&
-        !(postListsCubit.state is PostsListCubitFetchingHasError &&
-            isThisFirtFetchingError(
-                (postListsCubit.state as PostsListCubitFetchingHasError)))) {
+    if (_postListsCubit.state is! PostsListCubitFetchedSuccessfully) {
       return;
     }
 
-    if (postListsCubit.state is PostsListCubitFetching) {
+    if (_postListsCubit.state is PostsListCubitFetching) {
       return;
     }
 
     if (_scrollController.offset ==
         _scrollController.position.maxScrollExtent) {
-      postListsCubit.fetch(
-          context.read<AuthenticationCubit>().state is AuthenticationLoggedIn
-              ? (context.read<AuthenticationCubit>().state
-                      as AuthenticationLoggedIn)
-                  .user
-                  .token
-              : null,
-          widget.category?.id);
+      //fetch new posts
+      fetchPosts();
     }
   }
 
-  bool isThisFirstFetching(PostsListCubitFetching state) {
-    return state.lastLoadedPagingOptionsVm == null;
+  //we use this fuction to update post's bookmark value locally
+  void onPostBookmarkUpdated(int index, Post post, bool newBookmarkStatus) {
+    _postListsCubit.updatePostBookmarkStatusWithoutChangingState(
+        post, newBookmarkStatus);
+    _postsListNotifireCubit.modifyItem(
+        index, post..isBookmarked = newBookmarkStatus, false);
   }
 
-  bool isThisFirtFetchingError(PostsListCubitFetchingHasError state) {
-    return state.lastLoadedPagingOptionsVm == null;
+  // we use this function to do stuff when bookmark button is pressed
+  void onPostBookMarkPressed(Post post, bool newBookmarkStatusToSet) {
+    if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
+      //Todo:: Show 'You must login first to use this feature' snackbar
+
+      return;
+    }
+
+    context.read<PostBookmarkCubit>().toggleBookmark(
+        userToken: (context.read<AuthenticationCubit>().state
+                as AuthenticationLoggedIn)
+            .user
+            .token,
+        post: post,
+        newBookmarkValue: newBookmarkStatusToSet);
+  }
+
+  void fetchPosts() {
+    _postListsCubit.fetch(
+        context.read<AuthenticationCubit>().state is AuthenticationLoggedIn
+            ? (context.read<AuthenticationCubit>().state
+                    as AuthenticationLoggedIn)
+                .user
+                .token
+            : null,
+        widget.category?.id,
+        null);
   }
 }

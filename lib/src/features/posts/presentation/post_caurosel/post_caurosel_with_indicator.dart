@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/utils/utils.dart';
+import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_button.dart';
 import '../../domain/posts_models.dart';
-import '../post_bookmark_button/post_bookmark_button.dart';
 
 class PostCarouselWithIndicator extends StatefulWidget {
   final double height;
@@ -15,9 +15,9 @@ class PostCarouselWithIndicator extends StatefulWidget {
   final double borderRadious;
   final List<Post> items;
 
-  final CustomeValueSetterCallback<String, bool>? onPostBookmarkPressed;
+  final CustomeValueSetterCallback<Post, bool>? onPostBookmarkPressed;
 
-  final CustomeValueSetterCallback<String, bool>? onPostBookMarkUpdated;
+  final CustomeValueSetterCallback<Post, bool>? onPostBookMarkUpdated;
 
   const PostCarouselWithIndicator({
     Key? key,
@@ -112,15 +112,13 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                                   unBookmarkedColor: Colors.white70,
                                   initialBookmarkStatus:
                                       widget.items[itemIndex].isBookmarked,
-                                  postID: widget.items[itemIndex].id,
-                                  onPostBookmarkUpdated: (postId,
+                                  post: widget.items[itemIndex],
+                                  onPostBookmarkUpdated: (post,
                                           newBookmarkValue) =>
                                       onPostBookmarkUpdated(
-                                          itemIndex, postId, newBookmarkValue),
-                                  onnBookmarkButtonPressed:
-                                      (postId, newBookmarkValueToSet) =>
-                                          onPostBookMarkPressed(
-                                              postId, newBookmarkValueToSet),
+                                          itemIndex,
+                                          widget.items[itemIndex],
+                                          newBookmarkValue),
                                 )
                               ],
                             ),
@@ -164,21 +162,21 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
 
   //we use this fuction to update post's bookmark value locally
   //if onPostBookMarkUpdated CallBack is provided the the post's bookmark will be updated in the parent widegt's post lists too.
-  void onPostBookmarkUpdated(int index, String postId, bool newBookmarkStatus) {
+  void onPostBookmarkUpdated(int index, Post post, bool newBookmarkStatus) {
     //update local list
     widget.items[index].isBookmarked = newBookmarkStatus;
 
     //update parent widget's list
     if (widget.onPostBookMarkUpdated != null) {
-      widget.onPostBookMarkUpdated!(postId, newBookmarkStatus);
+      widget.onPostBookMarkUpdated!(post, newBookmarkStatus);
     }
   }
 
   // we use this function to do stuff when bookmark button is pressed
   //if widget.onPostBookmarkPressed is provided , parent widget's demands as function will be call
-  void onPostBookMarkPressed(String postId, bool newBookmarkStatusToSet) {
+  void onPostBookMarkPressed(Post post, bool newBookmarkStatusToSet) {
     widget.onPostBookmarkPressed != null
-        ? () => widget.onPostBookmarkPressed!(postId, newBookmarkStatusToSet)
+        ? () => widget.onPostBookmarkPressed!(post, newBookmarkStatusToSet)
         : null;
   }
 }
