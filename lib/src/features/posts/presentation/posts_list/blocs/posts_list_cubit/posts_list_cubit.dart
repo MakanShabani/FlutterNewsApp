@@ -94,4 +94,9 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
     emit(PostsListCubitPostHasBeenAdded(
         posts: [post] + state.posts, addedPost: post));
   }
+
+  void resetToInitial() {
+    emit(PostsListCubitInitial(
+        posts: List.empty(), categoryId: state.categoryId));
+  }
 }
