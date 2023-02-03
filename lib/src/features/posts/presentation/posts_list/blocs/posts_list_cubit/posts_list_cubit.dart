@@ -89,7 +89,9 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
   }
 
   void addPostToTheList({required Post post}) {
+    //add post to the first of the list
+    //like we fetch posts from a server --> it returns the latest bookmarks first
     emit(PostsListCubitPostHasBeenAdded(
-        posts: state.posts + [post], addedPost: post));
+        posts: [post] + state.posts, addedPost: post));
   }
 }
