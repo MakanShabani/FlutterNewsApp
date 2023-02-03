@@ -5,24 +5,24 @@ abstract class ListNotifireCubitState {}
 
 class ListNotifireCubitInitial extends ListNotifireCubitState {}
 
-class ListNotifireCubitInsertNewItems extends ListNotifireCubitState {
-  final List<dynamic> newItems;
+class ListNotifireCubitInsertNewItems<T> extends ListNotifireCubitState {
+  final List<T> newItems;
 
   ListNotifireCubitInsertNewItems({required this.newItems});
 }
 
-class ListNotifireCubitRemoveItem extends ListNotifireCubitState {
-  final dynamic itemToRemove;
+class ListNotifireCubitRemoveItem<T> extends ListNotifireCubitState {
+  final T itemToRemove;
 
   ListNotifireCubitRemoveItem({required this.itemToRemove});
 }
 
-class ListNotifireCubitItemModified extends ListNotifireCubitState {
+class ListNotifireCubitItemModified<T> extends ListNotifireCubitState {
   ListNotifireCubitItemModified(
       {required this.index,
       required this.modifiedItem,
       required this.updateListState});
-  final dynamic modifiedItem;
+  final T modifiedItem;
   final bool updateListState;
   final int index;
 }

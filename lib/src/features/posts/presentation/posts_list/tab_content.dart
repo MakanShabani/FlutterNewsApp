@@ -27,7 +27,7 @@ class _TabContentState extends State<TabContent>
     with AutomaticKeepAliveClientMixin {
   late ScrollController _scrollController;
   late PostsListCubit _postListsCubit;
-  late ListNotifireCubit _postsListNotifireCubit;
+  late ListNotifireCubit<Post> _postsListNotifireCubit;
   @override
   void initState() {
     super.initState();
@@ -188,7 +188,7 @@ class _TabContentState extends State<TabContent>
                       );
                     }
                     if (state is PostsListCubitFetchedSuccessfully) {
-                      return SliverInfiniteAnimatedList(
+                      return SliverInfiniteAnimatedList<Post>(
                         items: state.posts,
                         itemLayout: (item, index) => PostItemInVerticalList(
                           itemHeight: 160,
@@ -196,7 +196,7 @@ class _TabContentState extends State<TabContent>
                           bottoMargin: 20.0,
                           leftMargin: screenHorizontalPadding,
                           borderRadious: circularBorderRadious,
-                          item: item as Post,
+                          item: item,
                           onPostBookMarkUpdated: (postId, newBookmarkValue) =>
                               onPostBookmarkUpdated(
                                   index, postId, newBookmarkValue),

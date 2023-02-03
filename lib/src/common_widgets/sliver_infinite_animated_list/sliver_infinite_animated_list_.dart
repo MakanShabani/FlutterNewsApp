@@ -5,9 +5,9 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 export './list_notifire_cubit/list_notifire_cubit.dart';
 
-typedef ListItemLayout = Widget Function(dynamic item, int index);
+typedef ListItemLayout<E> = Widget Function(E item, int index);
 
-class SliverInfiniteAnimatedList extends StatefulWidget {
+class SliverInfiniteAnimatedList<T> extends StatefulWidget {
   const SliverInfiniteAnimatedList({
     Key? key,
     required this.items,
@@ -26,24 +26,24 @@ class SliverInfiniteAnimatedList extends StatefulWidget {
   final double? itemLeftMargin;
   final double? itemRightMargin;
   final double? itemTopMargin;
-  final List<dynamic> items;
+  final List<T> items;
   final Axis? scrollDirection;
-  final ListItemLayout itemLayout;
+  final ListItemLayout<T> itemLayout;
   final Widget loadingLayout;
 
   @override
-  State<SliverInfiniteAnimatedList> createState() =>
-      SliverInfiniteAnimatedListState();
+  State<SliverInfiniteAnimatedList<T>> createState() =>
+      SliverInfiniteAnimatedListState<T>();
 }
 
-class SliverInfiniteAnimatedListState
-    extends State<SliverInfiniteAnimatedList> {
+class SliverInfiniteAnimatedListState<S>
+    extends State<SliverInfiniteAnimatedList<S>> {
   /// Will used to access the Animated list
   final GlobalKey<SliverAnimatedListState> _listKey =
       GlobalKey<SliverAnimatedListState>();
 
   /// This holds the items
-  late List<dynamic> _items;
+  late List<S> _items;
 
   @override
   void initState() {
@@ -53,19 +53,19 @@ class SliverInfiniteAnimatedListState
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ListNotifireCubit, ListNotifireCubitState>(
+    return BlocListener<ListNotifireCubit<S>, ListNotifireCubitState>(
       listener: (context, state) {
-        if (state is ListNotifireCubitInsertNewItems) {
+        if (state is ListNotifireCubitInsertNewItems<S>) {
           //Insert new items
           _insertMultipleItems(state.newItems);
           return;
         }
 
-        if (state is ListNotifireCubitRemoveItem) {
+        if (state is ListNotifireCubitRemoveItem<S>) {
           _removeItem(state.itemToRemove);
           return;
         }
-        if (state is ListNotifireCubitItemModified) {
+        if (state is ListNotifireCubitItemModified<S>) {
           if (state.updateListState) {
             setState(() {
               _items[state.index] = state.modifiedItem;
@@ -90,7 +90,7 @@ class SliverInfiniteAnimatedListState
               child: widget.itemLayout(_items[index], index),
             ),
           ),
-          BlocBuilder<ListNotifireCubit, ListNotifireCubitState>(
+          BlocBuilder<ListNotifireCubit<S>, ListNotifireCubitState>(
             builder: (context, state) {
               return SliverToBoxAdapter(
                 child: state is ListNotifireCubitShowLoading
@@ -106,14 +106,14 @@ class SliverInfiniteAnimatedListState
     );
   }
 
-  void _insertSingleItem(dynamic item) {
+  void _insertSingleItem(S item) {
     int insertIndex = _items.length;
     _items.insert(insertIndex, item);
     _listKey.currentState
         ?.insertItem(insertIndex, duration: const Duration(milliseconds: 500));
   }
 
-  void _insertMultipleItems(List<dynamic> newItems) {
+  void _insertMultipleItems(List<S> newItems) {
     int insertIndex = _items.length;
     _items = _items + newItems;
     // This is a bit of a hack because currentState doesn't have
@@ -124,7 +124,7 @@ class SliverInfiniteAnimatedListState
     }
   }
 
-  void insertItem(List<dynamic> newPosts) {
+  void insertItem(List<S> newPosts) {
     int insertIndex = _items.length - 1;
     for (int offset = 0; offset < _items.length + newPosts.length; offset++) {
       _listKey.currentState?.insertItem(insertIndex + offset,
@@ -133,7 +133,7 @@ class SliverInfiniteAnimatedListState
     }
   }
 
-  void _removeItem(dynamic item) {
+  void _removeItem(S item) {
     _listKey.currentState?.removeItem(
         _items.indexOf(item),
         (_, animation) => SlideTransition(

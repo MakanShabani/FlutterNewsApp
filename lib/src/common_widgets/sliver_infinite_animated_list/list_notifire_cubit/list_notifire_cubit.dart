@@ -5,19 +5,19 @@ import 'package:meta/meta.dart';
 
 part 'list_notifire_cubit_state.dart';
 
-class ListNotifireCubit extends Cubit<ListNotifireCubitState> {
+class ListNotifireCubit<T> extends Cubit<ListNotifireCubitState> {
   ListNotifireCubit() : super(ListNotifireCubitInitial());
 
-  void insertItems(List<dynamic> newItems) {
-    emit(ListNotifireCubitInsertNewItems(newItems: newItems));
+  void insertItems(List<T> newItems) {
+    emit(ListNotifireCubitInsertNewItems<T>(newItems: newItems));
   }
 
-  void removeItems(dynamic itemToRemove) {
-    emit(ListNotifireCubitRemoveItem(itemToRemove: itemToRemove));
+  void removeItems(T itemToRemove) {
+    emit(ListNotifireCubitRemoveItem<T>(itemToRemove: itemToRemove));
   }
 
-  void modifyItem(int index, dynamic modifiedItem, bool updateState) {
-    emit(ListNotifireCubitItemModified(
+  void modifyItem(int index, T modifiedItem, bool updateState) {
+    emit(ListNotifireCubitItemModified<T>(
         index: index,
         modifiedItem: modifiedItem,
         updateListState: updateState));
