@@ -68,70 +68,12 @@ class _BookmarkSectionState extends State<BookmarkSection>
           BlocProvider.value(value: _postsListCubit),
           BlocProvider.value(value: _postslistNotifireCubit),
         ],
-        child: BlocListener<PostsListCubit, PostsListCubitState>(
-          listenWhen: (previous, current) =>
-              (current is PostsListCubitFetchedSuccessfully &&
-                  current.lastLoadedPagingOptionsDto.offset > 0) ||
-              (current is PostsListCubitFetchingHasError &&
-                  current.failedLoadPagingOptionsVm.offset == 0) ||
-              (current is PostsListCubitFetching &&
-                  current.toLoadPagingOptionsVm.offset > 0),
-          listener: (context, state) {
-            if (state is PostsListCubitFetchedSuccessfully) {
-              //After First successful fetch
-              //notify SliverInfiniteAnimatedList to show new posts
-              List<Post> newPosts = state.posts
-                  .skip(state.lastLoadedPagingOptionsDto.offset)
-                  .toList();
-              _postslistNotifireCubit.insertItems(newPosts);
-
-              if (newPosts.isNotEmpty) {
-                if (_scrollController.offset ==
-                    _scrollController.position.maxScrollExtent) {
-                  _scrollController.animateTo(_scrollController.offset + 100,
-                      duration: const Duration(milliseconds: 800),
-                      curve: Curves.easeInBack);
-                }
-              } else {
-                //if there is no new posts, we show a snackbar
-                ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
-                    context: context, message: noMoreBookmarkToFetch));
-              }
-
-              return;
-            }
-
-            if (state is PostsListCubitFetchingHasError) {
-              //show snackbar when fetching ends with an error
-              //for initial fetch we show an error widget in the screen >> go to the blocbuilder section
-              ScaffoldMessenger.of(context).showSnackBar(
-                appSnackBar(
-                  context: context,
-                  message: state.error.message,
-                  actionLabel: 'try again',
-                  action: () => _fetchPosts(),
-                ),
-              );
-              return;
-            }
-
-            if (state is PostsListCubitFetching) {
-              //notify the list widget to show the loading indicator at the end of the list.
-              //for initial fetch we show the loading in the center of the screen. >> go to the blocbuilder section
-
-              _postslistNotifireCubit.showLoading();
-
-              //smooth scroll to the loading indicator if we are at the end of the list
-              if (_scrollController.offset ==
-                  _scrollController.position.maxScrollExtent) {
-                _scrollController.animateTo(
-                    _scrollController.position.maxScrollExtent + 50,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeIn);
-              }
-              return;
-            }
-          },
+        child: MultiBlocListener(
+          listeners: [
+            authenticationListener(),
+            postsListCubitListener(),
+            bookmarkCubitListener(),
+          ],
           child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
             buildWhen: (previous, current) =>
                 current is AuthenticationLoggedIn ||
@@ -220,6 +162,8 @@ class _BookmarkSectionState extends State<BookmarkSection>
         //Posts list section
         BlocBuilder<PostsListCubit, PostsListCubitState>(
           buildWhen: (previous, current) =>
+              (previous.posts.isEmpty &&
+                  current is PostsListCubitPostHasBeenAdded) ||
               (current is PostsListCubitFetchedSuccessfully &&
                   current.lastLoadedPagingOptionsDto.offset == 0) ||
               (current is PostsListCubitFetchingHasError &&
@@ -249,7 +193,8 @@ class _BookmarkSectionState extends State<BookmarkSection>
               );
             }
 
-            if (state is PostsListCubitFetchedSuccessfully) {
+            if (state is PostsListCubitFetchedSuccessfully ||
+                state is PostsListCubitPostHasBeenAdded) {
               return state.posts.isNotEmpty
                   ? SliverInfiniteAnimatedList<Post>(
                       items: state.posts,
@@ -260,9 +205,6 @@ class _BookmarkSectionState extends State<BookmarkSection>
                         leftMargin: screenHorizontalPadding,
                         borderRadious: circularBorderRadious,
                         item: item,
-                        onPostBookMarkUpdated: (postId, newBookmarkValue) =>
-                            onPostBookmarkUpdated(
-                                index, postId, newBookmarkValue),
                       ),
                       loadingLayout: const SizedBox(
                         height: 50.0,
@@ -287,6 +229,111 @@ class _BookmarkSectionState extends State<BookmarkSection>
           },
         )
       ],
+    );
+  }
+
+  BlocListener<PostsListCubit, PostsListCubitState> postsListCubitListener() {
+    return BlocListener<PostsListCubit, PostsListCubitState>(
+      listenWhen: (previous, current) =>
+          (current is PostsListCubitFetchedSuccessfully &&
+              current.lastLoadedPagingOptionsDto.offset > 0) ||
+          (current is PostsListCubitFetchingHasError &&
+              current.failedLoadPagingOptionsVm.offset == 0) ||
+          (current is PostsListCubitFetching &&
+              current.toLoadPagingOptionsVm.offset > 0),
+      listener: (context, state) {
+        if (state is PostsListCubitFetchedSuccessfully) {
+          //After First successful fetch
+          //notify SliverInfiniteAnimatedList to show new posts
+          List<Post> newPosts = state.posts
+              .skip(state.lastLoadedPagingOptionsDto.offset)
+              .toList();
+          _postslistNotifireCubit.insertItems(newPosts);
+
+          if (newPosts.isNotEmpty) {
+            if (_scrollController.offset ==
+                _scrollController.position.maxScrollExtent) {
+              _scrollController.animateTo(_scrollController.offset + 100,
+                  duration: const Duration(milliseconds: 800),
+                  curve: Curves.easeInBack);
+            }
+          } else {
+            //if there is no new posts, we show a snackbar
+            ScaffoldMessenger.of(context).showSnackBar(
+                appSnackBar(context: context, message: noMoreBookmarkToFetch));
+          }
+
+          return;
+        }
+
+        if (state is PostsListCubitFetchingHasError) {
+          //show snackbar when fetching ends with an error
+          //for initial fetch we show an error widget in the screen >> go to the blocbuilder section
+          ScaffoldMessenger.of(context).showSnackBar(
+            appSnackBar(
+              context: context,
+              message: state.error.message,
+              actionLabel: 'try again',
+              action: () => _fetchPosts(),
+            ),
+          );
+          return;
+        }
+
+        if (state is PostsListCubitFetching) {
+          //notify the list widget to show the loading indicator at the end of the list.
+          //for initial fetch we show the loading in the center of the screen. >> go to the blocbuilder section
+
+          _postslistNotifireCubit.showLoading();
+
+          //smooth scroll to the loading indicator if we are at the end of the list
+          if (_scrollController.offset ==
+              _scrollController.position.maxScrollExtent) {
+            _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent + 50,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeIn);
+          }
+          return;
+        }
+      },
+    );
+  }
+
+  BlocListener<PostBookmarkCubit, PostBookmarkState> bookmarkCubitListener() {
+    return BlocListener<PostBookmarkCubit, PostBookmarkState>(
+      listenWhen: (previous, current) =>
+          current is PostBookmarkUpdatedSuccessfullyState,
+      listener: (context, state) {
+        if (state is PostBookmarkUpdatedSuccessfullyState) {
+          if (state.newBookmarkValue) {
+            //notify the postListCubit item to add the bookmark post to its list
+            _postsListCubit.addPostToTheList(post: state.post);
+
+            //notify SliverInfiniteAnimatedList to add post to the bookmark list
+
+            _postslistNotifireCubit.insertItems([state.post]);
+            if (_scrollController.offset ==
+                _scrollController.position.maxScrollExtent) {
+              _scrollController.animateTo(_scrollController.offset + 100,
+                  duration: const Duration(milliseconds: 800),
+                  curve: Curves.easeInBack);
+            }
+          } else {
+            //notify SliverInfiniteAnimatedList to remove the post from the bookmark list
+
+          }
+          return;
+        }
+      },
+    );
+  }
+
+  BlocListener<AuthenticationCubit, AuthenticationState>
+      authenticationListener() {
+    return BlocListener<AuthenticationCubit, AuthenticationState>(
+      listenWhen: ((previous, current) => current is AuthenticationLoggedIn),
+      listener: (context, state) => _fetchPosts(),
     );
   }
 }

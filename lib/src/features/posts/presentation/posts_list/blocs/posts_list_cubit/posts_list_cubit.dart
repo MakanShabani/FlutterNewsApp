@@ -87,4 +87,9 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
         newBookmarkStatus;
     return;
   }
+
+  void addPostToTheList({required Post post}) {
+    emit(PostsListCubitPostHasBeenAdded(
+        posts: state.posts + [post], addedPost: post));
+  }
 }
