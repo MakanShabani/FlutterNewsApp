@@ -109,6 +109,7 @@ class _BookmarkSectionState extends State<BookmarkSection>
 
   void scrollListenrer() {
     if (_postsListCubit.state is PostsListCubitFetchedSuccessfully ||
+        _postsListCubit.state is PostsListCubitPostHasBeenAdded ||
         (_postsListCubit.state is PostsListCubitFetchingHasError &&
             (_postsListCubit.state as PostsListCubitFetchingHasError)
                     .failedLoadPagingOptionsVm
