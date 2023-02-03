@@ -333,8 +333,19 @@ class _BookmarkSectionState extends State<BookmarkSection>
   BlocListener<AuthenticationCubit, AuthenticationState>
       authenticationListener() {
     return BlocListener<AuthenticationCubit, AuthenticationState>(
-      listenWhen: ((previous, current) => current is AuthenticationLoggedIn),
-      listener: (context, state) => _fetchPosts(),
+      listenWhen: ((previous, current) =>
+          current is AuthenticationLoggedIn ||
+          current is AuthenticationLoggedout),
+      listener: (context, state) {
+        if (state is AuthenticationLoggedIn) {
+          _fetchPosts();
+          return;
+        }
+
+        if (state is AuthenticationLoggedout) {
+          _postsListCubit.resetToInitial();
+        }
+      },
     );
   }
 }
