@@ -60,7 +60,7 @@ class FakeBookmarkDataSource {
         } else {
           //we'll bookmark the post
 
-          value.add(postId);
+          value.insert(0, postId);
         }
         return value;
       },
