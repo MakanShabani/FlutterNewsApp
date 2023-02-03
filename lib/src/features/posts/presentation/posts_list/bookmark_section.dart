@@ -248,7 +248,7 @@ class _BookmarkSectionState extends State<BookmarkSection>
           List<Post> newPosts = state.posts
               .skip(state.lastLoadedPagingOptionsDto.offset)
               .toList();
-          _postslistNotifireCubit.insertItems(newPosts);
+          _postslistNotifireCubit.insertItems(newPosts, false);
 
           if (newPosts.isNotEmpty) {
             if (_scrollController.offset ==
@@ -312,13 +312,13 @@ class _BookmarkSectionState extends State<BookmarkSection>
 
             //notify SliverInfiniteAnimatedList to add post to the bookmark list
 
-            _postslistNotifireCubit.insertItems([state.post]);
-            if (_scrollController.offset ==
-                _scrollController.position.maxScrollExtent) {
-              _scrollController.animateTo(_scrollController.offset + 100,
-                  duration: const Duration(milliseconds: 800),
-                  curve: Curves.easeInBack);
-            }
+            _postslistNotifireCubit.insertItems([state.post], true);
+            // if (_scrollController.offset ==
+            //     _scrollController.position.maxScrollExtent) {
+            //   _scrollController.animateTo(_scrollController.offset + 100,
+            //       duration: const Duration(milliseconds: 800),
+            //       curve: Curves.easeInBack);
+            // }
           } else {
             //notify SliverInfiniteAnimatedList to remove the post from the bookmark list
 
