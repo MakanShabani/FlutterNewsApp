@@ -22,7 +22,7 @@ class _BookmarkSectionState extends State<BookmarkSection>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late ScrollController _scrollController;
   late PostsListCubit _postsListCubit;
-  late ListNotifireCubit _postslistNotifireCubit;
+  late ListNotifireCubit<Post> _postslistNotifireCubit;
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _BookmarkSectionState extends State<BookmarkSection>
           true);
     }
 
-    _postslistNotifireCubit = ListNotifireCubit();
+    _postslistNotifireCubit = ListNotifireCubit<Post>();
   }
 
   @override
@@ -251,7 +251,7 @@ class _BookmarkSectionState extends State<BookmarkSection>
 
             if (state is PostsListCubitFetchedSuccessfully) {
               return state.posts.isNotEmpty
-                  ? SliverInfiniteAnimatedList(
+                  ? SliverInfiniteAnimatedList<Post>(
                       items: state.posts,
                       itemLayout: (item, index) => PostItemInVerticalList(
                         itemHeight: 160,
@@ -259,7 +259,7 @@ class _BookmarkSectionState extends State<BookmarkSection>
                         bottoMargin: 20.0,
                         leftMargin: screenHorizontalPadding,
                         borderRadious: circularBorderRadious,
-                        item: item as Post,
+                        item: item,
                         onPostBookMarkUpdated: (postId, newBookmarkValue) =>
                             onPostBookmarkUpdated(
                                 index, postId, newBookmarkValue),
