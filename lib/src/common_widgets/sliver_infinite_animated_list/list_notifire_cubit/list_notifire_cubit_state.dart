@@ -7,8 +7,9 @@ class ListNotifireCubitInitial extends ListNotifireCubitState {}
 
 class ListNotifireCubitInsertNewItems<T> extends ListNotifireCubitState {
   final List<T> newItems;
-
-  ListNotifireCubitInsertNewItems({required this.newItems});
+  final bool insertToTheTop;
+  ListNotifireCubitInsertNewItems(
+      {required this.newItems, required this.insertToTheTop});
 }
 
 class ListNotifireCubitRemoveItem<T> extends ListNotifireCubitState {

@@ -30,7 +30,6 @@ class SliverInfiniteAnimatedList<T> extends StatefulWidget {
   final Axis? scrollDirection;
   final ListItemLayout<T> itemLayout;
   final Widget loadingLayout;
-
   @override
   State<SliverInfiniteAnimatedList<T>> createState() =>
       SliverInfiniteAnimatedListState<T>();
@@ -57,7 +56,7 @@ class SliverInfiniteAnimatedListState<S>
       listener: (context, state) {
         if (state is ListNotifireCubitInsertNewItems<S>) {
           //Insert new items
-          _insertMultipleItems(state.newItems);
+          _insertMultipleItems(state.newItems, state.insertToTheTop);
           return;
         }
 
@@ -106,16 +105,18 @@ class SliverInfiniteAnimatedListState<S>
     );
   }
 
-  void _insertSingleItem(S item) {
-    int insertIndex = _items.length;
+  void _insertSingleItem(S item, bool insertToTheTop) {
+    //add the item to the start of the list or end of the list based on the insertTotheTop value
+    int insertIndex = insertToTheTop ? 0 : _items.length;
     _items.insert(insertIndex, item);
     _listKey.currentState
         ?.insertItem(insertIndex, duration: const Duration(milliseconds: 500));
   }
 
-  void _insertMultipleItems(List<S> newItems) {
-    int insertIndex = _items.length;
-    _items = _items + newItems;
+  void _insertMultipleItems(List<S> newItems, bool insertToTheTop) {
+    //add the items to the start of the list or end of the list based on the insertTotheTop value
+    int insertIndex = insertToTheTop ? 0 : _items.length;
+    _items = insertToTheTop ? newItems + _items : _items + newItems;
     // This is a bit of a hack because currentState doesn't have
     // an insertAll() method.
     for (int offset = 0; offset < newItems.length; offset++) {

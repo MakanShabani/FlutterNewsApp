@@ -106,7 +106,7 @@ class _TabContentState extends State<TabContent>
               List<Post> newPosts = state.posts
                   .skip(state.lastLoadedPagingOptionsDto.offset)
                   .toList();
-              _postsListNotifireCubit.insertItems(newPosts);
+              _postsListNotifireCubit.insertItems(newPosts, false);
 
               if (_scrollController.offset ==
                       _scrollController.position.maxScrollExtent &&

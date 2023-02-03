@@ -8,8 +8,9 @@ part 'list_notifire_cubit_state.dart';
 class ListNotifireCubit<T> extends Cubit<ListNotifireCubitState> {
   ListNotifireCubit() : super(ListNotifireCubitInitial());
 
-  void insertItems(List<T> newItems) {
-    emit(ListNotifireCubitInsertNewItems<T>(newItems: newItems));
+  void insertItems(List<T> newItems, bool insertToTheTop) {
+    emit(ListNotifireCubitInsertNewItems<T>(
+        newItems: newItems, insertToTheTop: insertToTheTop));
   }
 
   void removeItems(T itemToRemove) {
