@@ -1,7 +1,7 @@
-import '../../../../infrastructure/shared_dtos/shared_dtos.dart';
-import '../../../../server_impementation/databse_entities/databse_entities.dart';
-import '../../../../server_impementation/fake_database.dart';
-import '../../domain/post_category_models.dart';
+import '../../infrastructure/shared_dtos/shared_dtos.dart';
+import '../databse_entities/databse_entities.dart';
+import '../fake_database.dart';
+import '../../features/posts_category/domain/post_category_models.dart';
 
 class FakePostCategoryDataSource {
   FakePostCategoryDataSource({required FakeDatabase fakeDatabase})

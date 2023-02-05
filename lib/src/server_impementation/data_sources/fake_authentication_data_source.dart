@@ -1,11 +1,11 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 
-import '../../../../infrastructure/shared_dtos/shared_dtos.dart';
-import '../../../../infrastructure/shared_models/shared_model.dart';
-import '../../../../server_impementation/fake_database.dart';
-import '../../domain/authentication_models.dart';
-import '../dtos/authenticate_dtos.dart';
+import '../../infrastructure/shared_dtos/shared_dtos.dart';
+import '../../infrastructure/shared_models/shared_model.dart';
+import '../fake_database.dart';
+import '../../features/authentication/domain/authentication_models.dart';
+import '../../features/authentication/data/dtos/authenticate_dtos.dart';
 
 class FakeAuthenticationDataSource {
   FakeDatabase fakeData = FakeDatabase();

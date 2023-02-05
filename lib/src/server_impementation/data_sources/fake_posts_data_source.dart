@@ -2,11 +2,11 @@
 
 import 'package:collection/collection.dart';
 
-import '../../../../infrastructure/shared_dtos/shared_dtos.dart';
-import '../../../../infrastructure/shared_models/shared_model.dart';
-import '../../../../server_impementation/databse_entities/databse_entities.dart';
-import '../../../../server_impementation/fake_database.dart';
-import '../../domain/posts_models.dart';
+import '../../infrastructure/shared_dtos/shared_dtos.dart';
+import '../../infrastructure/shared_models/shared_model.dart';
+import '../databse_entities/databse_entities.dart';
+import '../fake_database.dart';
+import '../../features/posts/domain/posts_models.dart';
 
 class FakePostsDataSource {
   FakeDatabase fakeDatabase = FakeDatabase();

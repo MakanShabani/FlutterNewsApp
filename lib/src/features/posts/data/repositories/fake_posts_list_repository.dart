@@ -1,7 +1,7 @@
 import 'package:responsive_admin_dashboard/src/features/posts/domain/post.dart';
+import 'package:responsive_admin_dashboard/src/server_impementation/data_sources/fake_posts_data_source.dart';
 
 import '../../../../infrastructure/shared_dtos/shared_dtos.dart';
-import '../data_sources/post_data_sources.dart';
 import 'posts_repository.dart';
 
 class FakePostReposiory implements PostsRepository {
