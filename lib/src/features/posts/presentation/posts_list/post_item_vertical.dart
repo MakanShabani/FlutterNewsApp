@@ -105,10 +105,10 @@ class PostItemInVerticalList extends StatelessWidget {
                                   : Colors.white,
                               initialBookmarkStatus: item.isBookmarked,
                               post: item,
-                              onPostBookmarkUpdated:
-                                  (postId, newBookmarkValue) =>
-                                      onPostBookmarkUpdated(
-                                          postId, newBookmarkValue),
+                              onPostBookmarkUpdated: (_, newBookmarkValue) =>
+                                  _onPostBookmarkUpdated(newBookmarkValue),
+                              onBookmarkPressed: (_, newBookmarkValueToSet) =>
+                                  _onPostBookmarkPressed(newBookmarkValueToSet),
                             ),
                           ],
                         ),
@@ -131,13 +131,19 @@ class PostItemInVerticalList extends StatelessWidget {
 
   //we use this fuction to update post's bookmark value locally
   //if onPostBookMarkUpdated CallBack is provided the the post's bookmark will be updated in the parent widegt's post lists too.
-  void onPostBookmarkUpdated(Post post, bool newBookmarkStatus) {
+  void _onPostBookmarkUpdated(bool newBookmarkStatus) {
     //update local list
     item.isBookmarked = newBookmarkStatus;
 
     //update parent widget's list
     if (onPostBookMarkUpdated != null) {
-      onPostBookMarkUpdated!(post, newBookmarkStatus);
+      onPostBookMarkUpdated!(item, newBookmarkStatus);
     }
+  }
+
+  void _onPostBookmarkPressed(bool newBookmarkValueToSet) {
+    onPostBookmarkPressed != null
+        ? onPostBookmarkPressed!(item, newBookmarkValueToSet)
+        : null;
   }
 }
