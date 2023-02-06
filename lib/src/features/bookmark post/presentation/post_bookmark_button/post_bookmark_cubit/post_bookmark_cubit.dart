@@ -19,7 +19,7 @@ class PostBookmarkCubit extends Cubit<PostBookmarkState> {
   void toggleBookmark(
       {required String userToken,
       required Post post,
-      required bool newBookmarkValue}) async {
+      required bool newBookmarkValueToSet}) async {
     if (state.currentBookmarkingPosts.contains(post.id)) return;
 
     emit(PostBookmarkUpdatingPostBookmarkState(
@@ -45,7 +45,7 @@ class PostBookmarkCubit extends Cubit<PostBookmarkState> {
     emit(PostBookmarkUpdatedSuccessfullyState(
       currentBookmarkingPosts: state.currentBookmarkingPosts..remove(post.id),
       post: post,
-      newBookmarkValue: newBookmarkValue,
+      newBookmarkValue: newBookmarkValueToSet,
     ));
   }
 }
