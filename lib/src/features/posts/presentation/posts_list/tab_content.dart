@@ -197,13 +197,13 @@ class _TabContentState extends State<TabContent>
                           leftMargin: screenHorizontalPadding,
                           borderRadious: circularBorderRadious,
                           item: item,
-                          onPostBookMarkUpdated: (postId, newBookmarkValue) =>
+                          onPostBookMarkUpdated: (post, newBookmarkValue) =>
                               onPostBookmarkUpdated(
-                                  index, postId, newBookmarkValue),
+                                  index, post, newBookmarkValue),
                           onPostBookmarkPressed:
-                              (post, newBookmarkStatusToSet) =>
+                              (post, newBookmarkValueToSet) =>
                                   onPostBookMarkPressed(
-                                      post, newBookmarkStatusToSet),
+                                      post, newBookmarkValueToSet),
                         ),
                         loadingLayout: const SizedBox(
                           height: 50.0,
@@ -305,8 +305,6 @@ class _TabContentState extends State<TabContent>
   // we use this function to do stuff when bookmark button is pressed
   void onPostBookMarkPressed(Post post, bool newBookmarkStatusToSet) {
     if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
-      //Todo:: Show 'You must login first to use this feature' snackbar
-
       return;
     }
 
@@ -316,7 +314,7 @@ class _TabContentState extends State<TabContent>
             .user
             .token,
         post: post,
-        newBookmarkValue: newBookmarkStatusToSet);
+        newBookmarkValueToSet: newBookmarkStatusToSet);
   }
 
   void fetchPosts() {
