@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_admin_dashboard/src/common_widgets/common_widgest.dart';
 import 'package:responsive_admin_dashboard/src/features/authentication/presentation/authentication_presentations.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts_list/empty_posts_list.dart';
+import 'package:responsive_admin_dashboard/src/features/posts_category/presentation/blocs/post_category_cubit.dart';
 import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
 import 'package:responsive_admin_dashboard/src/router/route_names.dart';
 import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
@@ -151,9 +152,35 @@ class _BookmarkSectionState extends State<BookmarkSection>
           title: Text('Bookmarks'),
         ),
 
+        //Show contents top padding when there are some posts in the list
+        BlocBuilder<PostsListCubit, PostsListCubitState>(
+          buildWhen: (previous, current) =>
+              (current is PostsListCubitFetchedSuccessfully &&
+                  current.previousPostsLenght == 0) ||
+              current is PostsListCubitPostHasBeenAdded ||
+              (current is PostsListCubitPostHasBeenRemoved &&
+                  current.posts.isEmpty),
+          builder: (context, state) {
+            if (state is PostCategoryFetchedSuccessfully ||
+                state is PostsListCubitPostHasBeenAdded) {
+              //Show space
+              return const SliverToBoxAdapter(
+                child: SizedBox(
+                  height: screenTopPadding,
+                ),
+              );
+            }
+
+            //default --> no space between appbar and contents
+            return const SliverToBoxAdapter();
+          },
+        ),
+
         //Posts list section
         BlocBuilder<PostsListCubit, PostsListCubitState>(
           buildWhen: (previous, current) =>
+              (current is PostsListCubitPostHasBeenRemoved &&
+                  current.posts.isEmpty) ||
               (current is PostsListCubitPostHasBeenAdded &&
                   (previous.posts.isEmpty &&
                       previous is! PostsListCubitFetching)) ||
@@ -224,7 +251,13 @@ class _BookmarkSectionState extends State<BookmarkSection>
                         onActionClicked: () => _fetchPosts(),
                       ),
                     );
-              ;
+            }
+            if (state is PostsListCubitPostHasBeenRemoved) {
+              return SliverToBoxAdapter(
+                child: EmptyPostsList(
+                  onActionClicked: () => _fetchPosts(),
+                ),
+              );
             }
 
             //default view
@@ -324,7 +357,14 @@ class _BookmarkSectionState extends State<BookmarkSection>
             //       duration: const Duration(milliseconds: 800),
             //       curve: Curves.easeInBack);
             // }
-          } else {}
+          } else {
+            //remove the post from bookmarks
+
+            //remove the post from PostsListCubit
+            _postsListCubit.removePostFromList(postId: state.post.id);
+            //notify SliverInfiniteAnimatedList to remove the post from its local list
+            _postslistNotifireCubit.removeItems(state.post);
+          }
           return;
         }
       },
