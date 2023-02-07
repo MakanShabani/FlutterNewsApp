@@ -12,32 +12,26 @@ class PostsListCubitInitial extends PostsListCubitState {
 }
 
 class PostsListCubitFetching extends PostsListCubitState {
-  final PagingOptionsDTO toLoadPagingOptionsVm;
-
   const PostsListCubitFetching({
     required super.posts,
-    required this.toLoadPagingOptionsVm,
     super.categoryId,
   });
 }
 
 class PostsListCubitFetchedSuccessfully extends PostsListCubitState {
-  final PagingOptionsDTO lastLoadedPagingOptionsDto;
-
   const PostsListCubitFetchedSuccessfully({
     required super.posts,
-    required this.lastLoadedPagingOptionsDto,
     super.categoryId,
+    required this.previousPostsLenght,
   });
+  final int previousPostsLenght;
 }
 
 class PostsListCubitFetchingHasError extends PostsListCubitState {
-  final PagingOptionsDTO failedLoadPagingOptionsVm;
   final ErrorModel error;
 
   const PostsListCubitFetchingHasError({
     required super.posts,
-    required this.failedLoadPagingOptionsVm,
     super.categoryId,
     required this.error,
   });

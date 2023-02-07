@@ -112,9 +112,8 @@ class _BookmarkSectionState extends State<BookmarkSection>
         _postsListCubit.state is PostsListCubitPostHasBeenAdded ||
         (_postsListCubit.state is PostsListCubitFetchingHasError &&
             (_postsListCubit.state as PostsListCubitFetchingHasError)
-                    .failedLoadPagingOptionsVm
-                    .offset >
-                0)) {
+                .posts
+                .isNotEmpty)) {
       if (_scrollController.offset ==
           _scrollController.position.maxScrollExtent) {
         //fetch new posts
@@ -155,14 +154,14 @@ class _BookmarkSectionState extends State<BookmarkSection>
         //Posts list section
         BlocBuilder<PostsListCubit, PostsListCubitState>(
           buildWhen: (previous, current) =>
-              (previous.posts.isEmpty &&
-                  current is PostsListCubitPostHasBeenAdded) ||
+              (current is PostsListCubitPostHasBeenAdded &&
+                  (previous.posts.isEmpty &&
+                      previous is! PostsListCubitFetching)) ||
               (current is PostsListCubitFetchedSuccessfully &&
-                  current.lastLoadedPagingOptionsDto.offset == 0) ||
+                  current.posts.isEmpty) ||
               (current is PostsListCubitFetchingHasError &&
-                  current.failedLoadPagingOptionsVm.offset == 0) ||
-              (current is PostsListCubitFetching &&
-                  current.toLoadPagingOptionsVm.offset == 0),
+                  current.posts.isEmpty) ||
+              (current is PostsListCubitFetching && current.posts.isEmpty),
           builder: (context, state) {
             if (state is PostsListCubitFetching) {
               //show the loading indicator for the inital fetch
@@ -191,7 +190,8 @@ class _BookmarkSectionState extends State<BookmarkSection>
               return state.posts.isNotEmpty
                   ? SliverInfiniteAnimatedList<Post>(
                       items: state.posts,
-                      itemLayout: (item, index) => PostItemInVerticalList(
+                      itemLayoutBuilder: (item, index) =>
+                          PostItemInVerticalList(
                         itemHeight: 160,
                         rightMargin: screenHorizontalPadding,
                         bottoMargin: 20.0,
@@ -200,6 +200,16 @@ class _BookmarkSectionState extends State<BookmarkSection>
                         item: item,
                         onPostBookmarkPressed: (post, newBookmarkValueToSet) =>
                             onPostBookMarkPressed(post, newBookmarkValueToSet),
+                      ),
+                      removeItemBuilder: (item, index) =>
+                          PostItemInVerticalList(
+                        key: UniqueKey(),
+                        itemHeight: 160,
+                        rightMargin: screenHorizontalPadding,
+                        bottoMargin: 20.0,
+                        leftMargin: screenHorizontalPadding,
+                        borderRadious: circularBorderRadious,
+                        item: item,
                       ),
                       loadingLayout: const SizedBox(
                         height: 50.0,
@@ -231,18 +241,16 @@ class _BookmarkSectionState extends State<BookmarkSection>
     return BlocListener<PostsListCubit, PostsListCubitState>(
       listenWhen: (previous, current) =>
           (current is PostsListCubitFetchedSuccessfully &&
-              current.lastLoadedPagingOptionsDto.offset > 0) ||
+              current.posts.isNotEmpty) ||
           (current is PostsListCubitFetchingHasError &&
-              current.failedLoadPagingOptionsVm.offset == 0) ||
-          (current is PostsListCubitFetching &&
-              current.toLoadPagingOptionsVm.offset > 0),
+              current.posts.isNotEmpty) ||
+          (current is PostsListCubitFetching && current.posts.isNotEmpty),
       listener: (context, state) {
         if (state is PostsListCubitFetchedSuccessfully) {
           //After First successful fetch
           //notify SliverInfiniteAnimatedList to show new posts
-          List<Post> newPosts = state.posts
-              .skip(state.lastLoadedPagingOptionsDto.offset)
-              .toList();
+          List<Post> newPosts =
+              state.posts.skip(state.previousPostsLenght).toList();
           _postslistNotifireCubit.insertItems(newPosts, false);
 
           if (newPosts.isNotEmpty) {
@@ -316,10 +324,7 @@ class _BookmarkSectionState extends State<BookmarkSection>
             //       duration: const Duration(milliseconds: 800),
             //       curve: Curves.easeInBack);
             // }
-          } else {
-            //notify SliverInfiniteAnimatedList to remove the post from the bookmark list
-
-          }
+          } else {}
           return;
         }
       },

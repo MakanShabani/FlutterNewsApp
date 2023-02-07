@@ -76,10 +76,9 @@ class _TabContentState extends State<TabContent>
           //listen to the fetching process after the first fetch
           listenWhen: (previous, current) =>
               current is PostsListCubitFetchedSuccessfully ||
-              (current is PostsListCubitFetching &&
-                  current.toLoadPagingOptionsVm.offset > 0) ||
+              (current is PostsListCubitFetching && current.posts.isNotEmpty) ||
               (current is PostsListCubitFetchingHasError &&
-                  current.failedLoadPagingOptionsVm.offset > 0),
+                  current.posts.isNotEmpty),
           listener: (context, state) {
             if (state is PostsListCubitFetching) {
               //tell the InifiniteAnimatedList widget to show loading indicator at the end of it
@@ -94,7 +93,7 @@ class _TabContentState extends State<TabContent>
                     curve: Curves.easeIn);
               }
             } else if (state is PostsListCubitFetchedSuccessfully) {
-              if (state.lastLoadedPagingOptionsDto.offset == 0) {
+              if (state.previousPostsLenght == 0) {
                 //first fetch was successful
                 //we notify HomeSection's Appbar to show post's category tabbar instead of Home title
                 context.read<TabBarCubit>().showTabBar();
@@ -103,9 +102,8 @@ class _TabContentState extends State<TabContent>
 
               //After First successful fetch
               //Todo: if there is no new posts >> show realted snackbar
-              List<Post> newPosts = state.posts
-                  .skip(state.lastLoadedPagingOptionsDto.offset)
-                  .toList();
+              List<Post> newPosts =
+                  state.posts.skip(state.previousPostsLenght).toList();
               _postsListNotifireCubit.insertItems(newPosts, false);
 
               if (_scrollController.offset ==
@@ -142,9 +140,10 @@ class _TabContentState extends State<TabContent>
             slivers: [
               //Caurosel
               BlocBuilder<PostsListCubit, PostsListCubitState>(
+                // only rebuild after first fetch
                 buildWhen: (previous, current) =>
                     current is PostsListCubitFetchedSuccessfully &&
-                    current.lastLoadedPagingOptionsDto.offset == 0,
+                    current.previousPostsLenght == 0,
                 builder: (context, state) {
                   if (state is PostsListCubitFetchedSuccessfully) {
                     return caouroselSection(state.posts.take(5).toList());
@@ -171,14 +170,14 @@ class _TabContentState extends State<TabContent>
 
               //Posts List
               BlocBuilder<PostsListCubit, PostsListCubitState>(
-                  //only rebuild widget for first fetch
+                  //only rebuild widget after first fetch
                   buildWhen: (previous, current) =>
                       (current is PostsListCubitFetching &&
-                          current.toLoadPagingOptionsVm.offset == 0) ||
+                          current.posts.isEmpty) ||
                       (current is PostsListCubitFetchedSuccessfully &&
-                          current.lastLoadedPagingOptionsDto.offset == 0) ||
+                          current.previousPostsLenght == 0) ||
                       (current is PostsListCubitFetchingHasError &&
-                          current.failedLoadPagingOptionsVm.offset == 0),
+                          current.posts.isEmpty),
                   builder: (context, state) {
                     if (state is PostsListCubitFetching) {
                       return const SliverFillRemaining(
@@ -190,7 +189,8 @@ class _TabContentState extends State<TabContent>
                     if (state is PostsListCubitFetchedSuccessfully) {
                       return SliverInfiniteAnimatedList<Post>(
                         items: state.posts,
-                        itemLayout: (item, index) => PostItemInVerticalList(
+                        itemLayoutBuilder: (item, index) =>
+                            PostItemInVerticalList(
                           itemHeight: 160,
                           rightMargin: screenHorizontalPadding,
                           bottoMargin: 20.0,

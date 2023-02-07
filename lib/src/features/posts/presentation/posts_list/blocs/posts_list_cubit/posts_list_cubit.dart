@@ -27,8 +27,6 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
     }
 
     emit(PostsListCubitFetching(
-      toLoadPagingOptionsVm: PagingOptionsDTO(
-          offset: state.posts.length, limit: haowManyPostFetchEachTime),
       categoryId: categoryId,
       posts: state.posts,
     ));
@@ -43,21 +41,19 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
       //fetch user bookmarked posts
       fetchingPostsResponse = await _postsListService.getUserBookmarkedPosts(
           userToken: userToken,
-          pagingOptionsDTO:
-              (state as PostsListCubitFetching).toLoadPagingOptionsVm);
+          pagingOptionsDTO: PagingOptionsDTO(
+              offset: state.posts.length, limit: haowManyPostFetchEachTime));
     } else {
       //fetch all posts(including user bookmarked posts)
       fetchingPostsResponse = await _postsListService.getPosts(
-          pagingOptionsDTO:
-              (state as PostsListCubitFetching).toLoadPagingOptionsVm,
+          pagingOptionsDTO: PagingOptionsDTO(
+              offset: state.posts.length, limit: haowManyPostFetchEachTime),
           userToken: userToken,
           categoryId: categoryId);
     }
 
     if (fetchingPostsResponse.statusCode != 200) {
       emit(PostsListCubitFetchingHasError(
-          failedLoadPagingOptionsVm:
-              (state as PostsListCubitFetching).toLoadPagingOptionsVm,
           posts: state.posts,
           categoryId: categoryId,
           error: fetchingPostsResponse.error!));
@@ -65,9 +61,8 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
     }
 
     emit(PostsListCubitFetchedSuccessfully(
+      previousPostsLenght: state.posts.length,
       posts: state.posts + fetchingPostsResponse.data!,
-      lastLoadedPagingOptionsDto:
-          (state as PostsListCubitFetching).toLoadPagingOptionsVm,
       categoryId: categoryId,
     ));
   }
