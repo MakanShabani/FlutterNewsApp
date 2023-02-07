@@ -141,14 +141,6 @@ class _BookmarkSectionState extends State<BookmarkSection>
         true);
   }
 
-  //we use this fuction to update post's bookmark value locally
-  void onPostBookmarkUpdated(int index, Post post, bool newBookmarkStatus) {
-    _postsListCubit.updatePostBookmarkStatusWithoutChangingState(
-        post, newBookmarkStatus);
-    _postslistNotifireCubit.modifyItem(
-        index, post..isBookmarked = newBookmarkStatus, false);
-  }
-
   Widget mainContents() {
     return CustomScrollView(
       controller: _scrollController,
@@ -206,6 +198,8 @@ class _BookmarkSectionState extends State<BookmarkSection>
                         leftMargin: screenHorizontalPadding,
                         borderRadious: circularBorderRadious,
                         item: item,
+                        onPostBookmarkPressed: (post, newBookmarkValueToSet) =>
+                            onPostBookMarkPressed(post, newBookmarkValueToSet),
                       ),
                       loadingLayout: const SizedBox(
                         height: 50.0,
@@ -309,11 +303,13 @@ class _BookmarkSectionState extends State<BookmarkSection>
         if (state is PostBookmarkUpdatedSuccessfullyState) {
           if (state.newBookmarkValue) {
             //notify the postListCubit item to add the bookmark post to its list
-            _postsListCubit.addPostToTheList(post: state.post);
+            _postsListCubit.addPostToTheList(
+                post: state.post..isBookmarked = state.newBookmarkValue);
 
             //notify SliverInfiniteAnimatedList to add post to the bookmark list
 
-            _postslistNotifireCubit.insertItems([state.post], true);
+            _postslistNotifireCubit.insertItems(
+                [state.post..isBookmarked = state.newBookmarkValue], true);
             // if (_scrollController.offset ==
             //     _scrollController.position.maxScrollExtent) {
             //   _scrollController.animateTo(_scrollController.offset + 100,
@@ -347,5 +343,20 @@ class _BookmarkSectionState extends State<BookmarkSection>
         }
       },
     );
+  }
+
+  // we use this function to do stuff when bookmark button is pressed
+  void onPostBookMarkPressed(Post post, bool newBookmarkStatusToSet) {
+    if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
+      return;
+    }
+
+    context.read<PostBookmarkCubit>().toggleBookmark(
+        userToken: (context.read<AuthenticationCubit>().state
+                as AuthenticationLoggedIn)
+            .user
+            .token,
+        post: post,
+        newBookmarkValueToSet: newBookmarkStatusToSet);
   }
 }

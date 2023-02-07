@@ -80,7 +80,7 @@ class SliverInfiniteAnimatedListState<S>
         children: [
           SliverAnimatedList(
             key: _listKey,
-            initialItemCount: widget.items.length,
+            initialItemCount: _items.length,
             itemBuilder: (context, index, animation) => SlideTransition(
               position: Tween<Offset>(
                 begin: const Offset(1, 0),
@@ -126,7 +126,7 @@ class SliverInfiniteAnimatedListState<S>
   }
 
   void insertItem(List<S> newPosts) {
-    int insertIndex = _items.length - 1;
+    int insertIndex = _items.length;
     for (int offset = 0; offset < _items.length + newPosts.length; offset++) {
       _listKey.currentState?.insertItem(insertIndex + offset,
           duration: const Duration(milliseconds: 500));
@@ -135,15 +135,16 @@ class SliverInfiniteAnimatedListState<S>
   }
 
   void _removeItem(S item) {
+    int removeIndex = _items.indexOf(item);
+    _items.removeAt(removeIndex);
     _listKey.currentState?.removeItem(
-        _items.indexOf(item),
+        removeIndex,
         (_, animation) => SlideTransition(
             position: Tween<Offset>(
               begin: const Offset(-1, 0),
               end: const Offset(0, 0),
             ).animate(animation),
-            child: widget.itemLayout(item, _items.indexOf(item))),
+            child: widget.itemLayout(item, removeIndex)),
         duration: const Duration(milliseconds: 500));
-    _items.remove(item);
   }
 }
