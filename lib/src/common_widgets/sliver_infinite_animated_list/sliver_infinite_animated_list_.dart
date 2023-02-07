@@ -5,13 +5,15 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 export './list_notifire_cubit/list_notifire_cubit.dart';
 
-typedef ListItemLayout<E> = Widget Function(E item, int index);
+typedef ListItemLayoutBuilder<E> = Widget Function(E item, int index);
+typedef ListRemoveItemBuilder<E> = Widget Function(E item, int index);
 
 class SliverInfiniteAnimatedList<T> extends StatefulWidget {
   const SliverInfiniteAnimatedList({
     Key? key,
     required this.items,
-    required this.itemLayout,
+    required this.itemLayoutBuilder,
+    this.removeItemBuilder,
     required this.loadingLayout,
     this.scrollDirection,
     this.itemHeight,
@@ -28,7 +30,8 @@ class SliverInfiniteAnimatedList<T> extends StatefulWidget {
   final double? itemTopMargin;
   final List<T> items;
   final Axis? scrollDirection;
-  final ListItemLayout<T> itemLayout;
+  final ListItemLayoutBuilder<T> itemLayoutBuilder;
+  final ListRemoveItemBuilder<T>? removeItemBuilder;
   final Widget loadingLayout;
   @override
   State<SliverInfiniteAnimatedList<T>> createState() =>
@@ -86,7 +89,7 @@ class SliverInfiniteAnimatedListState<S>
                 begin: const Offset(1, 0),
                 end: const Offset(0, 0),
               ).animate(animation),
-              child: widget.itemLayout(_items[index], index),
+              child: widget.itemLayoutBuilder(_items[index], index),
             ),
           ),
           BlocBuilder<ListNotifireCubit<S>, ListNotifireCubitState>(
@@ -144,7 +147,11 @@ class SliverInfiniteAnimatedListState<S>
               begin: const Offset(-1, 0),
               end: const Offset(0, 0),
             ).animate(animation),
-            child: widget.itemLayout(item, removeIndex)),
+            child: widget.removeItemBuilder != null
+                ? widget.removeItemBuilder!(item, removeIndex)
+                : const SizedBox(
+                    height: 0,
+                  )),
         duration: const Duration(milliseconds: 500));
   }
 }
