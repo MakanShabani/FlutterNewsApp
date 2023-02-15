@@ -28,6 +28,10 @@ class ListNotifireCubit<T> extends Cubit<ListNotifireCubitState> {
     emit(ListNotifireCubitShowLoading());
   }
 
+  void resetState() {
+    emit(ListNotifireCubitInitial());
+  }
+
   void showError() {
     emit(ListNotifireCubitShowError());
   }

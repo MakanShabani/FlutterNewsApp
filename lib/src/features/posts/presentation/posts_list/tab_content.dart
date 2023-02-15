@@ -4,6 +4,7 @@ import 'package:responsive_admin_dashboard/src/features/authentication/presentat
 import 'package:responsive_admin_dashboard/src/features/posts/application/posts_services.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/data/repositories/posts_repositories.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts_list/home_section/tab_bar_cubit/tab_bar_cubit.dart';
+import 'package:responsive_admin_dashboard/src/features/posts_category/presentation/blocs/post_category_cubit.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/constants.dart/constants.dart';
@@ -76,6 +77,7 @@ class _TabContentState extends State<TabContent>
           //listen to the fetching process after the first fetch
           listenWhen: (previous, current) =>
               current is PostsListCubitFetchedSuccessfully ||
+              current is PostsListNoMorePostsToFetch ||
               (current is PostsListCubitFetching && current.posts.isNotEmpty) ||
               (current is PostsListCubitFetchingHasError &&
                   current.posts.isNotEmpty),
@@ -93,22 +95,18 @@ class _TabContentState extends State<TabContent>
                     curve: Curves.easeIn);
               }
             } else if (state is PostsListCubitFetchedSuccessfully) {
-              if (state.previousPostsLenght == 0) {
-                //first fetch was successful
+              if (state.posts.length == state.fetchedPosts.length) {
+                //it was first fetch
                 //we notify HomeSection's Appbar to show post's category tabbar instead of Home title
                 context.read<TabBarCubit>().showTabBar();
                 return;
               }
 
               //After First successful fetch
-              //Todo: if there is no new posts >> show realted snackbar
-              List<Post> newPosts =
-                  state.posts.skip(state.previousPostsLenght).toList();
-              _postsListNotifireCubit.insertItems(newPosts, false);
+              _postsListNotifireCubit.insertItems(state.fetchedPosts, false);
 
               if (_scrollController.offset ==
-                      _scrollController.position.maxScrollExtent &&
-                  newPosts.isNotEmpty) {
+                  _scrollController.position.maxScrollExtent) {
                 _scrollController.animateTo(_scrollController.offset + 100,
                     duration: const Duration(milliseconds: 800),
                     curve: Curves.easeInBack);
@@ -138,12 +136,32 @@ class _TabContentState extends State<TabContent>
             controller: _scrollController,
             scrollDirection: Axis.vertical,
             slivers: [
+              //Free Space Between Appbar and contents --> like Top padding
+              //Show contents top padding when there are some posts in the list
+              BlocBuilder<PostsListCubit, PostsListCubitState>(
+                buildWhen: (previous, current) =>
+                    (current is PostsListCubitFetchedSuccessfully &&
+                        previous.posts.isEmpty) ||
+                    (current is PostsListCubitFetching &&
+                        previous.posts.isEmpty) ||
+                    current is PostsListCubitIsEmpty ||
+                    (current is PostsListCubitFetchingHasError &&
+                        current.posts.isEmpty),
+                builder: (context, state) {
+                  return SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: state.posts.isEmpty ? 0 : screenTopPadding,
+                    ),
+                  );
+                },
+              ),
+
               //Caurosel
               BlocBuilder<PostsListCubit, PostsListCubitState>(
-                // only rebuild after first fetch
+                // only rebuild on first fetch
                 buildWhen: (previous, current) =>
                     current is PostsListCubitFetchedSuccessfully &&
-                    current.previousPostsLenght == 0,
+                    previous.posts.isEmpty,
                 builder: (context, state) {
                   if (state is PostsListCubitFetchedSuccessfully) {
                     return caouroselSection(state.posts.take(5).toList());
@@ -155,10 +173,11 @@ class _TabContentState extends State<TabContent>
               ),
 
               //Posts List Header
+              //only rebuild after first successful fetch
               BlocBuilder<PostsListCubit, PostsListCubitState>(
                   buildWhen: (previous, current) =>
                       current is PostsListCubitFetchedSuccessfully &&
-                      current.posts.isNotEmpty,
+                      previous.posts.isEmpty,
                   builder: (context, state) {
                     if (state is PostsListCubitFetchedSuccessfully) {
                       return postsListSectionHeader();
@@ -170,19 +189,22 @@ class _TabContentState extends State<TabContent>
 
               //Posts List
               BlocBuilder<PostsListCubit, PostsListCubitState>(
-                  //only rebuild widget after first fetch
+                  //only rebuild widget after first fetch has completed
                   buildWhen: (previous, current) =>
                       (current is PostsListCubitFetching &&
                           current.posts.isEmpty) ||
                       (current is PostsListCubitFetchedSuccessfully &&
-                          current.previousPostsLenght == 0) ||
+                          previous.posts.isEmpty) ||
                       (current is PostsListCubitFetchingHasError &&
-                          current.posts.isEmpty),
+                          current.posts.isEmpty) ||
+                      current is PostsListCubitIsEmpty,
                   builder: (context, state) {
                     if (state is PostsListCubitFetching) {
                       return const SliverFillRemaining(
                         child: Center(
-                          child: Text('First Loading'),
+                          child: LoadingIndicator(
+                            hasBackground: false,
+                          ),
                         ),
                       );
                     }
@@ -269,8 +291,8 @@ class _TabContentState extends State<TabContent>
               cauroselRightPadding: screenHorizontalPadding,
               items: posts,
               onPostBookMarkUpdated: (post, newBookmarkStatus) =>
-                  _postListsCubit.updatePostBookmarkStatusWithoutChangingState(
-                      post, newBookmarkStatus),
+                  _postListsCubit.updatePostsBookmarkStatus(
+                      postId: post.id, newBookmarkStatus: newBookmarkStatus),
             )
           : const SizedBox(
               height: 0,
@@ -296,8 +318,8 @@ class _TabContentState extends State<TabContent>
 
   //we use this fuction to update post's bookmark value locally
   void onPostBookmarkUpdated(int index, Post post, bool newBookmarkStatus) {
-    _postListsCubit.updatePostBookmarkStatusWithoutChangingState(
-        post, newBookmarkStatus);
+    _postListsCubit.updatePostsBookmarkStatus(
+        postId: post.id, newBookmarkStatus: newBookmarkStatus);
     _postsListNotifireCubit.modifyItem(
         index, post..isBookmarked = newBookmarkStatus, false);
   }

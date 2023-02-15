@@ -139,6 +139,9 @@ class SliverInfiniteAnimatedListState<S>
 
   void _removeItem(S item) {
     int removeIndex = _items.indexOf(item);
+
+    if (removeIndex == -1) return;
+
     _items.removeAt(removeIndex);
     _listKey.currentState?.removeItem(
         removeIndex,

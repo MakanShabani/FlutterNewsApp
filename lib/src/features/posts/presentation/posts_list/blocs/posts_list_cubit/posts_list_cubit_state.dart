@@ -19,12 +19,10 @@ class PostsListCubitFetching extends PostsListCubitState {
 }
 
 class PostsListCubitFetchedSuccessfully extends PostsListCubitState {
-  const PostsListCubitFetchedSuccessfully({
-    required super.posts,
-    super.categoryId,
-    required this.previousPostsLenght,
-  });
-  final int previousPostsLenght;
+  const PostsListCubitFetchedSuccessfully(
+      {required super.posts, super.categoryId, required this.fetchedPosts});
+
+  final List<Post> fetchedPosts;
 }
 
 class PostsListCubitFetchingHasError extends PostsListCubitState {
@@ -48,11 +46,24 @@ class PostsListCubitPostHasBeenRemoved extends PostsListCubitState {
 }
 
 class PostsListCubitPostHasBeenAdded extends PostsListCubitState {
-  final Post addedPost;
-
   const PostsListCubitPostHasBeenAdded({
     required super.posts,
-    required this.addedPost,
+    required this.addedPosts,
+    required super.categoryId,
+  });
+  final List<Post> addedPosts;
+}
+
+class PostsListCubitIsEmpty extends PostsListCubitState {
+  const PostsListCubitIsEmpty({
+    required super.posts,
+    super.categoryId,
+  });
+}
+
+class PostsListNoMorePostsToFetch extends PostsListCubitState {
+  const PostsListNoMorePostsToFetch({
+    required super.posts,
     super.categoryId,
   });
 }
