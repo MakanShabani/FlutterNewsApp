@@ -84,11 +84,8 @@ class SliverInfiniteAnimatedListState<S>
           SliverAnimatedList(
             key: _listKey,
             initialItemCount: _items.length,
-            itemBuilder: (context, index, animation) => SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1, 0),
-                end: const Offset(0, 0),
-              ).animate(animation),
+            itemBuilder: (context, index, animation) => FadeTransition(
+              opacity: animation,
               child: widget.itemLayoutBuilder(_items[index], index),
             ),
           ),
@@ -145,11 +142,8 @@ class SliverInfiniteAnimatedListState<S>
     _items.removeAt(removeIndex);
     _listKey.currentState?.removeItem(
         removeIndex,
-        (_, animation) => SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(-1, 0),
-              end: const Offset(0, 0),
-            ).animate(animation),
+        (_, animation) => FadeTransition(
+            opacity: animation,
             child: widget.removeItemBuilder != null
                 ? widget.removeItemBuilder!(item, removeIndex)
                 : const SizedBox(
