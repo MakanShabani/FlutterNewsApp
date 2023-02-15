@@ -5,6 +5,7 @@ import 'package:responsive_admin_dashboard/src/features/authentication/presentat
 import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts_list/empty_posts_list.dart';
 import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
 import 'package:responsive_admin_dashboard/src/router/route_names.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import '../../application/posts_list_service.dart';
 import '../../data/repositories/fake_posts_list_repository.dart';
@@ -334,77 +335,83 @@ class _BookmarkSectionState extends State<BookmarkSection>
               (current is PostsListCubitFetchingHasError &&
                   current.posts.isEmpty),
           builder: (context, state) {
-            if (state is PostsListCubitFetching) {
-              //show the loading indicator for the inital fetch
-              return const SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(
-                  child: LoadingIndicator(hasBackground: false),
-                ),
-              );
-            }
-
-            if (state is PostsListCubitFetchingHasError) {
-              //show the error widget for the inital fetch
-              //TODO:: show appropriate error with respect to the error code
-              return SliverToBoxAdapter(
-                child: state.error.statusCode == 401
-                    ? ErrorNotAuthorize(
-                        onActionClicked: () =>
-                            Navigator.pushNamed(context, loginRoute))
-                    : ErrorInternal(
-                        onActionClicked: () => _fetchPosts(true),
-                      ),
-              );
-            }
-
-            if (state is PostsListCubitFetchedSuccessfully ||
-                state is PostsListCubitPostHasBeenAdded) {
-              return SliverInfiniteAnimatedList<Post>(
-                items: state.posts,
-                itemLayoutBuilder: (item, index) => PostItemInVerticalList(
-                  itemHeight: 160,
-                  rightMargin: screenHorizontalPadding,
-                  bottoMargin: 20.0,
-                  leftMargin: screenHorizontalPadding,
-                  borderRadious: circularBorderRadious,
-                  item: item,
-                  onPostBookmarkPressed: (post, newBookmarkValueToSet) =>
-                      onPostBookMarkPressed(post, newBookmarkValueToSet),
-                ),
-                removeItemBuilder: (item, index) => PostItemInVerticalList(
-                  key: UniqueKey(),
-                  itemHeight: 160,
-                  rightMargin: screenHorizontalPadding,
-                  bottoMargin: 20.0,
-                  leftMargin: screenHorizontalPadding,
-                  borderRadious: circularBorderRadious,
-                  item: item,
-                ),
-                loadingLayout: const SizedBox(
-                  height: 50.0,
-                  child: LoadingIndicator(
-                    hasBackground: true,
-                    backgroundHeight: 20.0,
-                  ),
-                ),
-              );
-            }
-            if (state is PostsListCubitIsEmpty) {
-              return SliverToBoxAdapter(
-                child: EmptyPostsList(
-                  onActionClicked: () => _fetchPosts(true),
-                ),
-              );
-            }
-
-            //default view
-            return SliverToBoxAdapter(
-              child: Container(),
-            );
+            return SliverAnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                child: _mainContentListSection(state));
           },
         )
       ],
+    );
+  }
+
+  Widget _mainContentListSection(PostsListCubitState state) {
+    if (state is PostsListCubitFetching) {
+      //show the loading indicator for the inital fetch
+      return const SliverFillRemaining(
+        hasScrollBody: false,
+        child: Center(
+          child: LoadingIndicator(hasBackground: false),
+        ),
+      );
+    }
+
+    if (state is PostsListCubitFetchingHasError) {
+      //show the error widget for the inital fetch
+      //TODO:: show appropriate error with respect to the error code
+      return SliverToBoxAdapter(
+        child: state.error.statusCode == 401
+            ? ErrorNotAuthorize(
+                onActionClicked: () => Navigator.pushNamed(context, loginRoute))
+            : ErrorInternal(
+                onActionClicked: () => _fetchPosts(true),
+              ),
+      );
+    }
+
+    if (state is PostsListCubitFetchedSuccessfully ||
+        state is PostsListCubitPostHasBeenAdded) {
+      return SliverInfiniteAnimatedList<Post>(
+        items: state.posts,
+        itemLayoutBuilder: (item, index) => PostItemInVerticalList(
+          key: UniqueKey(),
+          itemHeight: 160,
+          rightMargin: screenHorizontalPadding,
+          bottoMargin: 20.0,
+          leftMargin: screenHorizontalPadding,
+          borderRadious: circularBorderRadious,
+          item: item,
+          onPostBookmarkPressed: (post, newBookmarkValueToSet) =>
+              onPostBookMarkPressed(post, newBookmarkValueToSet),
+        ),
+        removeItemBuilder: (item, index) => PostItemInVerticalList(
+          key: UniqueKey(),
+          itemHeight: 160,
+          rightMargin: screenHorizontalPadding,
+          bottoMargin: 20.0,
+          leftMargin: screenHorizontalPadding,
+          borderRadious: circularBorderRadious,
+          item: item,
+        ),
+        loadingLayout: const SizedBox(
+          height: 50.0,
+          child: LoadingIndicator(
+            hasBackground: true,
+            backgroundHeight: 20.0,
+          ),
+        ),
+      );
+    }
+    if (state is PostsListCubitIsEmpty) {
+      return SliverToBoxAdapter(
+        child: EmptyPostsList(
+          onActionClicked: () => _fetchPosts(true),
+        ),
+      );
+    }
+
+    //default view
+    return SliverToBoxAdapter(
+      child: Container(),
     );
   }
 }
