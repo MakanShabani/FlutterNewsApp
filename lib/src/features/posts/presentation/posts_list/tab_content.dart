@@ -76,10 +76,10 @@ class _TabContentState extends State<TabContent>
           //listen to the fetching process after the first fetch
           listenWhen: (previous, current) =>
               current is PostsListCubitFetchedSuccessfully ||
-              (current is PostsListCubitFetching &&
-                  current.toLoadPagingOptionsVm.offset > 0) ||
+              current is PostsListNoMorePostsToFetch ||
+              (current is PostsListCubitFetching && current.posts.isNotEmpty) ||
               (current is PostsListCubitFetchingHasError &&
-                  current.failedLoadPagingOptionsVm.offset > 0),
+                  current.posts.isNotEmpty),
           listener: (context, state) {
             if (state is PostsListCubitFetching) {
               //tell the InifiniteAnimatedList widget to show loading indicator at the end of it
@@ -94,23 +94,18 @@ class _TabContentState extends State<TabContent>
                     curve: Curves.easeIn);
               }
             } else if (state is PostsListCubitFetchedSuccessfully) {
-              if (state.lastLoadedPagingOptionsDto.offset == 0) {
-                //first fetch was successful
+              if (state.posts.length == state.fetchedPosts.length) {
+                //it was first fetch
                 //we notify HomeSection's Appbar to show post's category tabbar instead of Home title
                 context.read<TabBarCubit>().showTabBar();
                 return;
               }
 
               //After First successful fetch
-              //Todo: if there is no new posts >> show realted snackbar
-              List<Post> newPosts = state.posts
-                  .skip(state.lastLoadedPagingOptionsDto.offset)
-                  .toList();
-              _postsListNotifireCubit.insertItems(newPosts, false);
+              _postsListNotifireCubit.insertItems(state.fetchedPosts, false);
 
               if (_scrollController.offset ==
-                      _scrollController.position.maxScrollExtent &&
-                  newPosts.isNotEmpty) {
+                  _scrollController.position.maxScrollExtent) {
                 _scrollController.animateTo(_scrollController.offset + 100,
                     duration: const Duration(milliseconds: 800),
                     curve: Curves.easeInBack);
@@ -140,11 +135,32 @@ class _TabContentState extends State<TabContent>
             controller: _scrollController,
             scrollDirection: Axis.vertical,
             slivers: [
-              //Caurosel
+              //Free Space Between Appbar and contents --> like Top padding
+              //Show contents top padding when there are some posts in the list
               BlocBuilder<PostsListCubit, PostsListCubitState>(
                 buildWhen: (previous, current) =>
+                    (current is PostsListCubitFetchedSuccessfully &&
+                        previous.posts.isEmpty) ||
+                    (current is PostsListCubitFetching &&
+                        previous.posts.isEmpty) ||
+                    current is PostsListCubitIsEmpty ||
+                    (current is PostsListCubitFetchingHasError &&
+                        current.posts.isEmpty),
+                builder: (context, state) {
+                  return SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: state.posts.isEmpty ? 0 : screenTopPadding,
+                    ),
+                  );
+                },
+              ),
+
+              //Caurosel
+              BlocBuilder<PostsListCubit, PostsListCubitState>(
+                // only rebuild on first fetch
+                buildWhen: (previous, current) =>
                     current is PostsListCubitFetchedSuccessfully &&
-                    current.lastLoadedPagingOptionsDto.offset == 0,
+                    previous.posts.isEmpty,
                 builder: (context, state) {
                   if (state is PostsListCubitFetchedSuccessfully) {
                     return caouroselSection(state.posts.take(5).toList());
@@ -156,10 +172,11 @@ class _TabContentState extends State<TabContent>
               ),
 
               //Posts List Header
+              //only rebuild after first successful fetch
               BlocBuilder<PostsListCubit, PostsListCubitState>(
                   buildWhen: (previous, current) =>
                       current is PostsListCubitFetchedSuccessfully &&
-                      current.posts.isNotEmpty,
+                      previous.posts.isEmpty,
                   builder: (context, state) {
                     if (state is PostsListCubitFetchedSuccessfully) {
                       return postsListSectionHeader();
@@ -171,26 +188,30 @@ class _TabContentState extends State<TabContent>
 
               //Posts List
               BlocBuilder<PostsListCubit, PostsListCubitState>(
-                  //only rebuild widget for first fetch
+                  //only rebuild widget after first fetch has completed
                   buildWhen: (previous, current) =>
                       (current is PostsListCubitFetching &&
-                          current.toLoadPagingOptionsVm.offset == 0) ||
+                          current.posts.isEmpty) ||
                       (current is PostsListCubitFetchedSuccessfully &&
-                          current.lastLoadedPagingOptionsDto.offset == 0) ||
+                          previous.posts.isEmpty) ||
                       (current is PostsListCubitFetchingHasError &&
-                          current.failedLoadPagingOptionsVm.offset == 0),
+                          current.posts.isEmpty) ||
+                      current is PostsListCubitIsEmpty,
                   builder: (context, state) {
                     if (state is PostsListCubitFetching) {
                       return const SliverFillRemaining(
                         child: Center(
-                          child: Text('First Loading'),
+                          child: LoadingIndicator(
+                            hasBackground: false,
+                          ),
                         ),
                       );
                     }
                     if (state is PostsListCubitFetchedSuccessfully) {
                       return SliverInfiniteAnimatedList<Post>(
                         items: state.posts,
-                        itemLayout: (item, index) => PostItemInVerticalList(
+                        itemLayoutBuilder: (item, index) =>
+                            PostItemInVerticalList(
                           itemHeight: 160,
                           rightMargin: screenHorizontalPadding,
                           bottoMargin: 20.0,
@@ -269,8 +290,8 @@ class _TabContentState extends State<TabContent>
               cauroselRightPadding: screenHorizontalPadding,
               items: posts,
               onPostBookMarkUpdated: (post, newBookmarkStatus) =>
-                  _postListsCubit.updatePostBookmarkStatusWithoutChangingState(
-                      post, newBookmarkStatus),
+                  _postListsCubit.updatePostsBookmarkStatus(
+                      postId: post.id, newBookmarkStatus: newBookmarkStatus),
             )
           : const SizedBox(
               height: 0,
@@ -296,8 +317,8 @@ class _TabContentState extends State<TabContent>
 
   //we use this fuction to update post's bookmark value locally
   void onPostBookmarkUpdated(int index, Post post, bool newBookmarkStatus) {
-    _postListsCubit.updatePostBookmarkStatusWithoutChangingState(
-        post, newBookmarkStatus);
+    _postListsCubit.updatePostsBookmarkStatus(
+        postId: post.id, newBookmarkStatus: newBookmarkStatus);
     _postsListNotifireCubit.modifyItem(
         index, post..isBookmarked = newBookmarkStatus, false);
   }
@@ -305,6 +326,19 @@ class _TabContentState extends State<TabContent>
   // we use this function to do stuff when bookmark button is pressed
   void onPostBookMarkPressed(Post post, bool newBookmarkStatusToSet) {
     if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
+      ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+        context: context,
+        message: error401SnackBar,
+      ));
+      return;
+    }
+
+    //If bookmarking is locked -- we do nothing
+    if (context.read<PostBookmarkCubit>().state.isLocked) {
+      ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+        context: context,
+        message: updatingBookmarksListSnackBar,
+      ));
       return;
     }
 

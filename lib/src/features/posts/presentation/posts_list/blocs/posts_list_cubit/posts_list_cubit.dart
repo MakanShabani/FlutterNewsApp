@@ -6,7 +6,6 @@ import '../../../../../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../../../../../../infrastructure/shared_models/shared_model.dart';
 import '../../../../application/posts_services.dart';
 import '../../../../domain/posts_models.dart';
-import 'package:collection/collection.dart';
 part 'posts_list_cubit_state.dart';
 
 class PostsListCubit extends Cubit<PostsListCubitState> {
@@ -27,8 +26,6 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
     }
 
     emit(PostsListCubitFetching(
-      toLoadPagingOptionsVm: PagingOptionsDTO(
-          offset: state.posts.length, limit: haowManyPostFetchEachTime),
       categoryId: categoryId,
       posts: state.posts,
     ));
@@ -36,67 +33,111 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
     //load posts
     ResponseDTO<List<Post>> fetchingPostsResponse;
 
-    //fetch only user bookmarked post or all posts
-    if (loadOnlyBookmarkedPosts != null &&
-        loadOnlyBookmarkedPosts &&
-        userToken != null) {
+    //decide to fetch only user's bookmarks or all posts
+    if (loadOnlyBookmarkedPosts != null && loadOnlyBookmarkedPosts) {
       //fetch user bookmarked posts
       fetchingPostsResponse = await _postsListService.getUserBookmarkedPosts(
-          userToken: userToken,
-          pagingOptionsDTO:
-              (state as PostsListCubitFetching).toLoadPagingOptionsVm);
+          userToken: userToken ?? 'invalid_token',
+          pagingOptionsDTO: PagingOptionsDTO(
+              offset: state.posts.length, limit: haowManyPostFetchEachTime));
     } else {
       //fetch all posts(including user bookmarked posts)
       fetchingPostsResponse = await _postsListService.getPosts(
-          pagingOptionsDTO:
-              (state as PostsListCubitFetching).toLoadPagingOptionsVm,
+          pagingOptionsDTO: PagingOptionsDTO(
+              offset: state.posts.length, limit: haowManyPostFetchEachTime),
           userToken: userToken,
           categoryId: categoryId);
     }
 
     if (fetchingPostsResponse.statusCode != 200) {
       emit(PostsListCubitFetchingHasError(
-          failedLoadPagingOptionsVm:
-              (state as PostsListCubitFetching).toLoadPagingOptionsVm,
           posts: state.posts,
           categoryId: categoryId,
           error: fetchingPostsResponse.error!));
       return;
     }
 
-    emit(PostsListCubitFetchedSuccessfully(
-      posts: state.posts + fetchingPostsResponse.data!,
-      lastLoadedPagingOptionsDto:
-          (state as PostsListCubitFetching).toLoadPagingOptionsVm,
-      categoryId: categoryId,
-    ));
+    //request is successfully ended
+    if ((state.posts + fetchingPostsResponse.data!).isEmpty) {
+      //empty bookmarks
+      emit(PostsListCubitIsEmpty(
+        posts: List.empty(),
+        categoryId: state.categoryId,
+      ));
+    } else {
+      //User's Bookmarks List is not empty
+      //Add fetched posts
+
+      if (fetchingPostsResponse.data!.isEmpty) {
+        //no more posts to fecth
+
+        emit(PostsListNoMorePostsToFetch(
+          posts: state.posts,
+          categoryId: state.categoryId,
+        ));
+        return;
+      } else {
+        emit(PostsListCubitFetchedSuccessfully(
+          fetchedPosts: fetchingPostsResponse.data!,
+          posts: state.posts + fetchingPostsResponse.data!,
+          categoryId: categoryId,
+        ));
+      }
+    }
   }
 
   void removePostFromList({required String postId}) {
     Post removedPost =
         state.posts.removeAt(state.posts.indexWhere((p) => p.id == postId));
-    emit(PostsListCubitPostHasBeenRemoved(
+    if (state.posts.isEmpty) {
+      //first notify a post has been removed
+      emit(PostsListCubitPostHasBeenRemoved(
+          posts: state.posts,
+          removedPost: removedPost,
+          categoryId: state.categoryId));
+      //then notify post is empty
+      emit(PostsListCubitIsEmpty(
         posts: state.posts,
-        removedPost: removedPost,
-        categoryId: state.categoryId));
-  }
-
-  void updatePostBookmarkStatusWithoutChangingState(
-      Post post, bool newBookmarkStatus) {
-    state.posts.firstWhereOrNull((p) => p.id == post.id)?.isBookmarked =
-        newBookmarkStatus;
-    return;
+        categoryId: state.categoryId,
+      ));
+    } else {
+      //list is not empty
+      emit(PostsListCubitPostHasBeenRemoved(
+          posts: state.posts,
+          removedPost: removedPost,
+          categoryId: state.categoryId));
+    }
   }
 
   void addPostToTheList({required Post post}) {
-    //add post to the first of the list
-    //like we fetch posts from a server --> it returns the latest bookmarks first
+    //If the state is PostListCubitFetching - we do nothing
+    if (state is PostsListCubitFetching) {
+      return;
+    }
+
     emit(PostsListCubitPostHasBeenAdded(
-        posts: [post] + state.posts, addedPost: post));
+      categoryId: state.categoryId,
+      posts: [post] + state.posts, //add post to the first of the list
+      addedPosts: [post],
+    ));
   }
 
-  void resetToInitial() {
-    emit(PostsListCubitInitial(
+  void emptyList() {
+    emit(PostsListCubitIsEmpty(
         posts: List.empty(), categoryId: state.categoryId));
+  }
+
+  void updatePostsBookmarkStatus(
+      {required String postId, required bool newBookmarkStatus}) {
+    int index = state.posts.indexWhere((element) => element.id == postId);
+
+    if (index == -1) {
+      //item not found -->> not expected--> do nothing
+
+      return;
+    }
+
+    //update the item's bookmark value but emit the same state
+    emit(state..posts[index].isBookmarked = newBookmarkStatus);
   }
 }
