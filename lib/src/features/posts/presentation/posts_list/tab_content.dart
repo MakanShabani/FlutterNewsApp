@@ -4,7 +4,6 @@ import 'package:responsive_admin_dashboard/src/features/authentication/presentat
 import 'package:responsive_admin_dashboard/src/features/posts/application/posts_services.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/data/repositories/posts_repositories.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts_list/home_section/tab_bar_cubit/tab_bar_cubit.dart';
-import 'package:responsive_admin_dashboard/src/features/posts_category/presentation/blocs/post_category_cubit.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/constants.dart/constants.dart';
@@ -327,6 +326,19 @@ class _TabContentState extends State<TabContent>
   // we use this function to do stuff when bookmark button is pressed
   void onPostBookMarkPressed(Post post, bool newBookmarkStatusToSet) {
     if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
+      ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+        context: context,
+        message: error401SnackBar,
+      ));
+      return;
+    }
+
+    //If bookmarking is locked -- we do nothing
+    if (context.read<PostBookmarkCubit>().state.isLocked) {
+      ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+        context: context,
+        message: updatingBookmarksListSnackBar,
+      ));
       return;
     }
 

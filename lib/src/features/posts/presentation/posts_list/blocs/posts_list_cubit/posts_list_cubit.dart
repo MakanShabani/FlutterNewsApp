@@ -110,16 +110,14 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
   }
 
   void addPostToTheList({required Post post}) {
-    //add post to the first of the list
-
-    //If the list is empty and posts are fetching - we do nothing
-    if (state is PostsListCubitFetching && state.posts.isEmpty) {
+    //If the state is PostListCubitFetching - we do nothing
+    if (state is PostsListCubitFetching) {
       return;
     }
 
     emit(PostsListCubitPostHasBeenAdded(
       categoryId: state.categoryId,
-      posts: [post] + state.posts,
+      posts: [post] + state.posts, //add post to the first of the list
       addedPosts: [post],
     ));
   }

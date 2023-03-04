@@ -67,12 +67,11 @@ class _BookmarkSectionState extends State<BookmarkSection>
           current is PostsListNoMorePostsToFetch ||
           current is PostsListCubitIsEmpty,
       listener: (context, state) {
-        //notify PostBookmarkCubit to unlock bookmarking feature, if it is locked
-        context
-            .read<PostBookmarkCubit>()
-            .updateBookmarkingLockValue(lock: false);
-
         if (state is PostsListCubitFetchedSuccessfully) {
+          //notify PostBookmarkCubit to unlock bookmarking feature, if it is locked
+          context
+              .read<PostBookmarkCubit>()
+              .updateBookmarkingLockValue(lock: false);
           //notify SliverInfiniteAnimatedList to show add new posts to its local list
           _postslistNotifireCubit.insertItems(state.fetchedPosts, false);
           if (_scrollController.offset ==
@@ -90,6 +89,10 @@ class _BookmarkSectionState extends State<BookmarkSection>
         }
 
         if (state is PostsListNoMorePostsToFetch) {
+          //notify PostBookmarkCubit to unlock bookmarking feature, if it is locked
+          context
+              .read<PostBookmarkCubit>()
+              .updateBookmarkingLockValue(lock: false);
           if (state.posts.isNotEmpty) {
             //notify SliverInfiniteAnimatedList to hide its loading indicator
             _postslistNotifireCubit.resetState();
@@ -111,6 +114,10 @@ class _BookmarkSectionState extends State<BookmarkSection>
         }
 
         if (state is PostsListCubitFetchingHasError) {
+          //notify PostBookmarkCubit to unlock bookmarking feature, if it is locked
+          context
+              .read<PostBookmarkCubit>()
+              .updateBookmarkingLockValue(lock: false);
           //show snackbar when fetching ends with an error
           //for initial fetch we show an error widget in the screen >> go to the blocbuilder section
           ScaffoldMessenger.of(context).showSnackBar(
@@ -122,6 +129,13 @@ class _BookmarkSectionState extends State<BookmarkSection>
             ),
           );
           return;
+        }
+
+        if (state is PostsListCubitIsEmpty) {
+          //notify PostBookmarkCubit to unlock bookmarking feature, if it is locked
+          context
+              .read<PostBookmarkCubit>()
+              .updateBookmarkingLockValue(lock: false);
         }
 
         if (state is PostsListCubitFetching) {
@@ -187,6 +201,15 @@ class _BookmarkSectionState extends State<BookmarkSection>
 
   // we use this function to do stuff when bookmark button is pressed
   void onPostBookMarkPressed(Post post, bool newBookmarkStatusToSet) {
+    //If there are any ongoing fetching -- we do nothing -- show snackbar
+    if (_postsListCubit.state is PostsListCubitFetching) {
+      ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+        context: context,
+        message: updatingBookmarksListSnackBar,
+      ));
+      return;
+    }
+
     if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
       return;
     }
@@ -230,12 +253,26 @@ class _BookmarkSectionState extends State<BookmarkSection>
       }
     }
 
-    //lock bookmarking feature to prevent user from bookmarking a post during refreshing or fetching for the first time
+    //If there are any ongoing bookmarking -- we do nothing -- show snackbar
+    if (context
+        .read<PostBookmarkCubit>()
+        .state
+        .currentBookmarkingPosts
+        .isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+        context: context,
+        message: onGoingBookmarkingSnackBar,
+        actionLabel: 'Try Again',
+        action: () => _fetchPosts(checkAuthentication),
+      ));
+      return;
+    }
+
+    //lock bookmarking feature to prevent user from bookmarking a post during refreshing or fetching
     //Notify PostBookmarkCubit
     //Unlock the Bookmarking feature aftre the fetching ends. --> See PostListCubitListener
-    if (_postsListCubit.state.posts.isEmpty) {
-      context.read<PostBookmarkCubit>().updateBookmarkingLockValue(lock: true);
-    }
+    context.read<PostBookmarkCubit>().updateBookmarkingLockValue(lock: true);
+
     _postsListCubit.fetch(
         context.read<AuthenticationCubit>().state is AuthenticationLoggedIn
             ? (context.read<AuthenticationCubit>().state

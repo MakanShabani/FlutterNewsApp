@@ -13,3 +13,9 @@ const bookmarkListsEmptySubtitle =
 
 const noMorePostsToFetchSnackBar = 'There are no more posts to fetch';
 const noMoreBookmarkToFetchSnackBar = 'It seems you have no more bookmarks';
+
+const onGoingBookmarkingSnackBar =
+    'You must wait till ongoing bookmarking ends';
+
+const updatingBookmarksListSnackBar =
+    'Please wait, your bookmarks list is updating';
