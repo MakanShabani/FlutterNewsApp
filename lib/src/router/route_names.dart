@@ -4,3 +4,4 @@ const String splashRoute = '/';
 const String loginRoute = '/login';
 const String homeRoute = '/home';
 const String settingsRoute = '/settings';
+const String postRoute = '/post';
