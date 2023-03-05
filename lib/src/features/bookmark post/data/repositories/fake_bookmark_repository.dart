@@ -1,14 +1,14 @@
 import '../../../../infrastructure/shared_dtos/shared_dtos.dart';
-import '../../../../server_impementation/data_sources/fake_bookmark_data_source.dart';
+import '../../../../server_impementation/data_sources/bookmark_data_source.dart';
 import 'bookmark_repository.dart';
 
 class FakeBookmarkReposiory implements BookmarkRepository {
   FakeBookmarkReposiory(
       {required this.toggleBookmarkDelay,
-      required FakeBookmarkDataSource fakeBookmarkDataSource})
+      required BookmarkDataSource fakeBookmarkDataSource})
       : _fakeBookmarkDataSource = fakeBookmarkDataSource;
 
-  final FakeBookmarkDataSource _fakeBookmarkDataSource;
+  final BookmarkDataSource _fakeBookmarkDataSource;
   final int toggleBookmarkDelay;
 
   @override

@@ -7,7 +7,7 @@ import '../../infrastructure/shared_models/shared_model.dart';
 import '../databse_entities/databse_entities.dart';
 import '../fake_database.dart';
 
-class FakeBookmarkDataSource {
+class BookmarkDataSource {
   FakeDatabase fakeDatabase = FakeDatabase();
 
   ResponseDTO<void> toggleBookmarkPost(

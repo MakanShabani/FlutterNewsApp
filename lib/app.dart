@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_admin_dashboard/src/server_impementation/data_sources/fake_bookmark_data_source.dart';
+import 'package:responsive_admin_dashboard/src/server_impementation/data_sources/bookmark_data_source.dart';
 import 'src/features/bookmark%20post/application/bookmark_service.dart';
 import 'src/features/bookmark%20post/data/repositories/fake_bookmark_repository.dart';
 
@@ -8,9 +8,9 @@ import 'src/features/authentication/application/authentication_services.dart';
 import 'src/features/authentication/data/repositories/authentciation_repositories.dart';
 import 'src/features/authentication/presentation/authentication_presentations.dart';
 import 'src/features/bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
-import 'src/server_impementation/data_sources/fake_posts_data_source.dart';
+import 'src/server_impementation/data_sources/post_data_source.dart';
 import 'src/features/posts/data/repositories/posts_repositories.dart';
-import 'src/server_impementation/data_sources/fake_post_category_data_source.dart';
+import 'src/server_impementation/data_sources/post_category_data_source.dart';
 import 'src/features/posts_category/data/repositories/post_category_repositories.dart';
 import 'src/features/settings/application/settings_services.dart';
 import 'src/features/settings/presentation/blocs/settings_blocs.dart';
@@ -31,18 +31,18 @@ class App extends StatelessWidget {
                 FakeAuthenticationRepository(delayDurationInSeconds: 2)),
         RepositoryProvider(
             create: (context) => FakePostReposiory(
-                fakePostsDataSource: FakePostsDataSource(),
+                fakePostsDataSource: PostDataSource(),
                 fetchDelayDurationInSeconds: 2,
                 toggleBookmarkDelay: 10)),
         RepositoryProvider(
             create: (context) => FakePostCategoryRepository(
                 delayDurationInSeconds: 1,
                 fakePostCategoryDataSource:
-                    FakePostCategoryDataSource(fakeDatabase: FakeDatabase()))),
+                    PostCategoryDataSource(fakeDatabase: FakeDatabase()))),
         RepositoryProvider(
           create: (context) => FakeBookmarkReposiory(
               toggleBookmarkDelay: 5,
-              fakeBookmarkDataSource: FakeBookmarkDataSource()),
+              fakeBookmarkDataSource: BookmarkDataSource()),
         )
       ],
       child: MultiBlocProvider(

@@ -1,15 +1,15 @@
 import '../../../../infrastructure/shared_dtos/shared_dtos.dart';
-import '../../../../server_impementation/data_sources/fake_post_category_data_source.dart';
+import '../../../../server_impementation/data_sources/post_category_data_source.dart';
 import '../../domain/post_category_models.dart';
 import 'post_category_repository.dart';
 
 class FakePostCategoryRepository implements PostCategoryRepository {
   FakePostCategoryRepository(
       {required this.delayDurationInSeconds,
-      required FakePostCategoryDataSource fakePostCategoryDataSource})
+      required PostCategoryDataSource fakePostCategoryDataSource})
       : _fakeCategoryDataSource = fakePostCategoryDataSource;
 
-  final FakePostCategoryDataSource _fakeCategoryDataSource;
+  final PostCategoryDataSource _fakeCategoryDataSource;
   final int delayDurationInSeconds;
 
   @override

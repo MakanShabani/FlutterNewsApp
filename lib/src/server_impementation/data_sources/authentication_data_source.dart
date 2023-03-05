@@ -7,7 +7,7 @@ import '../fake_database.dart';
 import '../../features/authentication/domain/authentication_models.dart';
 import '../../features/authentication/data/dtos/authenticate_dtos.dart';
 
-class FakeAuthenticationDataSource {
+class AuthenticationDataSource {
   FakeDatabase fakeData = FakeDatabase();
 
   ResponseDTO<User> registerUser({required UserRegisterDTO userRegisterVm}) {

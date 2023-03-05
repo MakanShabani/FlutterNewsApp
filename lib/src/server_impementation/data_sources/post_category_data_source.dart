@@ -3,8 +3,8 @@ import '../databse_entities/databse_entities.dart';
 import '../fake_database.dart';
 import '../../features/posts_category/domain/post_category_models.dart';
 
-class FakePostCategoryDataSource {
-  FakePostCategoryDataSource({required FakeDatabase fakeDatabase})
+class PostCategoryDataSource {
+  PostCategoryDataSource({required FakeDatabase fakeDatabase})
       : _fakeDatabase = fakeDatabase;
 
   final FakeDatabase _fakeDatabase;

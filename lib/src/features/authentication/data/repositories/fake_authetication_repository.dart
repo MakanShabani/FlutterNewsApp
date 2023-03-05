@@ -1,4 +1,4 @@
-import 'package:responsive_admin_dashboard/src/server_impementation/data_sources/fake_authentication_data_source.dart';
+import 'package:responsive_admin_dashboard/src/server_impementation/data_sources/authentication_data_source.dart';
 
 import '../../../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../../domain/authentication_models.dart';
@@ -8,8 +8,7 @@ import 'authentication_repository.dart';
 class FakeAuthenticationRepository implements AuthenticationRepository {
   FakeAuthenticationRepository({required this.delayDurationInSeconds});
 
-  FakeAuthenticationDataSource fakeAuthDataSource =
-      FakeAuthenticationDataSource();
+  AuthenticationDataSource fakeAuthDataSource = AuthenticationDataSource();
 
   final int delayDurationInSeconds;
 

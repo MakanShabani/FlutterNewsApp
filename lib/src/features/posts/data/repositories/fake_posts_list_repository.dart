@@ -1,5 +1,5 @@
 import 'package:responsive_admin_dashboard/src/features/posts/domain/post.dart';
-import 'package:responsive_admin_dashboard/src/server_impementation/data_sources/fake_posts_data_source.dart';
+import 'package:responsive_admin_dashboard/src/server_impementation/data_sources/post_data_source.dart';
 
 import '../../../../infrastructure/shared_dtos/shared_dtos.dart';
 import 'posts_repository.dart';
@@ -8,10 +8,10 @@ class FakePostReposiory implements PostsRepository {
   FakePostReposiory(
       {required this.fetchDelayDurationInSeconds,
       required this.toggleBookmarkDelay,
-      required FakePostsDataSource fakePostsDataSource})
+      required PostDataSource fakePostsDataSource})
       : _fakePostDataSource = fakePostsDataSource;
 
-  final FakePostsDataSource _fakePostDataSource;
+  final PostDataSource _fakePostDataSource;
   final int fetchDelayDurationInSeconds;
   final int toggleBookmarkDelay;
 

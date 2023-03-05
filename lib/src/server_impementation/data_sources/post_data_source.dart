@@ -8,7 +8,7 @@ import '../databse_entities/databse_entities.dart';
 import '../fake_database.dart';
 import '../../features/posts/domain/posts_models.dart';
 
-class FakePostsDataSource {
+class PostDataSource {
   FakeDatabase fakeDatabase = FakeDatabase();
   ResponseDTO<List<Post>> getPosts(
       {String? userToken,
