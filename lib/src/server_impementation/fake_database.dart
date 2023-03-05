@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:faker/faker.dart';
+import 'package:responsive_admin_dashboard/src/server_impementation/databse_entities/databse_comment.dart';
 
 import 'databse_entities/databse_entities.dart';
 
@@ -16,6 +19,7 @@ class FakeDatabase {
   List<DatabaseUser> users = List.empty(growable: true);
   List<DatabasePostCategory> categories = List.empty(growable: true);
   List<DatabsePost> posts = List.empty(growable: true);
+  List<DatabaseComment> comments = List.empty(growable: true);
   String? signedInUserToken;
   DateTime? signedInUserExpirationDate;
   String? sigendInUserID;
@@ -68,6 +72,7 @@ class FakeDatabase {
     createDummyCategories(2);
     createDummyUser(10);
     createDummyPost(400);
+    createDummyComments();
   }
 
   void createDummyCategories(int count) {
@@ -81,6 +86,30 @@ class FakeDatabase {
         title: faker.lorem.word(),
         description: faker.lorem.sentence(),
       ));
+    }
+  }
+
+  void createDummyComments() {
+    Faker faker = Faker();
+
+    for (var post in posts) {
+      for (int i = 0; i < faker.randomGenerator.integer(15); i++) {
+        comments.add(
+          DatabaseComment(
+            id: DateTime.now().microsecondsSinceEpoch.toString(),
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+            postId: post.id,
+            content: i % 2 == 0
+                ? faker.lorem.sentence() +
+                    faker.lorem.sentence() +
+                    faker.lorem.sentence() +
+                    faker.lorem.sentence()
+                : faker.lorem.sentence(),
+            user: users[Random().nextInt(users.length)],
+          ),
+        );
+      }
     }
   }
 
