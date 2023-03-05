@@ -12,7 +12,7 @@ class DatabsePost extends DatabaseEntity {
   DatabasePostCategory category;
   DatabaseUser author;
   bool isBookmarked;
-
+  int commentsCount;
   DatabsePost({
     required String id,
     required DateTime createdAt,
@@ -24,6 +24,7 @@ class DatabsePost extends DatabaseEntity {
     required this.author,
     required this.status,
     required this.isBookmarked,
+    required this.commentsCount,
     this.imagesUrls,
   }) : super(id: id, createdAt: createdAt, updatedAt: updatedAt);
 }

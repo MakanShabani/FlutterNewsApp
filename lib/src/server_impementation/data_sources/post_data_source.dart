@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:collection/collection.dart';
+import 'package:responsive_admin_dashboard/src/server_impementation/data_sources/comment_data_source.dart';
 
 import '../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../../infrastructure/shared_models/shared_model.dart';
@@ -10,6 +11,8 @@ import '../../features/posts/domain/posts_models.dart';
 
 class PostDataSource {
   FakeDatabase fakeDatabase = FakeDatabase();
+  CommentDataSource commentDataSource = CommentDataSource();
+
   ResponseDTO<List<Post>> getPosts(
       {String? userToken,
       String? categoryId,
@@ -224,6 +227,10 @@ class PostDataSource {
             : post.isBookmarked = false;
       }
     }
+
+    //set posts comments count
+    post.commentsCount =
+        commentDataSource.getCommentsCount(postId: postId).data!;
 
     return ResponseDTO(statusCode: 200, data: Post.fromFakeDatabsePost(post));
   }

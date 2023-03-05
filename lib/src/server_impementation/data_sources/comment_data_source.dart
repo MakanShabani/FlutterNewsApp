@@ -51,4 +51,30 @@ class CommentDataSource {
 
     return ResponseDTO(statusCode: 200, data: finalComments);
   }
+
+  ResponseDTO<int> getCommentsCount({required String postId}) {
+    //check the existence of the post
+
+    DatabsePost? post =
+        fakeDatabase.posts.firstWhereOrNull((p) => p.id == postId);
+
+    //Post not found
+    if (post == null) {
+      ErrorModel error = ErrorModel(
+        message: 'Post not found',
+        detail: 'Post not found.',
+        statusCode: 404,
+      );
+
+      return ResponseDTO(statusCode: 404, error: error);
+    }
+
+    //everything is ok
+
+    return ResponseDTO(
+        statusCode: 200,
+        data: fakeDatabase.comments
+            .where((element) => element.id == postId)
+            .length);
+  }
 }

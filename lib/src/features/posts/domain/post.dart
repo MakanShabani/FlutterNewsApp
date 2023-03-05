@@ -13,7 +13,7 @@ class Post extends Entity {
   PostCategory category;
   Author author;
   bool isBookmarked;
-
+  int commentsCount;
   Post({
     required String id,
     required DateTime createdAt,
@@ -26,6 +26,7 @@ class Post extends Entity {
     required this.status,
     required this.isBookmarked,
     this.imagesUrls,
+    required this.commentsCount,
   }) : super(id: id, createdAt: createdAt, updatedAt: updatedAt);
 
   factory Post.fromJson(Map<String, dynamic> parsedJson) {
@@ -45,6 +46,7 @@ class Post extends Entity {
       status: PostStatus.fromIndex(parsedJson['status']),
       isBookmarked: parsedJson['is_bookmarked'],
       imagesUrls: (parsedJson['images_urls'] as List<dynamic>?)?.cast<String>(),
+      commentsCount: parsedJson['comments_count'],
     );
   }
 
@@ -80,6 +82,7 @@ class Post extends Entity {
       status: PostStatus.fromFakeDatabsePostStatus(databsePost.status),
       isBookmarked: databsePost.isBookmarked,
       imagesUrls: databsePost.imagesUrls,
+      commentsCount: databsePost.commentsCount,
     );
   }
 }

@@ -119,6 +119,7 @@ class FakeDatabase {
     for (int i = 0; i < count; i++) {
       posts.add(DatabsePost(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
+        commentsCount: 0,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         title: '${faker.lorem.word()} ${faker.lorem.sentence()}',
