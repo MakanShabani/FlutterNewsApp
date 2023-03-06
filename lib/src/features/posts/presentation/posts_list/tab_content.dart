@@ -36,7 +36,7 @@ class _TabContentState extends State<TabContent>
     _postsListNotifireCubit = ListNotifireCubit();
     _postListsCubit = PostsListCubit(
       postsListService:
-          PostsListService(postRepository: context.read<FakePostReposiory>()),
+          PostService(postRepository: context.read<FakePostReposiory>()),
       haowManyPostFetchEachTime: 10,
     )..fetch(
         context.read<AuthenticationCubit>().state is AuthenticationLoggedIn

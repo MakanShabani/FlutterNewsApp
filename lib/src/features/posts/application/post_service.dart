@@ -2,8 +2,8 @@ import '../../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../data/repositories/posts_repositories.dart';
 import '../domain/posts_models.dart';
 
-class PostsListService {
-  PostsListService({required PostsRepository postRepository})
+class PostService {
+  PostService({required PostsRepository postRepository})
       : _postRepository = postRepository;
 
   final PostsRepository _postRepository;

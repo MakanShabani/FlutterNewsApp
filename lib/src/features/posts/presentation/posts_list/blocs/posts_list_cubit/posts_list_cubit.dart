@@ -10,13 +10,13 @@ part 'posts_list_cubit_state.dart';
 
 class PostsListCubit extends Cubit<PostsListCubitState> {
   PostsListCubit({
-    required PostsListService postsListService,
+    required PostService postsListService,
     required this.haowManyPostFetchEachTime,
   })  : _postsListService = postsListService,
         assert(haowManyPostFetchEachTime >= 10),
         super(PostsListCubitInitial(posts: List.empty()));
 
-  final PostsListService _postsListService;
+  final PostService _postsListService;
   final int haowManyPostFetchEachTime;
 
   void fetch(String? userToken, String? categoryId,

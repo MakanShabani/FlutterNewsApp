@@ -33,7 +33,7 @@ class _BookmarkSectionState extends State<BookmarkSection>
 
     _postsListCubit = PostsListCubit(
         postsListService:
-            PostsListService(postRepository: context.read<FakePostReposiory>()),
+            PostService(postRepository: context.read<FakePostReposiory>()),
         haowManyPostFetchEachTime: 10);
 
     _postslistNotifireCubit = ListNotifireCubit<Post>();
