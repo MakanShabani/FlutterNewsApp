@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:responsive_admin_dashboard/src/features/posts/presentation/post_screen.dart';
+import 'package:responsive_admin_dashboard/src/features/posts/presentation/post_detail/post_screen.dart';
 
 import '../screens/home_screen/home_screen.dart';
 import '../screens/splash_screen.dart';
