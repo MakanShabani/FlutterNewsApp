@@ -120,6 +120,7 @@ class FakeDatabase {
       posts.add(DatabsePost(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         commentsCount: 0,
+        viewsCount: faker.randomGenerator.integer(10000000),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         title: '${faker.lorem.word()} ${faker.lorem.sentence()}',
