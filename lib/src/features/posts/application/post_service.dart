@@ -32,4 +32,15 @@ class PostsListService {
     return await _postRepository.getBookmarkedPosts(
         userToken: userToken, pagingOptionsDTO: pagingOptionsDTO);
   }
+
+  Future<ResponseDTO<Post>> getPostDetails(
+      {String? userToken, required String postId}) async {
+    if (userToken == null) {
+      //get post As a guest
+      return await _postRepository.getPostAsGuest(postId: postId);
+    }
+
+    //get post as a signed in user
+    return await _postRepository.getPost(userToken: userToken, postId: postId);
+  }
 }

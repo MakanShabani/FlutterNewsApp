@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 
 import '../../../../../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../../../../../../infrastructure/shared_models/shared_model.dart';
-import '../../../../application/posts_services.dart';
+import '../../../../application/post_service.dart';
 import '../../../../domain/posts_models.dart';
 part 'posts_list_cubit_state.dart';
 

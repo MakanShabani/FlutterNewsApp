@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_admin_dashboard/src/features/authentication/presentation/authentication_presentations.dart';
-import 'package:responsive_admin_dashboard/src/features/posts/application/posts_services.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/data/repositories/posts_repositories.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts_list/home_section/tab_bar_cubit/tab_bar_cubit.dart';
 
@@ -9,6 +8,7 @@ import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/constants.dart/constants.dart';
 import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import '../../../posts_category/domain/post_category_models.dart';
+import '../../application/post_service.dart';
 import '../../domain/posts_models.dart';
 import 'blocs/posts_list_blocs.dart';
 
