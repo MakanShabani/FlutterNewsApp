@@ -6,6 +6,7 @@ import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts
 import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
 import 'package:responsive_admin_dashboard/src/router/route_names.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import '../../../../router/app_router.dart';
 import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import '../../application/post_service.dart';
 import '../../data/repositories/fake_posts_list_repository.dart';
@@ -428,6 +429,8 @@ class _BookmarkSectionState extends State<BookmarkSection>
           leftMargin: screenHorizontalPadding,
           borderRadious: circularBorderRadious,
           item: item,
+          onItemtapped: () => Navigator.pushNamed(context, postRoute,
+              arguments: AppRouter.createPostRouteArguments(item.id)),
         ),
         loadingLayout: const SizedBox(
           height: 50.0,

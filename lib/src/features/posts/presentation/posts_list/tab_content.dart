@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_admin_dashboard/src/features/authentication/presentation/authentication_presentations.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/data/repositories/posts_repositories.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts_list/home_section/tab_bar_cubit/tab_bar_cubit.dart';
+import 'package:responsive_admin_dashboard/src/router/app_router.dart';
+import 'package:responsive_admin_dashboard/src/router/route_names.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../../infrastructure/constants.dart/constants.dart';
@@ -225,6 +227,10 @@ class _TabContentState extends State<TabContent>
                               (post, newBookmarkValueToSet) =>
                                   onPostBookMarkPressed(
                                       post, newBookmarkValueToSet),
+                          onItemtapped: () => Navigator.pushNamed(
+                              context, postRoute,
+                              arguments:
+                                  AppRouter.createPostRouteArguments(item.id)),
                         ),
                         loadingLayout: const SizedBox(
                           height: 50.0,
