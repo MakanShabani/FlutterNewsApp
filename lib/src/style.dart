@@ -19,7 +19,7 @@ class ThemeStyle {
           centerTitle: true,
           backgroundColor: Colors.white,
           iconTheme: const IconThemeData().copyWith(
-            color: Colors.orange,
+            color: Colors.white,
           )),
       switchTheme: const SwitchThemeData().copyWith(
         thumbColor:
@@ -52,8 +52,8 @@ class ThemeStyle {
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          primary: Colors.orange,
-          onPrimary: Colors.white,
+          backgroundColor: Colors.orange,
+          foregroundColor: Colors.white,
           textStyle: const TextStyle(),
           elevation: 0,
           minimumSize: const Size.fromHeight(45.0),
@@ -100,7 +100,7 @@ class ThemeStyle {
             color: Colors.white,
           ),
           iconTheme: const IconThemeData().copyWith(
-            color: Colors.orange,
+            color: Colors.white,
           )),
       switchTheme: const SwitchThemeData().copyWith(
         thumbColor: MaterialStateProperty.resolveWith<Color>(
@@ -134,8 +134,8 @@ class ThemeStyle {
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          primary: Colors.orange,
-          onPrimary: Colors.white,
+          backgroundColor: Colors.orange,
+          foregroundColor: Colors.white,
           textStyle: const TextStyle(),
           elevation: 0,
           minimumSize: const Size.fromHeight(45.0),
