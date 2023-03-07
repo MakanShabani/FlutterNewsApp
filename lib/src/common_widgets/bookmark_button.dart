@@ -7,7 +7,7 @@ class BookmarkButton extends StatelessWidget {
   final bool isBoolmarked;
   final bool isLoading;
   final double? loadingSize;
-
+  final double? size;
   final VoidCallback? onPressed;
 
   const BookmarkButton({
@@ -17,6 +17,7 @@ class BookmarkButton extends StatelessWidget {
     this.bookmarkedColor,
     this.unBookmarkedColor,
     this.loadingSize,
+    this.size,
     this.onPressed,
   }) : super(key: key);
 
@@ -36,7 +37,7 @@ class BookmarkButton extends StatelessWidget {
               color: isBoolmarked
                   ? bookmarkedColor ?? Theme.of(context).primaryColor
                   : unBookmarkedColor ?? Colors.white,
-              size: 16.0,
+              size: size ?? 16.0,
             ));
   }
 }
