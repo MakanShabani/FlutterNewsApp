@@ -30,4 +30,9 @@ class AppRouter {
                 ));
     }
   }
+
+  //Arguments generator functions for routes
+  static Map<String, dynamic> createPostRouteArguments(String postId) {
+    return {'postId': postId};
+  }
 }
