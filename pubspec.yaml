@@ -49,6 +49,10 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
+  fonts:
+    - family: CustomeIcons
+      fonts:
+        - asset: assets/fonts/CustomeIcons.ttf
   assets:
     - assets/images/
 
