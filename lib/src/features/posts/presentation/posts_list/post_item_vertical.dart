@@ -18,6 +18,7 @@ class PostItemInVerticalList extends StatelessWidget {
   final double? itemHeight;
   final CustomeValueSetterCallback<Post, bool>? onPostBookmarkPressed;
   final CustomeValueSetterCallback<Post, bool>? onPostBookMarkUpdated;
+  final VoidCallback? onItemtapped;
 
   static double _imageHeight = 0;
   static double _itemFinalHeight = 0;
@@ -42,6 +43,7 @@ class PostItemInVerticalList extends StatelessWidget {
     this.topMargin,
     this.rightMargin,
     this.leftMargin,
+    this.onItemtapped,
   }) : super(key: key) {
     _itemFinalHeight = (itemHeight ?? itemDefaultHeight) - (bottoMargin ?? 0);
     _imageHeight = _itemFinalHeight - imageBottomMargin;
@@ -51,80 +53,84 @@ class PostItemInVerticalList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: _itemFinalHeight,
-      margin: EdgeInsets.fromLTRB(
-        leftMargin ?? 0,
-        topMargin ?? 0,
-        rightMargin ?? 0,
-        bottoMargin ?? 0,
-      ),
-      child: Stack(
-        children: [
-          //Text Container
-          Container(
-            height: itemHeight ?? itemDefaultHeight,
-            margin: const EdgeInsets.fromLTRB(
-              textContainerLeftMargin,
-              textContainerTopMargin,
-              0,
-              0,
-            ),
-            child: Card(
-              color: backgroundColor,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  _textContainerLeftPadding,
-                  textContainerTopPadding,
-                  0,
-                  imageBottomMargin,
-                ),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.title,
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                      SizedBox(
-                        height: 22.0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '15 minutes ago',
-                              style: Theme.of(context).textTheme.labelSmall,
-                            ),
-                            PostBookmarkButton(
-                              bookmarkedColor: Colors.orange,
-                              unBookmarkedColor: context
-                                      .read<ThemeCubit>()
-                                      .state is ThemeLightModeState
-                                  ? Colors.black54
-                                  : Colors.white,
-                              initialBookmarkStatus: item.isBookmarked,
-                              post: item,
-                              onPostBookmarkUpdated: (_, newBookmarkValue) =>
-                                  _onPostBookmarkUpdated(newBookmarkValue),
-                              onBookmarkPressed: (_, newBookmarkValueToSet) =>
-                                  _onPostBookmarkPressed(newBookmarkValueToSet),
-                            ),
-                          ],
+    return GestureDetector(
+      onTap: onItemtapped,
+      child: Container(
+        height: _itemFinalHeight,
+        margin: EdgeInsets.fromLTRB(
+          leftMargin ?? 0,
+          topMargin ?? 0,
+          rightMargin ?? 0,
+          bottoMargin ?? 0,
+        ),
+        child: Stack(
+          children: [
+            //Text Container
+            Container(
+              height: itemHeight ?? itemDefaultHeight,
+              margin: const EdgeInsets.fromLTRB(
+                textContainerLeftMargin,
+                textContainerTopMargin,
+                0,
+                0,
+              ),
+              child: Card(
+                color: backgroundColor,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    _textContainerLeftPadding,
+                    textContainerTopPadding,
+                    0,
+                    imageBottomMargin,
+                  ),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.title,
+                          style: Theme.of(context).textTheme.labelMedium,
                         ),
-                      ),
-                    ]),
+                        SizedBox(
+                          height: 22.0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '15 minutes ago',
+                                style: Theme.of(context).textTheme.labelSmall,
+                              ),
+                              PostBookmarkButton(
+                                bookmarkedColor: Colors.orange,
+                                unBookmarkedColor: context
+                                        .read<ThemeCubit>()
+                                        .state is ThemeLightModeState
+                                    ? Colors.black54
+                                    : Colors.white,
+                                initialBookmarkStatus: item.isBookmarked,
+                                post: item,
+                                onPostBookmarkUpdated: (_, newBookmarkValue) =>
+                                    _onPostBookmarkUpdated(newBookmarkValue),
+                                onBookmarkPressed: (_, newBookmarkValueToSet) =>
+                                    _onPostBookmarkPressed(
+                                        newBookmarkValueToSet),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ]),
+                ),
               ),
             ),
-          ),
-          CustomeImage(
-            borderRadious: borderRadious ?? 0,
-            imageUrl: item.imagesUrls!.first,
-            height: _imageHeight,
-            width: _imageHeight,
-            fit: BoxFit.fill,
-          ),
-        ],
+            CustomeImage(
+              borderRadious: borderRadious ?? 0,
+              imageUrl: item.imagesUrls!.first,
+              height: _imageHeight,
+              width: _imageHeight,
+              fit: BoxFit.fill,
+            ),
+          ],
+        ),
       ),
     );
   }
