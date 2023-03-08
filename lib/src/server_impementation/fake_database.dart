@@ -57,7 +57,7 @@ class FakeDatabase {
     //create admin
     users.add(DatabaseUser(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
-        createdAt: DateTime.now(),
+        createdAt: faker.date.dateTime(minYear: 2018, maxYear: 2022),
         updatedAt: DateTime.now(),
         firstName: 'admin',
         lastName: 'admin',
@@ -81,7 +81,7 @@ class FakeDatabase {
     for (int i = 0; i < count; i++) {
       categories.add(DatabasePostCategory(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
-        createdAt: DateTime.now(),
+        createdAt: faker.date.dateTime(minYear: 2018, maxYear: 2022),
         updatedAt: DateTime.now(),
         title: faker.lorem.word(),
         description: faker.lorem.sentence(),
@@ -97,7 +97,7 @@ class FakeDatabase {
         comments.add(
           DatabaseComment(
             id: DateTime.now().microsecondsSinceEpoch.toString(),
-            createdAt: DateTime.now(),
+            createdAt: faker.date.dateTime(minYear: 2018, maxYear: 2022),
             updatedAt: DateTime.now(),
             postId: post.id,
             content: i % 2 == 0
@@ -121,7 +121,7 @@ class FakeDatabase {
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         commentsCount: 0,
         viewsCount: faker.randomGenerator.integer(10000000),
-        createdAt: DateTime.now(),
+        createdAt: faker.date.dateTime(minYear: 2022, maxYear: 2022),
         updatedAt: DateTime.now(),
         title: '${faker.lorem.word()} ${faker.lorem.sentence()}',
         summary: faker.lorem.sentence() +
