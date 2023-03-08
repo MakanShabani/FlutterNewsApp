@@ -59,12 +59,12 @@ class AppbarSection extends StatelessWidget {
               vertical: appbarBottomVerticalPadding),
           child: Row(
             children: [
-              Text(
-                '15 minutes ago',
-                style: Theme.of(context)
-                    .textTheme
-                    .labelSmall
-                    ?.copyWith(color: Colors.white),
+              TimeInText(
+                dateTime: (context.read<PostDetailsCubit>().state
+                        as PostDetailsFetchedSuccessfully)
+                    .post
+                    .createdAt,
+                textColor: Colors.white,
               ),
               const Spacer(),
               Row(

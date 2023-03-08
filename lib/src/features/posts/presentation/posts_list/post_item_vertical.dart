@@ -96,10 +96,7 @@ class PostItemInVerticalList extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                '15 minutes ago',
-                                style: Theme.of(context).textTheme.labelSmall,
-                              ),
+                              TimeInText(dateTime: item.createdAt),
                               PostBookmarkButton(
                                 bookmarkedColor: Colors.orange,
                                 unBookmarkedColor: context

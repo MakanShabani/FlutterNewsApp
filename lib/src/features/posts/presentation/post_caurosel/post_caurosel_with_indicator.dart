@@ -102,9 +102,9 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  '2 hours ago',
-                                  style: TextStyle(
+                                TimeInText(
+                                  dateTime: widget.items[itemIndex].createdAt,
+                                  customeStyle: const TextStyle(
                                       color: Colors.white70, fontSize: 12.0),
                                 ),
                                 PostBookmarkButton(
