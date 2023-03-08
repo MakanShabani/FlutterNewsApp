@@ -8,7 +8,6 @@ import 'route_names.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    var arguments = settings.arguments as Map<String, dynamic>;
     switch (settings.name) {
       case splashRoute:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
@@ -17,6 +16,7 @@ class AppRouter {
       case loginRoute:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case postRoute:
+        var arguments = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
             builder: (_) => PostScreen(
                   postId: arguments['postId'] as String,
