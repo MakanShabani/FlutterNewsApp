@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_admin_dashboard/src/features/posts/application/post_service.dart';
-import 'package:responsive_admin_dashboard/src/features/posts/data/repositories/fake_posts_list_repository.dart';
-import 'package:responsive_admin_dashboard/src/features/posts/presentation/post_detail/cubit/post_details_cubit.dart';
+
+import '../../application/post_service.dart';
+import '../../data/repositories/posts_repositories.dart';
+import 'cubit/post_details_cubit.dart';
+import 'widgets/appbar_section.dart';
 
 class PostScreen extends StatelessWidget {
   const PostScreen({Key? key, required this.postId}) : super(key: key);
@@ -21,9 +23,22 @@ class PostScreen extends StatelessWidget {
         )
       ],
       child: Scaffold(
-        body: SafeArea(
-            child: CustomScrollView(
-          slivers: [],
+        body: SafeArea(child: BlocBuilder<PostDetailsCubit, PostDetailsState>(
+          builder: (context, state) {
+            if (state is PostDetailsFetchedSuccessfully) {
+              return const CustomScrollView(
+                slivers: [
+                  AppbarSection(),
+                ],
+              );
+            } else if (state is PostDetailsFetchingHasError) {
+              //Show error
+              return Container();
+            } else {
+              //Show Loading
+              return Container();
+            }
+          },
         )),
       ),
     );
