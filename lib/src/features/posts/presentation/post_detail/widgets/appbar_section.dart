@@ -4,6 +4,7 @@ import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/con
 
 import '../../../../../common_widgets/common_widgest.dart';
 import '../../../../../custome_icons/custome_icons_icons.dart';
+import '../../../domain/posts_models.dart';
 import '../cubit/post_details_cubit.dart';
 
 class AppbarSection extends StatelessWidget {
@@ -81,8 +82,7 @@ class AppbarSection extends StatelessWidget {
                     (context.read<PostDetailsCubit>().state
                             as PostDetailsFetchedSuccessfully)
                         .post
-                        .commentsCount
-                        .toString(),
+                        .commentsCountToString(),
                     style: Theme.of(context)
                         .textTheme
                         .labelSmall
@@ -107,8 +107,7 @@ class AppbarSection extends StatelessWidget {
                     (context.read<PostDetailsCubit>().state
                             as PostDetailsFetchedSuccessfully)
                         .post
-                        .viewsCount
-                        .toString(),
+                        .viewsCountToString(),
                     style: Theme.of(context)
                         .textTheme
                         .labelSmall

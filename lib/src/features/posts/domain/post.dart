@@ -90,3 +90,41 @@ class Post extends Entity {
     );
   }
 }
+
+extension ToString on Post {
+  String commentsCountToString() {
+    if (commentsCount >= 1000000) {
+      int remaining = commentsCount % 1000000;
+      return '${commentsCount ~/ 1000000}M${remaining > 0 ? '+' : ''}';
+    }
+    if (commentsCount >= 100000) {
+      int remaining = commentsCount % 100000;
+      return '${commentsCount ~/ 100000}K${remaining > 0 ? '+' : ''}';
+    }
+    if (commentsCount >= 10000) {
+      int remaining = commentsCount % 10000;
+      return '${commentsCount ~/ 10000}K${remaining > 0 ? '+' : ''}';
+    }
+    if (commentsCount >= 1000) {
+      int remaining = commentsCount % 1000;
+      return '${commentsCount ~/ 1000}K${remaining > 0 ? '+' : ''}';
+    }
+    return '$commentsCount';
+  }
+
+  String viewsCountToString() {
+    if (viewsCount >= 1000000) {
+      return '${(viewsCount / 1000000).toStringAsFixed(1)}M';
+    }
+    if (viewsCount >= 100000) {
+      return '${(viewsCount / 100000).toStringAsFixed(1)}K';
+    }
+    if (viewsCount >= 10000) {
+      return '${(viewsCount / 10000).toStringAsFixed(1)}K';
+    }
+    if (viewsCount >= 1000) {
+      return '${(viewsCount / 1000).toStringAsFixed(1)}K';
+    }
+    return '$viewsCount';
+  }
+}
