@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../router/route_names.dart';
 
+import '../../../../common_widgets/common_widgest.dart';
+import '../../../../infrastructure/constants.dart/constants.dart';
+import '../../../authentication/presentation/blocs/authentication_cubit.dart';
+import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import '../../application/post_service.dart';
 import '../../data/repositories/posts_repositories.dart';
 import 'cubit/post_details_cubit.dart';
@@ -10,6 +15,40 @@ class PostScreen extends StatelessWidget {
   const PostScreen({Key? key, required this.postId}) : super(key: key);
 
   final String postId;
+
+  // we use this function to do stuff when bookmark button is pressed
+  void onPostBookMarkPressed(BuildContext context) {
+    if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
+      ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+          context: context,
+          message: error401SnackBar,
+          action: () => Navigator.pushNamed(context, loginRoute),
+          actionLabel: 'Sign In'));
+      return;
+    }
+
+    //If bookmarking is locked -- we do nothing
+    if (context.read<PostBookmarkCubit>().state.isLocked) {
+      ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+        context: context,
+        message: updatingBookmarksListSnackBar,
+      ));
+      return;
+    }
+
+    context.read<PostBookmarkCubit>().toggleBookmark(
+        userToken: (context.read<AuthenticationCubit>().state
+                as AuthenticationLoggedIn)
+            .user
+            .token,
+        post: (context.read<PostDetailsCubit>().state
+                as PostDetailsFetchedSuccessfully)
+            .post,
+        newBookmarkValueToSet: !(context.read<PostDetailsCubit>().state
+                as PostDetailsFetchedSuccessfully)
+            .post
+            .isBookmarked);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +65,11 @@ class PostScreen extends StatelessWidget {
         body: SafeArea(child: BlocBuilder<PostDetailsCubit, PostDetailsState>(
           builder: (context, state) {
             if (state is PostDetailsFetchedSuccessfully) {
-              return const CustomScrollView(
+              return CustomScrollView(
                 slivers: [
-                  AppbarSection(),
+                  AppbarSection(
+                    onBookmarkedPressed: () => onPostBookMarkPressed(context),
+                  ),
                 ],
               );
             } else if (state is PostDetailsFetchingHasError) {

@@ -8,7 +8,11 @@ import '../../../domain/posts_models.dart';
 import '../cubit/post_details_cubit.dart';
 
 class AppbarSection extends StatelessWidget {
-  const AppbarSection({Key? key}) : super(key: key);
+  const AppbarSection({
+    Key? key,
+    this.onBookmarkedPressed,
+  }) : super(key: key);
+  final VoidCallback? onBookmarkedPressed;
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
@@ -28,12 +32,14 @@ class AppbarSection extends StatelessWidget {
           iconSize: 20.0,
         ),
         BookmarkButton(
-            size: 20.0,
-            isBoolmarked: (context.read<PostDetailsCubit>().state
-                    as PostDetailsFetchedSuccessfully)
-                .post
-                .isBookmarked,
-            isLoading: false),
+          size: 20.0,
+          isBoolmarked: (context.read<PostDetailsCubit>().state
+                  as PostDetailsFetchedSuccessfully)
+              .post
+              .isBookmarked,
+          isLoading: false,
+          onPressed: onBookmarkedPressed,
+        ),
         const SizedBox(
           width: screenHorizontalPadding,
         ),
