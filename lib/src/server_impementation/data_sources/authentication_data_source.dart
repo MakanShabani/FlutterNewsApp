@@ -1,18 +1,21 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:collection/collection.dart';
+import 'package:responsive_admin_dashboard/src/server_impementation/databse_entities/databse_entities.dart';
+import 'package:responsive_admin_dashboard/src/server_impementation/services/signed_in_user_service.dart';
 
+import '../../features/authentication/data/dtos/authenticate_dtos.dart';
+import '../../features/authentication/domain/authentication_models.dart';
 import '../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../../infrastructure/shared_models/shared_model.dart';
 import '../fake_database.dart';
-import '../../features/authentication/domain/authentication_models.dart';
-import '../../features/authentication/data/dtos/authenticate_dtos.dart';
 
 class AuthenticationDataSource {
   FakeDatabase fakeData = FakeDatabase();
+  SignedInUserService signedInUserService = SignedInUserService();
 
   ResponseDTO<User> registerUser({required UserRegisterDTO userRegisterVm}) {
-    var user =
-        fakeData.users.firstWhereOrNull((u) => u.email == userRegisterVm.email);
+    var user = fakeData.clients
+        .firstWhereOrNull((u) => u.email == userRegisterVm.email);
 
     //the user already exists.
     if (user != null) {
@@ -27,7 +30,7 @@ class AuthenticationDataSource {
     }
 
     //everything is ok
-    User newUser = User(
+    DatabaseUser newUser = DatabaseUser(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
@@ -35,21 +38,22 @@ class AuthenticationDataSource {
         lastName: userRegisterVm.lastName,
         age: userRegisterVm.age,
         email: userRegisterVm.email,
-        role: UserRole.client,
-        status: UserStatus.active,
+        role: DatabseUserRole.client,
+        status: DatabseUserStatus.active,
         token: 'token ${userRegisterVm.email}',
-        expireAt: DateTime.now().add(const Duration(hours: 1)));
+        tokenExpiresAt: DateTime.now().add(const Duration(hours: 1)));
 
     //editServer
-    fakeData.signedInUserToken = newUser.token;
-    fakeData.signedInUserExpirationDate = newUser.expireAt;
-    fakeData.sigendInUserID = newUser.id;
+    fakeData.sigendInUser = newUser;
+    //save user credentials to database
+    signedInUserService.saveUserInfo(newUser);
 
-    return ResponseDTO(statusCode: 200, data: newUser);
+    return ResponseDTO(
+        statusCode: 200, data: User.fromFakeDatabseUser(newUser));
   }
 
   ResponseDTO<User> loginUser({required UserLoginDTO loginVm}) {
-    var serverUser = fakeData.users.firstWhereOrNull(
+    var serverUser = fakeData.clients.firstWhereOrNull(
         (u) => u.email == loginVm.email && u.password == loginVm.password);
 
     //the user not found or user password is incorrect.
@@ -64,22 +68,20 @@ class AuthenticationDataSource {
     }
 
     //everything is ok
-
-    User user = User.fromFakeDatabseUser(
-        serverUser,
-        'token ${serverUser.email}',
-        DateTime.now().add(const Duration(hours: 1)));
-
+    //assign token to the loggedIn user
+    serverUser.token = 'token ${serverUser.email}';
+    serverUser.tokenExpiresAt = DateTime.now().add(const Duration(hours: 1));
     //Upate fake database
-    fakeData.signedInUserToken = user.token;
-    fakeData.signedInUserExpirationDate = user.expireAt;
-    fakeData.sigendInUserID = user.id;
+    fakeData.sigendInUser = serverUser;
+    //save user credentials to database
+    signedInUserService.saveUserInfo(serverUser);
 
-    return ResponseDTO(statusCode: 200, data: user);
+    return ResponseDTO(
+        statusCode: 200, data: User.fromFakeDatabseUser(serverUser));
   }
 
   ResponseDTO<void> logoutUser({required String userToken}) {
-    //the user not found or user password is incorrect.
+    //the user not found or user token is incorrect.
     if (!fakeData.isUserTokenValid(token: userToken)) {
       ErrorModel error = ErrorModel(
         message: 'Unauthorized',
@@ -91,11 +93,10 @@ class AuthenticationDataSource {
       return ResponseDTO(statusCode: 401, error: error);
     }
 
+    //remove user credentials from database
+    signedInUserService.removeUserInfo();
     //everything is ok
-
-    fakeData.signedInUserToken = null;
-    fakeData.signedInUserExpirationDate = null;
-    fakeData.sigendInUserID = null;
+    fakeData.sigendInUser = null;
 
     return ResponseDTO(statusCode: 204);
   }

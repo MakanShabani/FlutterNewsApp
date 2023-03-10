@@ -11,6 +11,8 @@ class DatabaseUser extends DatabaseEntity {
   int? age;
   String? phone;
   String? imageUrl;
+  String? token;
+  DateTime? tokenExpiresAt;
   DatabseUserRole role;
   DatabseUserStatus status;
   List<DatabsePost>? posts;
@@ -26,13 +28,15 @@ class DatabaseUser extends DatabaseEntity {
     required this.email,
     required this.role,
     required this.status,
+    this.token,
+    this.tokenExpiresAt,
     this.phone,
     this.imageUrl,
     this.posts,
   });
 
   factory DatabaseUser.fromJson(Map<String, dynamic> parsedJson) {
-    final DatabaseUser tempEntity = DatabaseUser.fromJson(parsedJson);
+    final DatabaseEntity tempEntity = DatabaseEntity.fromJson(parsedJson);
 
     return DatabaseUser(
       id: tempEntity.id,
@@ -47,6 +51,8 @@ class DatabaseUser extends DatabaseEntity {
       status: DatabseUserStatus.fromIndex(parsedJson['status']),
       phone: parsedJson['phone'],
       imageUrl: parsedJson['image_url'],
+      token: parsedJson['token'],
+      tokenExpiresAt: DateTime.parse(parsedJson['token_expires_at']),
     );
   }
   @override
@@ -61,6 +67,8 @@ class DatabaseUser extends DatabaseEntity {
     data['status'] = status.index;
     data['phone'] = phone;
     data['image_url'] = imageUrl;
+    data['token'] = token;
+    data['token_expires_at'] = tokenExpiresAt.toString();
     return data;
   }
 }

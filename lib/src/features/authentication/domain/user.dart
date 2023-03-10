@@ -66,11 +66,10 @@ class User extends Entity {
     return data;
   }
 
-  factory User.fromFakeDatabseUser(DatabaseUser databseUser, String userToken,
-      DateTime tokenExpirationDate) {
+  factory User.fromFakeDatabseUser(DatabaseUser databseUser) {
     return User(
-        token: userToken,
-        expireAt: tokenExpirationDate,
+        token: databseUser.token!,
+        expireAt: databseUser.tokenExpiresAt!,
         id: databseUser.id,
         createdAt: databseUser.createdAt,
         updatedAt: databseUser.updatedAt,
