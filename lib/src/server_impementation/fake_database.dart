@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:faker/faker.dart';
 import 'package:responsive_admin_dashboard/src/server_impementation/databse_entities/databse_comment.dart';
+import 'package:responsive_admin_dashboard/src/server_impementation/services/signed_in_user_service.dart';
 
 import 'databse_entities/databse_entities.dart';
 
@@ -16,7 +17,8 @@ class FakeDatabase {
     initializeDatabase();
   }
 
-  List<DatabaseUser> clients = List.empty(growable: true);
+  SignedInUserService signedInUserService = SignedInUserService();
+  final List<DatabaseUser> clients = List.empty(growable: true);
   List<DatabaseUser> staffs = List.empty(growable: true);
   List<DatabasePostCategory> categories = List.empty(growable: true);
   List<DatabsePost> posts = List.empty(growable: true);
@@ -35,10 +37,20 @@ class FakeDatabase {
     statusCode: 404,
   );
 
+//methods
+
+  void initializeDatabase() {
+    createDummyCategories(4);
+    createDummyClients(20);
+    createDummyStaffs(15);
+    createDummyPost(100);
+    createDummyComments(15);
+  }
+
   void createDummyClients(int count) {
-    //Add myself -- for login & test purposes
+    //Add some users as static memebrs -- for login & test purposes
     clients.add(DatabaseUser(
-      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      id: 'user_static1',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       firstName: 'Makan',
@@ -67,23 +79,6 @@ class FakeDatabase {
   }
 
   void createDummyStaffs(int count) {
-    Faker faker = Faker();
-    for (int i = 0; i <= count; i++) {
-      clients.add(DatabaseUser(
-        id: DateTime.now().microsecondsSinceEpoch.toString(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        firstName: faker.person.name(),
-        lastName: faker.person.lastName(),
-        age: faker.randomGenerator.integer(80, min: 18),
-        email: faker.internet.email(),
-        role: DatabseUserRole.writer,
-        status: DatabseUserStatus.active,
-      ));
-    }
-  }
-
-  void initializeDatabase() async {
     //create admin
     staffs.add(DatabaseUser(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
@@ -99,11 +94,20 @@ class FakeDatabase {
         role: DatabseUserRole.chiefEditor,
         status: DatabseUserStatus.active));
 
-    createDummyCategories(4);
-    createDummyClients(20);
-    createDummyStaffs(15);
-    createDummyPost(100);
-    createDummyComments(15);
+    Faker faker = Faker();
+    for (int i = 0; i <= count; i++) {
+      clients.add(DatabaseUser(
+        id: DateTime.now().microsecondsSinceEpoch.toString(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        firstName: faker.person.name(),
+        lastName: faker.person.lastName(),
+        age: faker.randomGenerator.integer(80, min: 18),
+        email: faker.internet.email(),
+        role: DatabseUserRole.writer,
+        status: DatabseUserStatus.active,
+      ));
+    }
   }
 
   void createDummyCategories(int count) {
@@ -187,10 +191,9 @@ class FakeDatabase {
   }
 
   bool isUserTokenValid({required String token}) {
-    FakeDatabase fakeDatabase = FakeDatabase();
-    if (fakeDatabase.sigendInUser == null ||
-        fakeDatabase.sigendInUser!.token != token ||
-        fakeDatabase.sigendInUser!.tokenExpiresAt!.isBefore(DateTime.now())) {
+    if (sigendInUser == null ||
+        sigendInUser!.token != token ||
+        sigendInUser!.tokenExpiresAt!.isBefore(DateTime.now())) {
       return false;
     }
 

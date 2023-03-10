@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 import 'package:responsive_admin_dashboard/src/server_impementation/databse_entities/databse_entities.dart';
+import 'package:responsive_admin_dashboard/src/server_impementation/services/signed_in_user_service.dart';
 
 import '../../features/authentication/data/dtos/authenticate_dtos.dart';
 import '../../features/authentication/domain/authentication_models.dart';
@@ -10,6 +11,7 @@ import '../fake_database.dart';
 
 class AuthenticationDataSource {
   FakeDatabase fakeData = FakeDatabase();
+  SignedInUserService signedInUserService = SignedInUserService();
 
   ResponseDTO<User> registerUser({required UserRegisterDTO userRegisterVm}) {
     var user = fakeData.clients
@@ -43,6 +45,8 @@ class AuthenticationDataSource {
 
     //editServer
     fakeData.sigendInUser = newUser;
+    //save user credentials to database
+    signedInUserService.saveUserInfo(newUser);
 
     return ResponseDTO(
         statusCode: 200, data: User.fromFakeDatabseUser(newUser));
@@ -67,16 +71,17 @@ class AuthenticationDataSource {
     //assign token to the loggedIn user
     serverUser.token = 'token ${serverUser.email}';
     serverUser.tokenExpiresAt = DateTime.now().add(const Duration(hours: 1));
-
     //Upate fake database
     fakeData.sigendInUser = serverUser;
+    //save user credentials to database
+    signedInUserService.saveUserInfo(serverUser);
 
     return ResponseDTO(
         statusCode: 200, data: User.fromFakeDatabseUser(serverUser));
   }
 
   ResponseDTO<void> logoutUser({required String userToken}) {
-    //the user not found or user password is incorrect.
+    //the user not found or user token is incorrect.
     if (!fakeData.isUserTokenValid(token: userToken)) {
       ErrorModel error = ErrorModel(
         message: 'Unauthorized',
@@ -88,8 +93,9 @@ class AuthenticationDataSource {
       return ResponseDTO(statusCode: 401, error: error);
     }
 
+    //remove user credentials from database
+    signedInUserService.removeUserInfo();
     //everything is ok
-
     fakeData.sigendInUser = null;
 
     return ResponseDTO(statusCode: 204);
