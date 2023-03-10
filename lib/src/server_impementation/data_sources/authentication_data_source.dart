@@ -1,5 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:collection/collection.dart';
+import 'package:responsive_admin_dashboard/src/server_impementation/databse_entities/database_user.dart';
+import 'package:responsive_admin_dashboard/src/server_impementation/databse_entities/databse_entities.dart';
 
 import '../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../../infrastructure/shared_models/shared_model.dart';
@@ -27,7 +29,7 @@ class AuthenticationDataSource {
     }
 
     //everything is ok
-    User newUser = User(
+    DatabaseUser newUser = DatabaseUser(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
@@ -35,17 +37,16 @@ class AuthenticationDataSource {
         lastName: userRegisterVm.lastName,
         age: userRegisterVm.age,
         email: userRegisterVm.email,
-        role: UserRole.client,
-        status: UserStatus.active,
+        role: DatabseUserRole.client,
+        status: DatabseUserStatus.active,
         token: 'token ${userRegisterVm.email}',
-        expireAt: DateTime.now().add(const Duration(hours: 1)));
+        tokenExpiresAt: DateTime.now().add(const Duration(hours: 1)));
 
     //editServer
-    fakeData.signedInUserToken = newUser.token;
-    fakeData.signedInUserExpirationDate = newUser.expireAt;
-    fakeData.sigendInUserID = newUser.id;
+    fakeData.sigendInUser = newUser;
 
-    return ResponseDTO(statusCode: 200, data: newUser);
+    return ResponseDTO(
+        statusCode: 200, data: User.fromFakeDatabseUser(newUser));
   }
 
   ResponseDTO<User> loginUser({required UserLoginDTO loginVm}) {
@@ -64,18 +65,15 @@ class AuthenticationDataSource {
     }
 
     //everything is ok
-
-    User user = User.fromFakeDatabseUser(
-        serverUser,
-        'token ${serverUser.email}',
-        DateTime.now().add(const Duration(hours: 1)));
+    //assign token to the loggedIn user
+    serverUser.token = 'token ${serverUser.email}';
+    serverUser.tokenExpiresAt = DateTime.now().add(const Duration(hours: 1));
 
     //Upate fake database
-    fakeData.signedInUserToken = user.token;
-    fakeData.signedInUserExpirationDate = user.expireAt;
-    fakeData.sigendInUserID = user.id;
+    fakeData.sigendInUser = serverUser;
 
-    return ResponseDTO(statusCode: 200, data: user);
+    return ResponseDTO(
+        statusCode: 200, data: User.fromFakeDatabseUser(serverUser));
   }
 
   ResponseDTO<void> logoutUser({required String userToken}) {
@@ -93,9 +91,7 @@ class AuthenticationDataSource {
 
     //everything is ok
 
-    fakeData.signedInUserToken = null;
-    fakeData.signedInUserExpirationDate = null;
-    fakeData.sigendInUserID = null;
+    fakeData.sigendInUser = null;
 
     return ResponseDTO(statusCode: 204);
   }

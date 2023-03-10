@@ -20,9 +20,7 @@ class FakeDatabase {
   List<DatabasePostCategory> categories = List.empty(growable: true);
   List<DatabsePost> posts = List.empty(growable: true);
   List<DatabaseComment> comments = List.empty(growable: true);
-  String? signedInUserToken;
-  DateTime? signedInUserExpirationDate;
-  String? sigendInUserID;
+  DatabaseUser? sigendInUser;
   Map<String, List<String>> bookmarkedPostsTable = {};
   final DatabseErrorModel unAuthorizedError = DatabseErrorModel(
     message: 'Unauthorized',
@@ -154,10 +152,10 @@ class FakeDatabase {
   }
 
   bool isUserTokenValid({required String token}) {
-    if (signedInUserToken == null ||
-        signedInUserToken != token ||
-        signedInUserExpirationDate == null ||
-        signedInUserExpirationDate!.isBefore(DateTime.now())) {
+    FakeDatabase fakeDatabase = FakeDatabase();
+    if (fakeDatabase.sigendInUser == null ||
+        fakeDatabase.sigendInUser!.token != token ||
+        fakeDatabase.sigendInUser!.tokenExpiresAt!.isBefore(DateTime.now())) {
       return false;
     }
 

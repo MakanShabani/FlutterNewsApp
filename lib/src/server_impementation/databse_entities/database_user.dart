@@ -11,6 +11,8 @@ class DatabaseUser extends DatabaseEntity {
   int? age;
   String? phone;
   String? imageUrl;
+  String? token;
+  DateTime? tokenExpiresAt;
   DatabseUserRole role;
   DatabseUserStatus status;
   List<DatabsePost>? posts;
@@ -26,6 +28,8 @@ class DatabaseUser extends DatabaseEntity {
     required this.email,
     required this.role,
     required this.status,
+    this.token,
+    this.tokenExpiresAt,
     this.phone,
     this.imageUrl,
     this.posts,
@@ -61,6 +65,8 @@ class DatabaseUser extends DatabaseEntity {
     data['status'] = status.index;
     data['phone'] = phone;
     data['image_url'] = imageUrl;
+    data['token'] = token;
+    data['token_expires_at'] = tokenExpiresAt;
     return data;
   }
 }

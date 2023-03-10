@@ -20,20 +20,6 @@ class BookmarkDataSource {
               ErrorModel.fromFakeDatabaseError(fakeDatabase.unAuthorizedError));
     }
 
-    DatabaseUser? user = fakeDatabase.users
-        .firstWhereOrNull((u) => u.id == fakeDatabase.sigendInUserID);
-
-    //User not found
-    if (user == null) {
-      ErrorModel error = ErrorModel(
-        message: 'User not found',
-        detail: 'User not found.',
-        statusCode: 404,
-      );
-
-      return ResponseDTO(statusCode: 404, error: error);
-    }
-
     DatabsePost? post =
         fakeDatabase.posts.firstWhereOrNull((p) => p.id == postId);
 
@@ -51,7 +37,7 @@ class BookmarkDataSource {
     //everything is ok
 
     fakeDatabase.bookmarkedPostsTable.update(
-      user.id,
+      fakeDatabase.sigendInUser!.id,
       (value) {
         if (value.contains(postId)) {
           //we'll unbookmark the post

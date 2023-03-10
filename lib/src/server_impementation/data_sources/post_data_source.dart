@@ -17,8 +17,6 @@ class PostDataSource {
       {String? userToken,
       String? categoryId,
       required PagingOptionsDTO pagingOptionsDTO}) {
-    DatabaseUser? databaseUser;
-
     if (userToken != null) {
       //user token is not valid -- Unauthorized
       if (!fakeDatabase.isUserTokenValid(token: userToken)) {
@@ -26,19 +24,6 @@ class PostDataSource {
             statusCode: 401,
             error: ErrorModel.fromFakeDatabaseError(
                 fakeDatabase.unAuthorizedError));
-      }
-
-      databaseUser = fakeDatabase.users
-          .firstWhereOrNull((u) => u.id == fakeDatabase.sigendInUserID!);
-
-      //User not found
-      if (databaseUser == null) {
-        ErrorModel error = ErrorModel(
-          message: 'User not found',
-          detail: 'User not found.',
-          statusCode: 404,
-        );
-        return ResponseDTO(statusCode: 404, error: error);
       }
     }
 
@@ -63,10 +48,10 @@ class PostDataSource {
 
       //check each post bookmark status and modify it accordingly
       //if user has any bookmarked posts.
-      if (databaseUser != null) {
-        var userBookmarkedPostTableEntry = fakeDatabase
-            .bookmarkedPostsTable.entries
-            .firstWhereOrNull((element) => element.key == databaseUser!.id);
+      if (userToken != null) {
+        var userBookmarkedPostTableEntry =
+            fakeDatabase.bookmarkedPostsTable.entries.firstWhereOrNull(
+                (element) => element.key == fakeDatabase.sigendInUser!.id);
         if (userBookmarkedPostTableEntry != null) {
           for (var element in posts) {
             userBookmarkedPostTableEntry.value.contains(element.id)
@@ -111,9 +96,7 @@ class PostDataSource {
       {String? userToken,
       required String authorId,
       required PagingOptionsDTO pagingOptionsDTO}) {
-    //user token is not valid -- Unauthorized
-    DatabaseUser? currentUSer;
-
+    //Check authorization
     if (userToken != null) {
       if (!fakeDatabase.isUserTokenValid(token: userToken)) {
         return ResponseDTO(
@@ -121,9 +104,6 @@ class PostDataSource {
             error: ErrorModel.fromFakeDatabaseError(
                 fakeDatabase.unAuthorizedError));
       }
-
-      currentUSer = fakeDatabase.users
-          .firstWhereOrNull((u) => u.id == fakeDatabase.sigendInUserID);
     }
 
     DatabaseUser? user =
@@ -148,12 +128,12 @@ class PostDataSource {
         .skip(pagingOptionsDTO.offset)
         .take(pagingOptionsDTO.limit);
 
-    if (currentUSer != null) {
+    if (userToken != null) {
       //check each post bookmark status and modify it accordingly
       //if user has any bookmarked posts.
-      var userBookmarkedPostTableEntry = fakeDatabase
-          .bookmarkedPostsTable.entries
-          .firstWhereOrNull((element) => element.key == currentUSer!.id);
+      var userBookmarkedPostTableEntry =
+          fakeDatabase.bookmarkedPostsTable.entries.firstWhereOrNull(
+              (element) => element.key == fakeDatabase.sigendInUser!.id);
       if (userBookmarkedPostTableEntry != null) {
         for (var element in posts) {
           userBookmarkedPostTableEntry.value.contains(element.id)
@@ -177,26 +157,12 @@ class PostDataSource {
 
   ResponseDTO<Post> getPost({String? userToken, required postId}) {
     //user token is not valid -- Unauthorized
-    DatabaseUser? user;
     if (userToken != null) {
       if (!fakeDatabase.isUserTokenValid(token: userToken)) {
         return ResponseDTO(
             statusCode: 401,
             error: ErrorModel.fromFakeDatabaseError(
                 fakeDatabase.unAuthorizedError));
-      }
-
-      DatabaseUser? user = fakeDatabase.users
-          .firstWhereOrNull((u) => u.id == fakeDatabase.sigendInUserID);
-
-      //User not found
-      if (user == null) {
-        ErrorModel error = ErrorModel(
-          message: 'User not found',
-          detail: 'User not found.',
-          statusCode: 404,
-        );
-        return ResponseDTO(statusCode: 404, error: error);
       }
     }
     DatabsePost? post =
@@ -214,13 +180,12 @@ class PostDataSource {
     }
 
     //everything is ok
-
-    if (user != null) {
-      //check post bookmark status and modify it accordingly
-      //if user has any bookmarked posts.
-      var userBookmarkedPostTableEntry = fakeDatabase
-          .bookmarkedPostsTable.entries
-          .firstWhereOrNull((element) => element.key == user.id);
+    //check post bookmark status and modify it accordingly
+    //if user has any bookmarked posts.
+    if (userToken != null) {
+      var userBookmarkedPostTableEntry =
+          fakeDatabase.bookmarkedPostsTable.entries.firstWhereOrNull(
+              (element) => element.key == fakeDatabase.sigendInUser!.id);
       if (userBookmarkedPostTableEntry != null) {
         userBookmarkedPostTableEntry.value.contains(post.id)
             ? post.isBookmarked = true
@@ -246,24 +211,11 @@ class PostDataSource {
           error:
               ErrorModel.fromFakeDatabaseError(fakeDatabase.unAuthorizedError));
     }
-
-    DatabaseUser? user = fakeDatabase.users
-        .firstWhereOrNull((u) => u.id == fakeDatabase.sigendInUserID);
-
-    //User not found
-    if (user == null) {
-      ErrorModel error = ErrorModel(
-        message: 'User not found',
-        detail: 'User not found.',
-        statusCode: 404,
-      );
-
-      return ResponseDTO(statusCode: 404, error: error);
-    }
     //everything is ok
 
     var userEntryInBookmarkedtable = fakeDatabase.bookmarkedPostsTable.entries
-        .firstWhereOrNull((element) => element.key == user.id);
+        .firstWhereOrNull(
+            (element) => element.key == fakeDatabase.sigendInUser!.id);
 
     if (userEntryInBookmarkedtable == null) {
       // user has'nt any bookmarked posts
