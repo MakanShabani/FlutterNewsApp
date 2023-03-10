@@ -107,7 +107,7 @@ class PostDataSource {
     }
 
     DatabaseUser? user =
-        fakeDatabase.users.firstWhereOrNull((u) => u.id == authorId);
+        fakeDatabase.clients.firstWhereOrNull((u) => u.id == authorId);
 
     //User not found
     if (user == null) {

@@ -16,7 +16,8 @@ class FakeDatabase {
     initializeDatabase();
   }
 
-  List<DatabaseUser> users = List.empty(growable: true);
+  List<DatabaseUser> clients = List.empty(growable: true);
+  List<DatabaseUser> staffs = List.empty(growable: true);
   List<DatabasePostCategory> categories = List.empty(growable: true);
   List<DatabsePost> posts = List.empty(growable: true);
   List<DatabaseComment> comments = List.empty(growable: true);
@@ -34,10 +35,41 @@ class FakeDatabase {
     statusCode: 404,
   );
 
-  void createDummyUser(int count) {
+  void createDummyClients(int count) {
+    //Add myself -- for login & test purposes
+    clients.add(DatabaseUser(
+      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      firstName: 'Makan',
+      lastName: 'Shabani',
+      age: 30,
+      email: 'makan@gmail.com',
+      password: 'mk',
+      role: DatabseUserRole.client,
+      status: DatabseUserStatus.active,
+    ));
+    //Create Dummy Clients
     Faker faker = Faker();
     for (int i = 0; i <= count; i++) {
-      users.add(DatabaseUser(
+      clients.add(DatabaseUser(
+        id: DateTime.now().microsecondsSinceEpoch.toString(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        firstName: faker.person.name(),
+        lastName: faker.person.lastName(),
+        age: faker.randomGenerator.integer(80, min: 18),
+        email: faker.internet.email(),
+        role: DatabseUserRole.client,
+        status: DatabseUserStatus.active,
+      ));
+    }
+  }
+
+  void createDummyStaffs(int count) {
+    Faker faker = Faker();
+    for (int i = 0; i <= count; i++) {
+      clients.add(DatabaseUser(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
@@ -53,7 +85,7 @@ class FakeDatabase {
 
   void initializeDatabase() async {
     //create admin
-    users.add(DatabaseUser(
+    staffs.add(DatabaseUser(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
@@ -67,10 +99,11 @@ class FakeDatabase {
         role: DatabseUserRole.chiefEditor,
         status: DatabseUserStatus.active));
 
-    createDummyCategories(2);
-    createDummyUser(10);
-    createDummyPost(400);
-    createDummyComments();
+    createDummyCategories(4);
+    createDummyClients(20);
+    createDummyStaffs(15);
+    createDummyPost(100);
+    createDummyComments(15);
   }
 
   void createDummyCategories(int count) {
@@ -87,11 +120,13 @@ class FakeDatabase {
     }
   }
 
-  void createDummyComments() {
+  void createDummyComments(int maxCommentsForEachPost) {
     Faker faker = Faker();
 
     for (var post in posts) {
-      for (int i = 0; i < faker.randomGenerator.integer(15); i++) {
+      for (int i = 0;
+          i < faker.randomGenerator.integer(maxCommentsForEachPost);
+          i++) {
         comments.add(
           DatabaseComment(
             id: DateTime.now().microsecondsSinceEpoch.toString(),
@@ -104,7 +139,7 @@ class FakeDatabase {
                     faker.lorem.sentence() +
                     faker.lorem.sentence()
                 : faker.lorem.sentence(),
-            user: users[Random().nextInt(users.length)],
+            user: clients[Random().nextInt(clients.length)],
           ),
         );
       }
@@ -146,7 +181,7 @@ class FakeDatabase {
               keywords: ['spring', 'winter', 'nature'],
               random: true)
         ],
-        author: (users..shuffle()).first,
+        author: (staffs..shuffle()).first,
       ));
     }
   }

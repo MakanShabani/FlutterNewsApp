@@ -1,20 +1,19 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:collection/collection.dart';
-import 'package:responsive_admin_dashboard/src/server_impementation/databse_entities/database_user.dart';
 import 'package:responsive_admin_dashboard/src/server_impementation/databse_entities/databse_entities.dart';
 
+import '../../features/authentication/data/dtos/authenticate_dtos.dart';
+import '../../features/authentication/domain/authentication_models.dart';
 import '../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../../infrastructure/shared_models/shared_model.dart';
 import '../fake_database.dart';
-import '../../features/authentication/domain/authentication_models.dart';
-import '../../features/authentication/data/dtos/authenticate_dtos.dart';
 
 class AuthenticationDataSource {
   FakeDatabase fakeData = FakeDatabase();
 
   ResponseDTO<User> registerUser({required UserRegisterDTO userRegisterVm}) {
-    var user =
-        fakeData.users.firstWhereOrNull((u) => u.email == userRegisterVm.email);
+    var user = fakeData.clients
+        .firstWhereOrNull((u) => u.email == userRegisterVm.email);
 
     //the user already exists.
     if (user != null) {
@@ -50,7 +49,7 @@ class AuthenticationDataSource {
   }
 
   ResponseDTO<User> loginUser({required UserLoginDTO loginVm}) {
-    var serverUser = fakeData.users.firstWhereOrNull(
+    var serverUser = fakeData.clients.firstWhereOrNull(
         (u) => u.email == loginVm.email && u.password == loginVm.password);
 
     //the user not found or user password is incorrect.
