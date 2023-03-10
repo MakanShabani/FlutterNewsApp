@@ -16,3 +16,10 @@ class PostDetailsFetchingHasError extends PostDetailsState {
   PostDetailsFetchingHasError({required this.error});
   final ErrorModel error;
 }
+
+class PostDetailsBookmarkHasUpdated extends PostDetailsState {
+  PostDetailsBookmarkHasUpdated(
+      {required this.post, required this.newBookmarkvalue});
+  final Post post;
+  final bool newBookmarkvalue;
+}

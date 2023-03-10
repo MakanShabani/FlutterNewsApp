@@ -4,6 +4,7 @@ import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/con
 
 import '../../../../../common_widgets/common_widgest.dart';
 import '../../../../../custome_icons/custome_icons_icons.dart';
+import '../../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import '../../../domain/posts_models.dart';
 import '../cubit/post_details_cubit.dart';
 
@@ -11,8 +12,10 @@ class AppbarSection extends StatelessWidget {
   const AppbarSection({
     Key? key,
     this.onBookmarkedPressed,
+    required this.postId,
   }) : super(key: key);
   final VoidCallback? onBookmarkedPressed;
+  final String postId;
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
@@ -31,14 +34,31 @@ class AppbarSection extends StatelessWidget {
           icon: const Icon(Icons.share),
           iconSize: 20.0,
         ),
-        BookmarkButton(
-          size: 20.0,
-          isBoolmarked: (context.read<PostDetailsCubit>().state
-                  as PostDetailsFetchedSuccessfully)
-              .post
-              .isBookmarked,
-          isLoading: false,
-          onPressed: onBookmarkedPressed,
+        BlocBuilder<PostDetailsCubit, PostDetailsState>(
+          buildWhen: (previous, current) =>
+              current is PostDetailsFetchedSuccessfully ||
+              current is PostDetailsBookmarkHasUpdated,
+          builder: (context, state) {
+            return BookmarkButton(
+              size: 20.0,
+              isBoolmarked: context.read<PostDetailsCubit>().state
+                      is PostDetailsFetchedSuccessfully
+                  ? (context.read<PostDetailsCubit>().state
+                          as PostDetailsFetchedSuccessfully)
+                      .post
+                      .isBookmarked
+                  : (context.read<PostDetailsCubit>().state
+                          as PostDetailsBookmarkHasUpdated)
+                      .post
+                      .isBookmarked,
+              isLoading: context
+                  .watch<PostBookmarkCubit>()
+                  .state
+                  .currentBookmarkingPosts
+                  .contains(postId),
+              onPressed: onBookmarkedPressed,
+            );
+          },
         ),
         const SizedBox(
           width: screenHorizontalPadding,

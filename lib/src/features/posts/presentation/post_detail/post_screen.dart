@@ -41,13 +41,25 @@ class PostScreen extends StatelessWidget {
                 as AuthenticationLoggedIn)
             .user
             .token,
-        post: (context.read<PostDetailsCubit>().state
-                as PostDetailsFetchedSuccessfully)
-            .post,
-        newBookmarkValueToSet: !(context.read<PostDetailsCubit>().state
-                as PostDetailsFetchedSuccessfully)
-            .post
-            .isBookmarked);
+        post: context.read<PostDetailsCubit>().state
+                is PostDetailsFetchedSuccessfully
+            ? (context.read<PostDetailsCubit>().state
+                    as PostDetailsFetchedSuccessfully)
+                .post
+            : (context.read<PostDetailsCubit>().state
+                    as PostDetailsBookmarkHasUpdated)
+                .post,
+        newBookmarkValueToSet: context
+                .read<PostDetailsCubit>()
+                .state is PostDetailsFetchedSuccessfully
+            ? !(context.read<PostDetailsCubit>().state
+                    as PostDetailsFetchedSuccessfully)
+                .post
+                .isBookmarked
+            : !(context.read<PostDetailsCubit>().state
+                    as PostDetailsBookmarkHasUpdated)
+                .post
+                .isBookmarked);
   }
 
   @override
@@ -58,29 +70,56 @@ class PostScreen extends StatelessWidget {
           create: (context) => PostDetailsCubit(
             postService:
                 PostService(postRepository: context.read<FakePostReposiory>()),
-          )..fetchPostDetails(postId: postId),
+          )..fetchPostDetails(
+              userToken: context.read<AuthenticationCubit>().state
+                      is AuthenticationLoggedIn
+                  ? (context.read<AuthenticationCubit>().state
+                          as AuthenticationLoggedIn)
+                      .user
+                      .token
+                  : null,
+              postId: postId),
         )
       ],
-      child: Scaffold(
-        body: SafeArea(child: BlocBuilder<PostDetailsCubit, PostDetailsState>(
-          builder: (context, state) {
-            if (state is PostDetailsFetchedSuccessfully) {
-              return CustomScrollView(
-                slivers: [
-                  AppbarSection(
-                    onBookmarkedPressed: () => onPostBookMarkPressed(context),
-                  ),
-                ],
-              );
-            } else if (state is PostDetailsFetchingHasError) {
-              //Show error
-              return Container();
-            } else {
-              //Show Loading
-              return Container();
-            }
-          },
-        )),
+      child: MultiBlocListener(
+        listeners: [
+          //Update Post's bookmark value
+          BlocListener<PostBookmarkCubit, PostBookmarkState>(
+            listenWhen: (previous, current) =>
+                current is PostBookmarkUpdatedSuccessfullyState &&
+                current.post.id == postId,
+            listener: (context, state) => context
+                .read<PostDetailsCubit>()
+                .updateBookmarkValue(
+                    (state as PostBookmarkUpdatedSuccessfullyState)
+                        .newBookmarkValue),
+          ),
+        ],
+        child: Scaffold(
+          body: SafeArea(
+              child: BlocBuilder<PostDetailsCubit, PostDetailsState>(
+            buildWhen: (previous, current) =>
+                current is! PostDetailsBookmarkHasUpdated,
+            builder: (context, state) {
+              if (state is PostDetailsFetchedSuccessfully) {
+                return CustomScrollView(
+                  slivers: [
+                    AppbarSection(
+                      postId: postId,
+                      onBookmarkedPressed: () => onPostBookMarkPressed(context),
+                    ),
+                  ],
+                );
+              } else if (state is PostDetailsFetchingHasError) {
+                //Show error
+                return Container();
+              } else {
+                //Show Loading
+                return Container();
+              }
+            },
+          )),
+        ),
       ),
     );
   }

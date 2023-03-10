@@ -36,4 +36,16 @@ class PostDetailsCubit extends Cubit<PostDetailsState> {
     emit(PostDetailsFetchedSuccessfully(post: response.data!));
     return;
   }
+
+  void updateBookmarkValue(bool newBookmarkValue) {
+    if (state is! PostDetailsFetchedSuccessfully &&
+        state is! PostDetailsBookmarkHasUpdated) return;
+    emit(PostDetailsBookmarkHasUpdated(
+        post: state is PostDetailsFetchedSuccessfully
+            ? ((state as PostDetailsFetchedSuccessfully).post
+              ..isBookmarked = newBookmarkValue)
+            : ((state as PostDetailsBookmarkHasUpdated).post
+              ..isBookmarked = newBookmarkValue),
+        newBookmarkvalue: newBookmarkValue));
+  }
 }
