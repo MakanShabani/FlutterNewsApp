@@ -73,12 +73,14 @@ class ThemeStyle {
       // Define the default `TextTheme`. Use this to specify the default
       // text styling for headlines, titles, bodies of text, and more.
       textTheme: const TextTheme(
-          bodyLarge: TextStyle(fontSize: 16.0, color: Colors.black54),
-          bodyMedium: TextStyle(fontSize: 14.0, color: Colors.black54),
-          bodySmall: TextStyle(fontSize: 12.0, color: Colors.black54),
-          labelLarge: TextStyle(fontSize: 20.0, color: Colors.black87),
-          labelMedium: TextStyle(fontSize: 15.0, color: Colors.black87),
-          labelSmall: TextStyle(fontSize: 13.0, color: Colors.black54)),
+        bodyLarge: TextStyle(fontSize: 16.0, color: Colors.black54),
+        bodyMedium: TextStyle(fontSize: 14.0, color: Colors.black54),
+        bodySmall: TextStyle(fontSize: 12.0, color: Colors.black54),
+        labelLarge: TextStyle(fontSize: 20.0, color: Colors.black87),
+        labelMedium: TextStyle(fontSize: 15.0, color: Colors.black87),
+        labelSmall: TextStyle(fontSize: 13.0, color: Colors.black54),
+        titleLarge: TextStyle(fontSize: 20.0, color: Colors.black87),
+      ),
     );
   }
 
@@ -161,6 +163,7 @@ class ThemeStyle {
         labelLarge: TextStyle(fontSize: 20.0, color: Colors.white),
         labelMedium: TextStyle(fontSize: 15.0, color: Colors.white),
         labelSmall: TextStyle(fontSize: 13.0, color: Colors.white60),
+        titleLarge: TextStyle(fontSize: 20.0, color: Colors.white),
       ),
     );
   }

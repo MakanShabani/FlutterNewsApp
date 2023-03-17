@@ -274,7 +274,7 @@ class _TabContentState extends State<TabContent>
                   horizontal: screenHorizontalPadding),
               child: Text(
                 'Latest news',
-                style: Theme.of(context).textTheme.labelLarge,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             )
           : const SizedBox(
