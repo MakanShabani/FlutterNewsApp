@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_admin_dashboard/src/features/posts/presentation/post_detail/widgets/widgets.dart';
 import '../../../../router/route_names.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
@@ -107,6 +108,12 @@ class PostScreen extends StatelessWidget {
                     AppbarSection(
                       postId: postId,
                       onBookmarkedPressed: () => onPostBookMarkPressed(context),
+                    ),
+                    TitileSection(
+                      leftMargin: screenHorizontalPadding,
+                      topMargin: 20.0,
+                      rightMargin: screenHorizontalPadding,
+                      title: state.post.title,
                     ),
                   ],
                 );
