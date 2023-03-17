@@ -115,7 +115,9 @@ class PostScreen extends StatelessWidget {
                 return Container();
               } else {
                 //Show Loading
-                return Container();
+                return const Center(
+                  child: LoadingIndicator(hasBackground: false),
+                );
               }
             },
           )),
