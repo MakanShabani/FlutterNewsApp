@@ -112,7 +112,11 @@ class PostScreen extends StatelessWidget {
                 );
               } else if (state is PostDetailsFetchingHasError) {
                 //Show error
-                return Container();
+                return ErrorInternal(
+                  onActionClicked: () => context
+                      .read<PostDetailsCubit>()
+                      .fetchPostDetails(postId: postId),
+                );
               } else {
                 //Show Loading
                 return const Center(
