@@ -20,7 +20,8 @@ class AppbarSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       expandedHeight: 250.0,
-      stretch: true,
+      floating: true,
+      snap: true,
       leading: IconButton(
         onPressed: () => Navigator.pop(context),
         icon: const Icon(
@@ -65,6 +66,7 @@ class AppbarSection extends StatelessWidget {
         ),
       ],
       flexibleSpace: Image.network(
+        height: 250.0,
         fit: BoxFit.cover,
         (context.read<PostDetailsCubit>().state
                         as PostDetailsFetchedSuccessfully)
@@ -79,7 +81,7 @@ class AppbarSection extends StatelessWidget {
                 .first,
       ),
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(0.0),
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: screenHorizontalPadding,
