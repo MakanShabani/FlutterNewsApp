@@ -73,13 +73,13 @@ class ThemeStyle {
       // Define the default `TextTheme`. Use this to specify the default
       // text styling for headlines, titles, bodies of text, and more.
       textTheme: const TextTheme(
-        bodyLarge: TextStyle(fontSize: 16.0, color: Colors.black54),
-        bodyMedium: TextStyle(fontSize: 14.0, color: Colors.black54),
-        bodySmall: TextStyle(fontSize: 12.0, color: Colors.black54),
-        labelLarge: TextStyle(fontSize: 20.0, color: Colors.black87),
-        labelMedium: TextStyle(fontSize: 15.0, color: Colors.black87),
-        labelSmall: TextStyle(fontSize: 13.0, color: Colors.black54),
-        titleLarge: TextStyle(fontSize: 20.0, color: Colors.black87),
+        bodyLarge: TextStyle(fontSize: 16.0, color: Colors.black87),
+        bodyMedium: TextStyle(fontSize: 14.0, color: Colors.black87),
+        bodySmall: TextStyle(fontSize: 12.0, color: Colors.black87),
+        labelLarge: TextStyle(fontSize: 20.0, color: Colors.black),
+        labelMedium: TextStyle(fontSize: 15.0, color: Colors.black),
+        labelSmall: TextStyle(fontSize: 13.0, color: Colors.black87),
+        titleLarge: TextStyle(fontSize: 20.0, color: Colors.black),
       ),
     );
   }
@@ -157,12 +157,12 @@ class ThemeStyle {
       // Define the default `TextTheme`. Use this to specify the default
       // text styling for headlines, titles, bodies of text, and more.
       textTheme: const TextTheme(
-        bodyLarge: TextStyle(fontSize: 16.0, color: Colors.white),
-        bodyMedium: TextStyle(fontSize: 14.0, color: Colors.white),
-        bodySmall: TextStyle(fontSize: 12.0, color: Colors.white),
+        bodyLarge: TextStyle(fontSize: 16.0, color: Colors.white70),
+        bodyMedium: TextStyle(fontSize: 14.0, color: Colors.white70),
+        bodySmall: TextStyle(fontSize: 12.0, color: Colors.white70),
         labelLarge: TextStyle(fontSize: 20.0, color: Colors.white),
         labelMedium: TextStyle(fontSize: 15.0, color: Colors.white),
-        labelSmall: TextStyle(fontSize: 13.0, color: Colors.white60),
+        labelSmall: TextStyle(fontSize: 13.0, color: Colors.white70),
         titleLarge: TextStyle(fontSize: 20.0, color: Colors.white),
       ),
     );
