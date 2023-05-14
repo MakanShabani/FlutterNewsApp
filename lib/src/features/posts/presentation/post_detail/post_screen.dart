@@ -10,7 +10,6 @@ import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_c
 import '../../application/post_service.dart';
 import '../../data/repositories/posts_repositories.dart';
 import 'cubit/post_details_cubit.dart';
-import 'widgets/appbar_section.dart';
 
 class PostScreen extends StatelessWidget {
   const PostScreen({Key? key, required this.postId}) : super(key: key);
@@ -105,16 +104,35 @@ class PostScreen extends StatelessWidget {
               if (state is PostDetailsFetchedSuccessfully) {
                 return CustomScrollView(
                   slivers: [
+                    //Appbar Section
                     AppbarSection(
                       postId: postId,
                       onBookmarkedPressed: () => onPostBookMarkPressed(context),
                     ),
+
+                    //Title Section
                     TitileSection(
                       leftMargin: screenHorizontalPadding,
                       topMargin: 20.0,
                       rightMargin: screenHorizontalPadding,
                       title: state.post.title,
                     ),
+
+                    //Summary Section
+                    SummarySection(
+                      summary: state.post.summary,
+                      leftMargin: screenHorizontalPadding,
+                      rightMargin: screenHorizontalPadding,
+                      topMargin: 20.0,
+                    ),
+
+                    //Content Section
+                    ContentSection(
+                      content: state.post.content,
+                      leftMargin: screenHorizontalPadding,
+                      rightMargin: screenHorizontalPadding,
+                      topMargin: 20.0,
+                    )
                   ],
                 );
               } else if (state is PostDetailsFetchingHasError) {
