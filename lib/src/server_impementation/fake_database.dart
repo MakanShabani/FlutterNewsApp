@@ -164,7 +164,33 @@ class FakeDatabase {
         summary: faker.lorem.sentence() +
             faker.lorem.sentence() +
             faker.lorem.sentence(),
-        content: faker.randomGenerator.string(400, min: 200),
+        content: faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence() +
+            faker.lorem.sentence(),
         status: DatabsePostStatus.published,
         category: (categories..shuffle()).first,
         isBookmarked: false,
