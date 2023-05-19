@@ -57,7 +57,8 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
       return;
     }
 
-    //request is successfully ended
+    //request is successfully ended7
+    //check it was the first fetch or not, then, switch to proper state
     if ((state.posts + fetchingPostsResponse.data!).isEmpty) {
       //empty bookmarks
       emit(PostsListCubitIsEmpty(

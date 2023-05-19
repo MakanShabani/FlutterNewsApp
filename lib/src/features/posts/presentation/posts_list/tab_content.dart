@@ -95,6 +95,9 @@ class _TabContentState extends State<TabContent>
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeIn);
               }
+            } else if (state is PostsListNoMorePostsToFetch) {
+              //tell the InifiniteAnimatedList widget to hide loading indicator at the end of it
+              _postsListNotifireCubit.resetState();
             } else if (state is PostsListCubitFetchedSuccessfully) {
               if (state.posts.length == state.fetchedPosts.length) {
                 //it was first fetch
