@@ -132,6 +132,14 @@ class PostScreen extends StatelessWidget {
                       leftMargin: screenHorizontalPadding,
                       rightMargin: screenHorizontalPadding,
                       topMargin: 20.0,
+                    ),
+
+                    //See Comments button
+                    SeeCommentsButton(
+                      text: 'See Comments (${state.post.commentsCount})',
+                      leftMargin: screenHorizontalPadding,
+                      rightMargin: screenHorizontalPadding,
+                      topMargin: 20.0,
                     )
                   ],
                 );
