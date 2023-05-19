@@ -2,9 +2,9 @@ import 'package:responsive_admin_dashboard/src/features/posts/domain/post.dart';
 import 'package:responsive_admin_dashboard/src/server_impementation/data_sources/post_data_source.dart';
 
 import '../../../../infrastructure/shared_dtos/shared_dtos.dart';
-import 'posts_repository.dart';
+import 'post_repository.dart';
 
-class FakePostReposiory implements PostsRepository {
+class FakePostReposiory implements PostRepository {
   FakePostReposiory(
       {required this.fetchDelayDurationInSeconds,
       required this.toggleBookmarkDelay,

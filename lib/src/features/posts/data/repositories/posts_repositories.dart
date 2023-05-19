@@ -1,2 +1,2 @@
-export 'fake_posts_list_repository.dart';
-export './posts_repository.dart';
+export 'fake_post_repository.dart';
+export 'post_repository.dart';

@@ -9,7 +9,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import '../../../../router/app_router.dart';
 import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import '../../application/post_service.dart';
-import '../../data/repositories/fake_posts_list_repository.dart';
+import '../../data/repositories/fake_post_repository.dart';
 import '../../domain/posts_models.dart';
 import 'blocs/posts_list_blocs.dart';
 

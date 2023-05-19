@@ -3,10 +3,10 @@ import '../data/repositories/posts_repositories.dart';
 import '../domain/posts_models.dart';
 
 class PostService {
-  PostService({required PostsRepository postRepository})
+  PostService({required PostRepository postRepository})
       : _postRepository = postRepository;
 
-  final PostsRepository _postRepository;
+  final PostRepository _postRepository;
 
   Future<ResponseDTO<List<Post>>> getPosts(
       {String? userToken,
