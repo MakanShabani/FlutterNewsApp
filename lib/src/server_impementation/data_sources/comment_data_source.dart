@@ -75,6 +75,7 @@ class CommentDataSource {
         statusCode: 200,
         data: fakeDatabase.comments
             .where((element) => element.id == postId)
+            .toList()
             .length);
   }
 }

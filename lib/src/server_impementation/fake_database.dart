@@ -43,7 +43,7 @@ class FakeDatabase {
     createDummyCategories(4);
     createDummyClients(20);
     createDummyStaffs(15);
-    createDummyPost(100);
+    createDummyPost(30);
     createDummyComments(15);
   }
 
@@ -127,16 +127,16 @@ class FakeDatabase {
   void createDummyComments(int maxCommentsForEachPost) {
     Faker faker = Faker();
 
-    for (var post in posts) {
-      for (int i = 0;
-          i < faker.randomGenerator.integer(maxCommentsForEachPost);
-          i++) {
+    for (int j = 0; j < posts.length; j++) {
+      int commentsCount =
+          faker.randomGenerator.integer(maxCommentsForEachPost, min: 1);
+      for (int i = 0; i < commentsCount; i++) {
         comments.add(
           DatabaseComment(
             id: DateTime.now().microsecondsSinceEpoch.toString(),
             createdAt: faker.date.dateTime(minYear: 2018, maxYear: 2022),
             updatedAt: DateTime.now(),
-            postId: post.id,
+            postId: posts[j].id,
             content: i % 2 == 0
                 ? faker.lorem.sentence() +
                     faker.lorem.sentence() +
@@ -147,6 +147,9 @@ class FakeDatabase {
           ),
         );
       }
+
+      //set post's commentsCount
+      posts[j].commentsCount = commentsCount;
     }
   }
 
