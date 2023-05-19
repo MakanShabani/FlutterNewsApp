@@ -74,7 +74,7 @@ class ButtonSections extends StatelessWidget {
                   current is ThemeDarkModeState ||
                   current is ThemeLightModeState,
               builder: (context, state) {
-                return SignInButton(
+                return CustomeButton(
                   backgroundColor: state is ThemeDarkModeState
                       ? Colors.white
                       : Colors.black12,
