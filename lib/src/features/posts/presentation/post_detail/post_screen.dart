@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_admin_dashboard/src/features/posts/domain/post.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/presentation/post_detail/widgets/widgets.dart';
+import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts_list/blocs/posts_list_blocs.dart';
 import '../../../../router/route_names.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
@@ -9,12 +11,17 @@ import '../../../authentication/presentation/blocs/authentication_cubit.dart';
 import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import '../../application/post_service.dart';
 import '../../data/repositories/posts_repositories.dart';
-import 'cubit/post_details_cubit.dart';
+import 'cubit/post_details_cubit/post_details_cubit.dart';
 
 class PostScreen extends StatelessWidget {
-  const PostScreen({Key? key, required this.postId}) : super(key: key);
+  const PostScreen({
+    Key? key,
+    required this.postId,
+    required this.categoryId,
+  }) : super(key: key);
 
   final String postId;
+  final String categoryId;
 
   // we use this function to do stuff when bookmark button is pressed
   void onPostBookMarkPressed(BuildContext context) {
@@ -67,19 +74,36 @@ class PostScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<PostDetailsCubit>(
-          create: (context) => PostDetailsCubit(
-            postService:
-                PostService(postRepository: context.read<FakePostReposiory>()),
-          )..fetchPostDetails(
-              userToken: context.read<AuthenticationCubit>().state
-                      is AuthenticationLoggedIn
-                  ? (context.read<AuthenticationCubit>().state
-                          as AuthenticationLoggedIn)
-                      .user
-                      .token
-                  : null,
-              postId: postId),
-        )
+            create: (context) => PostDetailsCubit(
+                  postService: PostService(
+                      postRepository: context.read<FakePostReposiory>()),
+                )..fetchPostDetails(
+                    userToken: context.read<AuthenticationCubit>().state
+                            is AuthenticationLoggedIn
+                        ? (context.read<AuthenticationCubit>().state
+                                as AuthenticationLoggedIn)
+                            .user
+                            .token
+                        : null,
+                    postId: postId)),
+        BlocProvider<PostsListCubit>(
+          create: (context) => PostsListCubit(
+              postsListService: PostService(
+                  postRepository: context.read<FakePostReposiory>()),
+              haowManyPostFetchEachTime: 10)
+            ..fetch(
+                context.read<AuthenticationCubit>().state
+                        is AuthenticationLoggedIn
+                    ? (context.read<AuthenticationCubit>().state
+                            as AuthenticationLoggedIn)
+                        .user
+                        .token
+                    : null,
+                categoryId,
+                false),
+        ),
+        BlocProvider<ListNotifireCubit<Post>>(
+            create: (context) => ListNotifireCubit())
       ],
       child: MultiBlocListener(
         listeners: [
@@ -140,6 +164,13 @@ class PostScreen extends StatelessWidget {
                       leftMargin: screenHorizontalPadding,
                       rightMargin: screenHorizontalPadding,
                       topMargin: 20.0,
+                    ),
+
+                    //Related Posts section
+                    const RelatedPostsSection(
+                      leftMargin: screenHorizontalPadding,
+                      rightMargin: screenHorizontalPadding,
+                      topMargin: 40.0,
                     )
                   ],
                 );
