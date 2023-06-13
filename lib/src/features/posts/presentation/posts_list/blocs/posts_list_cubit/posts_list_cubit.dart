@@ -24,11 +24,12 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
     if (state is PostsListCubitFetching) {
       return;
     }
-
-    emit(PostsListCubitFetching(
-      categoryId: categoryId,
-      posts: state.posts,
-    ));
+    if (!isClosed) {
+      emit(PostsListCubitFetching(
+        categoryId: categoryId,
+        posts: state.posts,
+      ));
+    }
 
     //load posts
     ResponseDTO<List<Post>> fetchingPostsResponse;
@@ -50,10 +51,12 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
     }
 
     if (fetchingPostsResponse.statusCode != 200) {
-      emit(PostsListCubitFetchingHasError(
-          posts: state.posts,
-          categoryId: categoryId,
-          error: fetchingPostsResponse.error!));
+      if (!isClosed) {
+        emit(PostsListCubitFetchingHasError(
+            posts: state.posts,
+            categoryId: categoryId,
+            error: fetchingPostsResponse.error!));
+      }
       return;
     }
 
@@ -61,28 +64,33 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
     //check it was the first fetch or not, then, switch to proper state
     if ((state.posts + fetchingPostsResponse.data!).isEmpty) {
       //empty bookmarks
-      emit(PostsListCubitIsEmpty(
-        posts: List.empty(),
-        categoryId: state.categoryId,
-      ));
+      if (!isClosed) {
+        emit(PostsListCubitIsEmpty(
+          posts: List.empty(),
+          categoryId: state.categoryId,
+        ));
+      }
     } else {
       //User's Bookmarks List is not empty
       //Add fetched posts
 
       if (fetchingPostsResponse.data!.isEmpty) {
         //no more posts to fecth
-
-        emit(PostsListNoMorePostsToFetch(
-          posts: state.posts,
-          categoryId: state.categoryId,
-        ));
+        if (!isClosed) {
+          emit(PostsListNoMorePostsToFetch(
+            posts: state.posts,
+            categoryId: state.categoryId,
+          ));
+        }
         return;
       } else {
-        emit(PostsListCubitFetchedSuccessfully(
-          fetchedPosts: fetchingPostsResponse.data!,
-          posts: state.posts + fetchingPostsResponse.data!,
-          categoryId: categoryId,
-        ));
+        if (!isClosed) {
+          emit(PostsListCubitFetchedSuccessfully(
+            fetchedPosts: fetchingPostsResponse.data!,
+            posts: state.posts + fetchingPostsResponse.data!,
+            categoryId: categoryId,
+          ));
+        }
       }
     }
   }
@@ -92,21 +100,27 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
         state.posts.removeAt(state.posts.indexWhere((p) => p.id == postId));
     if (state.posts.isEmpty) {
       //first notify a post has been removed
-      emit(PostsListCubitPostHasBeenRemoved(
-          posts: state.posts,
-          removedPost: removedPost,
-          categoryId: state.categoryId));
+      if (!isClosed) {
+        emit(PostsListCubitPostHasBeenRemoved(
+            posts: state.posts,
+            removedPost: removedPost,
+            categoryId: state.categoryId));
+      }
       //then notify post is empty
-      emit(PostsListCubitIsEmpty(
-        posts: state.posts,
-        categoryId: state.categoryId,
-      ));
+      if (!isClosed) {
+        emit(PostsListCubitIsEmpty(
+          posts: state.posts,
+          categoryId: state.categoryId,
+        ));
+      }
     } else {
       //list is not empty
-      emit(PostsListCubitPostHasBeenRemoved(
-          posts: state.posts,
-          removedPost: removedPost,
-          categoryId: state.categoryId));
+      if (!isClosed) {
+        emit(PostsListCubitPostHasBeenRemoved(
+            posts: state.posts,
+            removedPost: removedPost,
+            categoryId: state.categoryId));
+      }
     }
   }
 
@@ -116,16 +130,20 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
       return;
     }
 
-    emit(PostsListCubitPostHasBeenAdded(
-      categoryId: state.categoryId,
-      posts: [post] + state.posts, //add post to the first of the list
-      addedPosts: [post],
-    ));
+    if (!isClosed) {
+      emit(PostsListCubitPostHasBeenAdded(
+        categoryId: state.categoryId,
+        posts: [post] + state.posts, //add post to the first of the list
+        addedPosts: [post],
+      ));
+    }
   }
 
   void emptyList() {
-    emit(PostsListCubitIsEmpty(
-        posts: List.empty(), categoryId: state.categoryId));
+    if (!isClosed) {
+      emit(PostsListCubitIsEmpty(
+          posts: List.empty(), categoryId: state.categoryId));
+    }
   }
 
   void updatePostsBookmarkStatus(
@@ -139,6 +157,8 @@ class PostsListCubit extends Cubit<PostsListCubitState> {
     }
 
     //update the item's bookmark value but emit the same state
-    emit(state..posts[index].isBookmarked = newBookmarkStatus);
+    if (!isClosed) {
+      emit(state..posts[index].isBookmarked = newBookmarkStatus);
+    }
   }
 }
