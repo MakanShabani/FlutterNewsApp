@@ -5,8 +5,8 @@ import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/con
 import '../../../../../common_widgets/common_widgest.dart';
 import '../../../../../custome_icons/custome_icons_icons.dart';
 import '../../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
+import '../cubit/post_details_cubit/post_details_cubit.dart';
 import '../../../domain/posts_models.dart';
-import '../cubit/post_details_cubit.dart';
 
 class AppbarSection extends StatelessWidget {
   const AppbarSection({
@@ -20,8 +20,10 @@ class AppbarSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       expandedHeight: 250.0,
-      floating: true,
-      snap: true,
+      collapsedHeight: kToolbarHeight,
+      pinned: false,
+      floating: false,
+      snap: false,
       leading: IconButton(
         onPressed: () => Navigator.pop(context),
         icon: const Icon(
