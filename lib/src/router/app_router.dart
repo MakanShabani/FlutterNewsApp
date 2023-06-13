@@ -20,6 +20,7 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => PostScreen(
                   postId: arguments['postId'] as String,
+                  categoryId: arguments['categoryId'] as String,
                 ));
 
       default:
@@ -32,7 +33,8 @@ class AppRouter {
   }
 
   //Arguments generator functions for routes
-  static Map<String, dynamic> createPostRouteArguments(String postId) {
-    return {'postId': postId};
+  static Map<String, dynamic> createPostRouteArguments(
+      String postId, String categoryId) {
+    return {'postId': postId, 'categoryId': categoryId};
   }
 }

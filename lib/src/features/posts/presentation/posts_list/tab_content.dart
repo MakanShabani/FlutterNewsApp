@@ -232,8 +232,8 @@ class _TabContentState extends State<TabContent>
                                       post, newBookmarkValueToSet),
                           onItemtapped: () => Navigator.pushNamed(
                               context, postRoute,
-                              arguments:
-                                  AppRouter.createPostRouteArguments(item.id)),
+                              arguments: AppRouter.createPostRouteArguments(
+                                  item.id, item.category.id)),
                         ),
                         loadingLayout: const SizedBox(
                           height: 50.0,
