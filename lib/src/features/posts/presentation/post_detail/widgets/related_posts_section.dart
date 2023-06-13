@@ -6,7 +6,10 @@ import 'package:responsive_admin_dashboard/src/router/route_names.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../../../../common_widgets/common_widgest.dart';
+import '../../../../../infrastructure/constants.dart/text_constants.dart';
 import '../../../../../infrastructure/constants.dart/view_constants.dart';
+import '../../../../authentication/presentation/blocs/authentication_cubit.dart';
+import '../../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';
 import '../../posts_list/blocs/posts_list_cubit/posts_list_cubit.dart';
 
 class RelatedPostsSection extends StatelessWidget {
@@ -49,6 +52,10 @@ class RelatedPostsSection extends StatelessWidget {
                 onItemtapped: () => Navigator.pushNamed(context, postRoute,
                     arguments: AppRouter.createPostRouteArguments(
                         item.id, item.category.id)),
+                onPostBookmarkPressed: (post, newBookmarkStatus) =>
+                    onPostBookMarkPressed(context, post, newBookmarkStatus),
+                onPostBookMarkUpdated: (post, newBookmarkStatus) =>
+                    onPostBookmarkUpdated(context, post, newBookmarkStatus),
               ),
               loadingLayout: const SizedBox(
                 height: 50.0,
@@ -73,5 +80,43 @@ class RelatedPostsSection extends StatelessWidget {
         );
       },
     );
+  }
+
+  //---------------functions----------------------------
+
+  // we use this function to do stuff when bookmark button is pressed
+  void onPostBookMarkPressed(
+      BuildContext context, Post post, bool newBookmarkStatus) {
+    if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
+      ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+          context: context,
+          message: error401SnackBar,
+          action: () => Navigator.pushNamed(context, loginRoute),
+          actionLabel: 'Sign In'));
+      return;
+    }
+
+    //If bookmarking is locked -- we do nothing
+    if (context.read<PostBookmarkCubit>().state.isLocked) {
+      ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+        context: context,
+        message: updatingBookmarksListSnackBar,
+      ));
+      return;
+    }
+
+    context.read<PostBookmarkCubit>().toggleBookmark(
+        userToken: (context.read<AuthenticationCubit>().state
+                as AuthenticationLoggedIn)
+            .user
+            .token,
+        post: post,
+        newBookmarkValueToSet: newBookmarkStatus);
+  }
+
+  void onPostBookmarkUpdated(
+      BuildContext context, Post post, bool newBookmarkStatus) {
+    context.read<PostsListCubit>().updatePostsBookmarkStatus(
+        postId: post.id, newBookmarkStatus: newBookmarkStatus);
   }
 }
