@@ -3,10 +3,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../../../../../infrastructure/shared_dtos/shared_dtos.dart';
-import '../../../../../infrastructure/shared_models/shared_model.dart';
-import '../../../application/post_service.dart';
-import '../../../domain/posts_models.dart';
+import '../../../../../../infrastructure/shared_dtos/shared_dtos.dart';
+import '../../../../../../infrastructure/shared_models/shared_model.dart';
+import '../../../../application/post_service.dart';
+import '../../../../domain/posts_models.dart';
 
 part 'post_details_state.dart';
 
