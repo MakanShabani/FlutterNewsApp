@@ -26,8 +26,10 @@ class FakeCommentsRepository implements CommentRepository {
   Future<ResponseDTO<void>> sendComment(
       {required userToken,
       required userId,
-      required SendCommentDTO sendCommentDTO}) {
-    // TODO: implement sendComment
-    throw UnimplementedError();
+      required SendCommentDTO sendCommentDTO}) async {
+    return await Future.delayed(
+        Duration(seconds: delayDurationInSeconds),
+        () => _commentDataSource.sendComment(
+            userToken: userToken, sendCommentDTO: sendCommentDTO));
   }
 }
