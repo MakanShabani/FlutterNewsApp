@@ -144,6 +144,7 @@ class FakeDatabase {
                     faker.lorem.sentence()
                 : faker.lorem.sentence(),
             user: clients[Random().nextInt(clients.length)],
+            replies: List.empty(growable: true),
           ),
         );
       }
