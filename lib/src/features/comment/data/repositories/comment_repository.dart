@@ -6,6 +6,9 @@ abstract class CommentRepository {
   Future<ResponseDTO<List<Comment>>> getComments(
       {required postId, required PagingOptionsDTO pagingOptionsDTO});
 
+  Future<ResponseDTO<List<Comment>>> getCommentReplies(
+      {required commentId, required PagingOptionsDTO pagingOptionsDTO});
+
   Future<ResponseDTO<void>> sendComment(
       {required userToken,
       required userId,

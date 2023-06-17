@@ -53,6 +53,37 @@ class CommentDataSource {
     return ResponseDTO(statusCode: 200, data: finalComments);
   }
 
+  ResponseDTO<List<Comment>> getCommentReplies(
+      {required commentId, required PagingOptionsDTO pagingOptionsDTO}) {
+    //check whether the comment exists
+    DatabaseComment? comment = fakeDatabase.comments
+        .firstWhereOrNull((element) => element.id == commentId);
+
+    if (comment == null) {
+      //comment does not exist
+      return ResponseDTO(
+          statusCode: 404,
+          error: ErrorModel(
+            message: 'Comment was not found',
+            detail: 'Comment was not found.',
+            statusCode: 404,
+          ));
+    }
+
+    //comment was founded
+
+    //paginate and sort the replies then convert their type to Comment Object
+
+    List<Comment> replies = comment.replies
+        .sorted((a, b) => b.createdAt.compareTo(a.createdAt))
+        .skip(pagingOptionsDTO.offset)
+        .take(pagingOptionsDTO.limit)
+        .map((e) => Comment.fromDatabaseComment(e))
+        .toList();
+
+    return ResponseDTO(statusCode: 200, data: replies);
+  }
+
   ResponseDTO<int> getCommentsCount({required String postId}) {
     //check the existence of the post
 

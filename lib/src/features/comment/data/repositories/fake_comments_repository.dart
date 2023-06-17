@@ -32,4 +32,13 @@ class FakeCommentsRepository implements CommentRepository {
         () => _commentDataSource.sendComment(
             userToken: userToken, sendCommentDTO: sendCommentDTO));
   }
+
+  @override
+  Future<ResponseDTO<List<Comment>>> getCommentReplies(
+      {required commentId, required PagingOptionsDTO pagingOptionsDTO}) async {
+    return await Future.delayed(
+        Duration(seconds: delayDurationInSeconds),
+        () => _commentDataSource.getCommentReplies(
+            commentId: commentId, pagingOptionsDTO: pagingOptionsDTO));
+  }
 }
