@@ -37,13 +37,10 @@ class Comment extends Entity {
   }
 
   factory Comment.fromDatabaseComment(DatabaseComment databaseComment) {
-    List<Comment>? replies;
+    List<Comment> replies = List.empty(growable: true);
 
-    if (databaseComment.replies != null) {
-      replies = List.empty(growable: true);
-      for (var element in databaseComment.replies!) {
-        replies.add(Comment.fromDatabaseComment(element));
-      }
+    for (var element in databaseComment.replies) {
+      replies.add(Comment.fromDatabaseComment(element));
     }
 
     return Comment(
