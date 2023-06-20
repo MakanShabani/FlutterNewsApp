@@ -2,8 +2,8 @@ import '../../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../data/repositories/repositories.dart';
 import '../domain/comment.dart';
 
-class FetchCommentsService {
-  FetchCommentsService({required CommentRepository commentRepository})
+class CommentsFetchingService {
+  CommentsFetchingService({required CommentRepository commentRepository})
       : _commentRepository = commentRepository;
   final CommentRepository _commentRepository;
 

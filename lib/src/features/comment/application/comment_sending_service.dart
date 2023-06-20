@@ -3,8 +3,8 @@ import 'package:responsive_admin_dashboard/src/features/comment/data/repositorie
 import '../../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../data/dtos/dtos.dart';
 
-class SendCommentService {
-  SendCommentService({required CommentRepository commentRepository})
+class CommentSendingService {
+  CommentSendingService({required CommentRepository commentRepository})
       : _commentRepository = commentRepository;
   final CommentRepository _commentRepository;
 
