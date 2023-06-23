@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/domain/post.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/presentation/post_detail/widgets/widgets.dart';
 import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts_list/blocs/posts_list_blocs.dart';
+import 'package:responsive_admin_dashboard/src/router/app_router.dart';
 import '../../../../router/route_names.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
@@ -164,6 +165,10 @@ class PostScreen extends StatelessWidget {
                       leftMargin: screenHorizontalPadding,
                       rightMargin: screenHorizontalPadding,
                       topMargin: 20.0,
+                      onClicked: () => Navigator.pushNamed(
+                          context, commentsRoute,
+                          arguments:
+                              AppRouter.createCommentsRouteArguments(postId)),
                     ),
 
                     //Related Posts section
