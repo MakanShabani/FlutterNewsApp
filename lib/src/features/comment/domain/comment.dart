@@ -3,6 +3,7 @@ import 'package:responsive_admin_dashboard/src/server_impementation/databse_enti
 
 class Comment extends Entity {
   final String userId;
+  final String postId;
   final String userName;
   final String userLastName;
   final String? userImageUrl;
@@ -14,6 +15,7 @@ class Comment extends Entity {
     required super.createdAt,
     required super.updatedAt,
     required this.userId,
+    required this.postId,
     required this.userName,
     required this.userLastName,
     this.userImageUrl,
@@ -28,6 +30,7 @@ class Comment extends Entity {
         id: tempEntity.id,
         createdAt: tempEntity.createdAt,
         updatedAt: tempEntity.updatedAt,
+        postId: parsedJson['post_id'],
         userId: parsedJson['user_id'],
         userName: parsedJson['user_name'],
         userLastName: parsedJson['user_lastName'],
@@ -47,6 +50,7 @@ class Comment extends Entity {
       id: databaseComment.id,
       createdAt: databaseComment.createdAt,
       updatedAt: databaseComment.updatedAt,
+      postId: databaseComment.postId,
       userId: databaseComment.user.id,
       userName: databaseComment.user.firstName,
       userLastName: databaseComment.user.lastName,
