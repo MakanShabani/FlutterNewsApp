@@ -1,4 +1,6 @@
-class PagingOptionsDTO {
+import 'package:equatable/equatable.dart';
+
+class PagingOptionsDTO extends Equatable {
   late int limit;
   late int offset;
 
@@ -15,4 +17,7 @@ class PagingOptionsDTO {
       this.offset = offset;
     }
   }
+
+  @override
+  List<Object?> get props => [offset, limit];
 }
