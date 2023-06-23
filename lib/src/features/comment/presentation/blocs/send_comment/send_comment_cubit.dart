@@ -11,11 +11,11 @@ import '../../../data/dtos/send_comment_dto.dart';
 part 'send_comment_state.dart';
 
 class SendCommentCubit extends Cubit<SendCommentState> {
-  SendCommentCubit({required SendCommentService sendCommentService})
+  SendCommentCubit({required CommentSendingService sendCommentService})
       : _sendCommentService = sendCommentService,
         super(SendCommentInitialState());
 
-  final SendCommentService _sendCommentService;
+  final CommentSendingService _sendCommentService;
 
   void sendComment(
       {required String userToken,
