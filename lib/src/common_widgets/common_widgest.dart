@@ -10,3 +10,4 @@ export './error_not_authorize.dart';
 export './bookmark_button.dart';
 export './sliver_infinite_animated_list/sliver_infinite_animated_list_.dart';
 export './time_in_text.dart';
+export './profile_picture.dart';
