@@ -28,17 +28,18 @@ class CommentsSection extends StatelessWidget {
         if (state is CommentsFetchingFetchedState) {
           //Build once only after First Fetch successfully fetched some new posts
           return SliverInfiniteAnimatedList<Comment>(
-              items: state.comments,
-              itemTopPadding: 20.0,
-              itemLeftPadding: screenHorizontalPadding,
-              itemRightPadding: screenHorizontalPadding,
-              itemBottomPadding: 20.0,
-              firstItemWithoutTopPadding: true,
-              lastItemWithoutBottomPadding: false,
-              showDivider: true,
-              itemLayoutBuilder: (comment, index) =>
-                  CommentLayoutInVerticalList(comment: comment),
-              loadingLayout: const LoadingIndicator(hasBackground: false));
+            items: state.comments,
+            itemTopPadding: 20.0,
+            itemLeftPadding: screenHorizontalPadding,
+            itemRightPadding: screenHorizontalPadding,
+            itemBottomPadding: 20.0,
+            firstItemWithoutTopPadding: true,
+            lastItemWithoutBottomPadding: false,
+            showDivider: true,
+            itemLayoutBuilder: (comment, index) =>
+                CommentLayoutInVerticalList(comment: comment),
+            loadingLayout: const ListDefaultLoadingIndicator(),
+          );
         }
 
         if (state is CommentsFetchingListIsEmpty) {
