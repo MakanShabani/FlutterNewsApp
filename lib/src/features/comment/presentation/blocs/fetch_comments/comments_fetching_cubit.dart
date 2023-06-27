@@ -15,16 +15,21 @@ part 'comments_fetching_state.dart';
 class CommentsFetchingCubit extends Cubit<CommentsFetchingState> {
   CommentsFetchingCubit(
       {required this.postId,
-      required CommentsFetchingService fetchCommentsService})
+      required CommentsFetchingService fetchCommentsService,
+      int? howManyToFetchEachTime})
       : _fetchCommentsService = fetchCommentsService,
+        _howManyToFetchEachTime = howManyToFetchEachTime ?? 10,
         super(CommentsFetchingInitialState(
             comments: List.empty(), postId: postId));
 
   final CommentsFetchingService _fetchCommentsService;
   final String postId;
+  // ignore: prefer_final_fields
+  late int _howManyToFetchEachTime; //default is 10
 
-  void fetchComments({required int howManyShouldFetch}) async {
+  void fetchComments({int? howManyShouldFetch}) async {
     //set the limit for pagingOption if a new limit is provided
+    _howManyToFetchEachTime = howManyShouldFetch ?? _howManyToFetchEachTime;
 
     //do nothing if another fetching is in progress
     if (state is CommentsFetchingFetchingState) {
@@ -46,7 +51,7 @@ class CommentsFetchingCubit extends Cubit<CommentsFetchingState> {
         await _fetchCommentsService.getComments(
             postId: postId,
             pagingOptionsDTO: PagingOptionsDTO(
-                offset: state.comments.length, limit: howManyShouldFetch));
+                offset: state.comments.length, limit: _howManyToFetchEachTime));
 
     //process the response
     if (responseDTO.statusCode == 200) {
