@@ -18,21 +18,30 @@ class SliverInfiniteAnimatedList<T> extends StatefulWidget {
     this.scrollDirection,
     this.itemHeight,
     this.spaceBetweenItems,
-    this.itemLeftMargin,
-    this.itemRightMargin,
-    this.itemTopMargin,
+    this.itemLeftPadding,
+    this.itemRightPadding,
+    this.itemTopPadding,
+    this.showDivider,
+    required this.firstItemWithoutTopPadding,
+    required this.lastItemWithoutBottomPadding,
+    this.itemBottomPadding,
+    this.showDividerAfterLastItem,
   }) : super(key: key);
-
+  final bool firstItemWithoutTopPadding;
+  final bool lastItemWithoutBottomPadding;
+  final bool? showDivider;
   final double? itemHeight;
   final double? spaceBetweenItems;
-  final double? itemLeftMargin;
-  final double? itemRightMargin;
-  final double? itemTopMargin;
+  final double? itemLeftPadding;
+  final double? itemRightPadding;
+  final double? itemTopPadding;
+  final double? itemBottomPadding;
   final List<T> items;
   final Axis? scrollDirection;
   final ListItemLayoutBuilder<T> itemLayoutBuilder;
   final ListRemoveItemBuilder<T>? removeItemBuilder;
   final Widget loadingLayout;
+  final bool? showDividerAfterLastItem;
   @override
   State<SliverInfiniteAnimatedList<T>> createState() =>
       SliverInfiniteAnimatedListState<T>();
@@ -86,7 +95,43 @@ class SliverInfiniteAnimatedListState<S>
             initialItemCount: _items.length,
             itemBuilder: (context, index, animation) => FadeTransition(
               opacity: animation,
-              child: widget.itemLayoutBuilder(_items[index], index),
+              child: Column(
+                children: [
+                  Padding(
+                    //padding
+                    padding: EdgeInsets.fromLTRB(
+                        widget.itemLeftPadding ?? 0,
+                        widget.itemTopPadding != null
+                            ? (index == 0 && widget.firstItemWithoutTopPadding)
+                                ? 0
+                                : widget.itemTopPadding!
+                            : 0,
+                        widget.itemRightPadding ?? 0,
+                        widget.itemBottomPadding != null
+                            ? (index == _items.length - 1 &&
+                                    widget.lastItemWithoutBottomPadding)
+                                ? 0
+                                : widget.itemBottomPadding!
+                            : 0),
+                    //Item Layout Builder
+                    child: widget.itemLayoutBuilder(_items[index], index),
+                  ),
+                  //Divider
+                  widget.showDivider != null && widget.showDivider!
+                      ? (index == _items.length - 1 &&
+                              (widget.showDividerAfterLastItem == null ||
+                                  !widget.showDividerAfterLastItem!))
+                          ? const SizedBox(
+                              height: 0,
+                            )
+                          : const Divider(
+                              thickness: 2.0,
+                            )
+                      : const SizedBox(
+                          height: 0,
+                        )
+                ],
+              ),
             ),
           ),
           BlocBuilder<ListNotifireCubit<S>, ListNotifireCubitState>(
