@@ -14,3 +14,4 @@ export './profile_picture.dart';
 export './border_text_button.dart';
 export './dot_icon.dart';
 export './list_default_loading_indicator.dart';
+export './text_handle_overflow.dart';
