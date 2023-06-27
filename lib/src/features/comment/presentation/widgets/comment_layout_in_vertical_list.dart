@@ -6,13 +6,22 @@ import 'package:responsive_admin_dashboard/src/infrastructure/utils/helper_metho
 import '../../../../common_widgets/common_widgest.dart';
 import '../../domain/comment.dart';
 
-class CommentLayoutInVerticalList extends StatelessWidget {
+class CommentLayoutInVerticalList extends StatefulWidget {
   const CommentLayoutInVerticalList({
     Key? key,
     required this.comment,
   }) : super(key: key);
 
   final Comment comment;
+
+  @override
+  State<CommentLayoutInVerticalList> createState() =>
+      _CommentLayoutInVerticalListState();
+}
+
+class _CommentLayoutInVerticalListState
+    extends State<CommentLayoutInVerticalList> {
+  bool fullContent = false;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +31,7 @@ class CommentLayoutInVerticalList extends StatelessWidget {
       children: [
         //Profile Picture
         ProfilePicture(
-          imageUrl: comment.userImageUrl,
+          imageUrl: widget.comment.userImageUrl,
           height: 60.0,
           width: 60.0,
           reservedIconSize: 30.0,
@@ -46,7 +55,7 @@ class CommentLayoutInVerticalList extends StatelessWidget {
                   children: [
                     //user's name section
                     Text(
-                      '${comment.userName} ${comment.userLastName}',
+                      '${widget.comment.userName} ${widget.comment.userLastName}',
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                           fontSize: 13.0, fontWeight: FontWeight.bold),
                     ),
@@ -68,7 +77,7 @@ class CommentLayoutInVerticalList extends StatelessWidget {
                     //comment's sent time
                     Text(
                       HelperMethods.calculateTimeForRepresetingInUI(
-                          comment.createdAt),
+                          widget.comment.createdAt),
                       style: Theme.of(context).textTheme.labelSmall,
                     )
                   ],
@@ -80,11 +89,10 @@ class CommentLayoutInVerticalList extends StatelessWidget {
               ),
               // comment's content
 
-              Text(
-                comment.content,
-                maxLines: 5,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyLarge,
+              TextHandleOverflow(
+                content: widget.comment.content,
+                maxLine: 5,
+                textStyle: Theme.of(context).textTheme.bodyLarge,
               ),
 
               const SizedBox(
