@@ -11,6 +11,10 @@ const bookmarkListsEmpty = "Looks Like You Haven't Bookmarked Any Post Yet";
 const bookmarkListsEmptySubtitle =
     'Try bookmark some posts to see them here, or just refresh the page to update the list';
 
+const commentListsEmpty = 'Looks Like No One Has Commented Yet';
+const commentListsEmptySubtitle =
+    'Be the first one to comment, or just refresh the page to update the list';
+
 const noMorePostsToFetchSnackBar = 'There are no more posts to fetch';
 const noMoreBookmarkToFetchSnackBar = 'It seems you have no more bookmarks';
 
