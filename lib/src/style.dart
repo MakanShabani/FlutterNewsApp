@@ -20,7 +20,7 @@ class ThemeStyle {
           centerTitle: true,
           backgroundColor: Colors.white,
           iconTheme: const IconThemeData().copyWith(
-            color: Colors.white,
+            color: Colors.black87,
           )),
       switchTheme: const SwitchThemeData().copyWith(
         thumbColor:
