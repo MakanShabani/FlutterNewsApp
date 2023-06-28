@@ -78,7 +78,10 @@ class _CommentLayoutInVerticalListState
                     Text(
                       HelperMethods.calculateTimeForRepresetingInUI(
                           widget.comment.createdAt),
-                      style: Theme.of(context).textTheme.labelSmall,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelSmall
+                          ?.copyWith(fontSize: 12.0),
                     )
                   ],
                 ),
