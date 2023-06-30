@@ -10,7 +10,9 @@ import 'comment_widgets.dart';
 class CommentsSection extends StatelessWidget {
   const CommentsSection({
     Key? key,
+    this.onNewItemsAreInserted,
   }) : super(key: key);
+  final VoidCallback? onNewItemsAreInserted;
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +37,12 @@ class CommentsSection extends StatelessWidget {
             itemBottomPadding: 20.0,
             firstItemWithoutTopPadding: true,
             lastItemWithoutBottomPadding: false,
+            hideDividerAfterLastItem: true,
             showDivider: true,
             itemLayoutBuilder: (comment, index) =>
                 CommentLayoutInVerticalList(comment: comment),
             loadingLayout: const ListDefaultLoadingIndicator(),
+            onItemsAreInserted: onNewItemsAreInserted,
           );
         }
 

@@ -12,7 +12,6 @@ import 'widgets/comment_widgets.dart';
 class CommentsScreen extends StatefulWidget {
   const CommentsScreen({Key? key, required this.postId}) : super(key: key);
   final String postId;
-
   @override
   State<CommentsScreen> createState() => _CommentsScreenState();
 }
@@ -27,7 +26,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
     super.initState();
     _commentsFetchingCubit = CommentsFetchingCubit(
         postId: widget.postId,
-        howManyToFetchEachTime: 20,
+        howManyToFetchEachTime: 10,
         fetchCommentsService: CommentsFetchingService(
             commentRepository: context.read<FakeCommentsRepository>()))
       ..fetchComments();
@@ -52,8 +51,16 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
     if (_scrollController.offset ==
         _scrollController.position.maxScrollExtent) {
-      //fetch new posts
+      //fetch new comments when user scrolls to the end of the list
       _commentsFetchingCubit.fetchComments();
+    }
+  }
+
+  void _onItemsInsertedToList() {
+    if (_scrollController.offset ==
+        _scrollController.position.maxScrollExtent) {
+      _scrollController.animateTo(_scrollController.offset + 50.0,
+          duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
     }
   }
 
@@ -71,73 +78,79 @@ class _CommentsScreenState extends State<CommentsScreen> {
       ],
       child: Scaffold(
         body: SafeArea(
-          child: MultiBlocListener(
-            listeners: [
-              BlocListener<CommentsFetchingCubit, CommentsFetchingState>(
-                  listenWhen: (previous, current) =>
-                      //listen to the cubit in the following situations::::
-                      //1. want to fetch new comments and already have some comments in our list -->> show the list's loading indicatior
-                      //2. just fetched some new comments && already have some comments in our list -->> Insert new items to the list
-                      //3. current state is noMoreCommentsToFetch -->> hide the list's loading indicatior
-                      //4. fetching ended with an error and we already have some comments in our list -->> hide the list's loading indicatior
-                      // and show the error via snackbar to the user
-                      (current is CommentsFetchingFetchingState &&
-                          current.comments.isNotEmpty) ||
-                      (current is CommentsFetchingFetchedState &&
-                          previous.comments.isNotEmpty) ||
-                      current is CommentsFetchingNoMoreToFetch ||
-                      (current is CommentsFetchingFailedState &&
-                          current.comments.isNotEmpty),
-                  listener: (context, state) {
-                    if (state is CommentsFetchingFetchingState) {
-                      // notify the list widget to show the loading indicator at the end of the list
-                      _listNotifireCubit.showLoading();
-                      //smooth scroll to the loading indicator if we are at the end of the list
-                      if (_scrollController.offset ==
-                          _scrollController.position.maxScrollExtent) {
-                        _scrollController.animateTo(
-                            _scrollController.position.maxScrollExtent + 50,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeIn);
-                      }
-                      return;
+            child: MultiBlocListener(
+          listeners: [
+            BlocListener<CommentsFetchingCubit, CommentsFetchingState>(
+                listenWhen: (previous, current) =>
+                    //listen to the cubit in the following situations::::
+                    //1. want to fetch new comments and already have some comments in our list -->> show the list's loading indicatior
+                    //2. just fetched some new comments && already have some comments in our list -->> Insert new items to the list
+                    //3. current state is noMoreCommentsToFetch -->> hide the list's loading indicatior
+                    //4. fetching ended with an error and we already have some comments in our list -->> hide the list's loading indicatior
+                    // and show the error via snackbar to the user
+                    (current is CommentsFetchingFetchingState &&
+                        current.comments.isNotEmpty) ||
+                    (current is CommentsFetchingFetchedState &&
+                        previous.comments.isNotEmpty) ||
+                    current is CommentsFetchingNoMoreToFetch ||
+                    (current is CommentsFetchingFailedState &&
+                        current.comments.isNotEmpty),
+                listener: (context, state) {
+                  if (state is CommentsFetchingFetchingState) {
+                    // notify the list widget to show the loading indicator at the end of the list
+                    _listNotifireCubit.showLoading();
+                    if (_scrollController.offset ==
+                        _scrollController.position.maxScrollExtent) {
+                      _scrollController.animateTo(
+                          _scrollController.offset + 30.0,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeIn);
                     }
-                    if (state is CommentsFetchingFetchedState) {
-                      // notify the list widget to insert newly fetched comments to the list via ListNotifireCubit
-
-                      _listNotifireCubit.insertItems(
-                          state.fetchedComments, false);
-                      return;
-                    }
-                    if (state is CommentsFetchingNoMoreToFetch) {
-                      // notify the list widget to hide the loading indicator at the end of the list
-                      _listNotifireCubit.resetState();
-                      return;
-                    }
-                    if (state is CommentsFetchingFetchedState) {
-                      // notify the list widget to hide the loading indicator at the end of the list
-                      _listNotifireCubit.resetState();
-                      //TODO: show the error to the user via snackbar
-                      return;
-                    }
-                  })
-            ],
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                //Appbar Section
-                AppbarSection(title: 'Comments'),
-
-                //Free Space Between Appbar & rest of the page
-                SliverToBoxAdapter(
-                  child: SizedBox(height: screenTopPadding),
+                    return;
+                  }
+                  if (state is CommentsFetchingFetchedState) {
+                    // notify the list widget to insert newly fetched comments to the list via ListNotifireCubit
+                    _listNotifireCubit.insertItems(
+                        state.fetchedComments, false);
+                    return;
+                  }
+                  if (state is CommentsFetchingNoMoreToFetch) {
+                    // notify the list widget to hide the loading indicator at the end of the list
+                    _listNotifireCubit.resetState();
+                    return;
+                  }
+                  if (state is CommentsFetchingFetchedState) {
+                    // notify the list widget to hide the loading indicator at the end of the list
+                    _listNotifireCubit.resetState();
+                    //TODO: show the error to the user via snackbar
+                    return;
+                  }
+                })
+          ],
+          child: Column(
+            children: [
+              Expanded(
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    //Appbar Section
+                    const AppbarSection(title: 'Comments'),
+                    //Free Space between the appbar and rest of the page
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: screenTopPadding),
+                    ),
+                    //Comments List Section
+                    CommentsSection(
+                        onNewItemsAreInserted: _onItemsInsertedToList),
+                  ],
                 ),
-                //Comments List Section
-                CommentsSection(),
-              ],
-            ),
+              ),
+              // WritingSection(
+              //   hintText: commentWritingSectionHint,
+              // ),
+            ],
           ),
-        ),
+        )),
       ),
     );
   }
