@@ -298,6 +298,8 @@ class _TabContentState extends State<TabContent>
               cauroselLeftPadding: screenHorizontalPadding,
               cauroselRightPadding: screenHorizontalPadding,
               items: posts,
+              onPostBookmarkPressed: (post, newBookmarkStatus) =>
+                  onPostBookMarkPressed(post, newBookmarkStatus),
               onPostBookMarkUpdated: (post, newBookmarkStatus) =>
                   _postListsCubit.updatePostsBookmarkStatus(
                       postId: post.id, newBookmarkStatus: newBookmarkStatus),
@@ -336,9 +338,10 @@ class _TabContentState extends State<TabContent>
   void onPostBookMarkPressed(Post post, bool newBookmarkStatusToSet) {
     if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
       ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
-        context: context,
-        message: error401SnackBar,
-      ));
+          context: context,
+          message: error401SnackBar,
+          actionLabel: 'Sign In',
+          action: () => Navigator.pushNamed(context, loginRoute)));
       return;
     }
 
