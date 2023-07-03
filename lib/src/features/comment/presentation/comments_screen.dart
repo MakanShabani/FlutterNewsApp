@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_admin_dashboard/src/features/authentication/presentation/authentication_presentations.dart';
+import 'package:responsive_admin_dashboard/src/features/comment/data/dtos/dtos.dart';
 import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
+import 'package:responsive_admin_dashboard/src/router/route_names.dart';
 
 import '../../../common_widgets/common_widgest.dart';
 import '../application/comment_application.dart';
 import '../data/repositories/fake_comments_repository.dart';
+import '../data/repositories/repositories.dart';
 import '../domain/comment.dart';
 import 'blocs/cubits.dart';
 import 'widgets/comment_widgets.dart';
@@ -20,7 +24,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
   late ScrollController _scrollController;
   late CommentsFetchingCubit _commentsFetchingCubit;
   late ListNotifireCubit<Comment> _listNotifireCubit;
-
+  late SendCommentCubit _sendCommentCubit;
   @override
   void initState() {
     super.initState();
@@ -30,6 +34,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
         fetchCommentsService: CommentsFetchingService(
             commentRepository: context.read<FakeCommentsRepository>()))
       ..fetchComments();
+    _sendCommentCubit = SendCommentCubit(
+        sendCommentService: CommentSendingService(
+            commentRepository: context.read<FakeCommentsRepository>()));
     _listNotifireCubit = ListNotifireCubit();
     _scrollController = ScrollController();
     _scrollController.addListener(scrollListenrer);
@@ -40,6 +47,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
     _scrollController.removeListener(scrollListenrer);
     _scrollController.dispose();
     _listNotifireCubit.close();
+    _sendCommentCubit.close();
     _commentsFetchingCubit.close();
     super.dispose();
   }
@@ -64,17 +72,53 @@ class _CommentsScreenState extends State<CommentsScreen> {
     }
   }
 
+  void _onSendCommentTap(String userInput) {
+    late String userToken;
+    late String userId;
+
+    //check whether user is signed in
+
+    if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
+      // user is not signed in -->> show snackbar to notify the client and do nothing
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        appSnackBar(
+          context: context,
+          message: error401SnackBar,
+          action: () => Navigator.pushNamed(context, loginRoute),
+          actionLabel: 'Sign In',
+          isFloating: true,
+        ),
+      );
+
+      return;
+    }
+
+    //everything is ok
+
+    userToken =
+        (context.read<AuthenticationCubit>().state as AuthenticationLoggedIn)
+            .user
+            .token;
+    userId =
+        (context.read<AuthenticationCubit>().state as AuthenticationLoggedIn)
+            .user
+            .token;
+
+    _sendCommentCubit.sendComment(
+        userToken: userToken,
+        userId: userId,
+        sendCommentDTO:
+            SendCommentDTO(postId: widget.postId, content: userInput));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: _listNotifireCubit),
         BlocProvider.value(value: _commentsFetchingCubit),
-        // BlocProvider(
-        //   create: (context) => SendCommentCubit(
-        //       sendCommentService: CommentSendingService(
-        //           commentRepository: context.read<CommentRepository>())),
-        // ),
+        BlocProvider.value(value: _sendCommentCubit),
       ],
       child: Scaffold(
         body: SafeArea(
@@ -125,7 +169,18 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     //TODO: show the error to the user via snackbar
                     return;
                   }
-                })
+                }),
+            BlocListener<SendCommentCubit, SendCommentState>(
+                listener: (context, state) {
+              if (state is SendCommentSentState) {
+                //comment sent successfully
+                //show snackbar to notify user
+                ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+                    context: context,
+                    message: commentsSentSuccessfullySnackBar));
+                return;
+              }
+            }),
           ],
           child: Column(
             children: [
@@ -145,9 +200,10 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   ],
                 ),
               ),
-              // WritingSection(
-              //   hintText: commentWritingSectionHint,
-              // ),
+              WritingSection(
+                hintText: commentWritingSectionHint,
+                onSendTap: (userInput) => _onSendCommentTap(userInput),
+              ),
             ],
           ),
         )),
