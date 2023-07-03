@@ -75,8 +75,11 @@ class FakeDatabase {
           email: faker.internet.email(),
           role: DatabseUserRole.client,
           status: DatabseUserStatus.active,
-          imageUrl: faker.image
-              .image(keywords: ['face', 'man', 'woman'], random: true)));
+          imageUrl: faker.image.image(
+              keywords: ['face', 'man', 'woman'],
+              random: true,
+              height: 300,
+              width: 400)));
     }
   }
 
@@ -202,8 +205,8 @@ class FakeDatabase {
         isBookmarked: false,
         imagesUrls: [
           faker.image.image(
-              width: 1280,
-              height: 720,
+              width: 640,
+              height: 320,
               keywords: ['spring', 'winter', 'nature'],
               random: true),
           faker.image.image(
