@@ -298,6 +298,8 @@ class _TabContentState extends State<TabContent>
               cauroselLeftPadding: screenHorizontalPadding,
               cauroselRightPadding: screenHorizontalPadding,
               items: posts,
+              onPostBookmarkPressed: (post, newBookmarkStatus) =>
+                  onPostBookMarkPressed(post, newBookmarkStatus),
               onPostBookMarkUpdated: (post, newBookmarkStatus) =>
                   _postListsCubit.updatePostsBookmarkStatus(
                       postId: post.id, newBookmarkStatus: newBookmarkStatus),
