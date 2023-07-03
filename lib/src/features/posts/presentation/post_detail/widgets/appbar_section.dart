@@ -67,10 +67,11 @@ class AppbarSection extends StatelessWidget {
           width: screenHorizontalPadding,
         ),
       ],
-      flexibleSpace: Image.network(
+      flexibleSpace: CustomeImage(
+        borderRadious: 0,
         height: 250.0,
         fit: BoxFit.cover,
-        (context.read<PostDetailsCubit>().state
+        imageUrl: (context.read<PostDetailsCubit>().state
                         as PostDetailsFetchedSuccessfully)
                     .post
                     .imagesUrls ==
