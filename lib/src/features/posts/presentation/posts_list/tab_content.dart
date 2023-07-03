@@ -340,9 +340,10 @@ class _TabContentState extends State<TabContent>
   void onPostBookMarkPressed(Post post, bool newBookmarkStatusToSet) {
     if (context.read<AuthenticationCubit>().state is! AuthenticationLoggedIn) {
       ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
-        context: context,
-        message: error401SnackBar,
-      ));
+          context: context,
+          message: error401SnackBar,
+          actionLabel: 'Sign In',
+          action: () => Navigator.pushNamed(context, loginRoute)));
       return;
     }
 
