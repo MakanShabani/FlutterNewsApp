@@ -113,6 +113,9 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                                   initialBookmarkStatus:
                                       widget.items[itemIndex].isBookmarked,
                                   post: widget.items[itemIndex],
+                                  onBookmarkPressed: (post, newBookmarkValue) =>
+                                      onPostBookMarkPressed(
+                                          post, newBookmarkValue),
                                   onPostBookmarkUpdated: (post,
                                           newBookmarkValue) =>
                                       onPostBookmarkUpdated(
@@ -175,8 +178,8 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
   // we use this function to do stuff when bookmark button is pressed
   //if widget.onPostBookmarkPressed is provided , parent widget's demands as function will be call
   void onPostBookMarkPressed(Post post, bool newBookmarkStatusToSet) {
-    widget.onPostBookmarkPressed != null
-        ? () => widget.onPostBookmarkPressed!(post, newBookmarkStatusToSet)
-        : null;
+    if (widget.onPostBookmarkPressed != null) {
+      widget.onPostBookmarkPressed!(post, newBookmarkStatusToSet);
+    }
   }
 }
