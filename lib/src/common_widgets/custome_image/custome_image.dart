@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,13 +28,17 @@ class CustomeImage extends StatelessWidget {
         create: (context) => ImageCubit(),
         child: BlocBuilder<ImageCubit, ImageState>(
           builder: (context, state) {
-            return Image.network(
-              imageUrl,
+            return CachedNetworkImage(
+              imageUrl: imageUrl,
               key: UniqueKey(),
               height: height ?? 100.0,
               width: width ?? 100.0,
               fit: fit ?? BoxFit.fill,
-              errorBuilder: (context, exception, stackTrace) => SizedBox(
+              placeholder: (context, url) => SizedBox(
+                  height: height ?? 100.0,
+                  width: width ?? 100.0,
+                  child: const Icon(Icons.image)),
+              errorWidget: (context, url, error) => SizedBox(
                 height: height ?? 100.0,
                 width: width ?? 100.0,
                 child: Center(
