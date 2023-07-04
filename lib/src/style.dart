@@ -5,6 +5,8 @@ class ThemeStyle {
 
   static ThemeData lightTheme() {
     return ThemeData(
+      //use to change scroll and navigation behavior globally
+      platform: TargetPlatform.iOS,
       // Define the default brightness and colors.
       brightness: Brightness.light,
       primarySwatch: Colors.orange,
@@ -86,6 +88,8 @@ class ThemeStyle {
 
   static ThemeData darkTheme() {
     return ThemeData(
+      //use to change scroll and navigation behavior globally
+      platform: TargetPlatform.iOS,
       // Define the default brightness and colors.
       brightness: Brightness.dark,
       primarySwatch: Colors.orange,
