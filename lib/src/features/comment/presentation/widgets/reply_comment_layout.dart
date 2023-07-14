@@ -1,28 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:responsive_admin_dashboard/src/features/comment/presentation/widgets/comment_widgets.dart';
 import 'package:responsive_admin_dashboard/src/infrastructure/utils/helper_methods.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../domain/comment.dart';
 
-class CommentLayoutInVerticalList extends StatefulWidget {
-  const CommentLayoutInVerticalList({
+class ReplyCommentLayout extends StatefulWidget {
+  const ReplyCommentLayout({
     Key? key,
-    required this.comment,
+    required this.reply,
     this.dotIconColor,
-    this.spaceBetweenReplies,
+    required this.bottomPadding,
   }) : super(key: key);
 
-  final Comment comment;
+  final Comment reply;
   final Color? dotIconColor;
-  final double? spaceBetweenReplies;
+  final double bottomPadding;
   @override
-  State<CommentLayoutInVerticalList> createState() =>
-      _CommentLayoutInVerticalListState();
+  State<ReplyCommentLayout> createState() => _ReplyCommentLayoutState();
 }
 
-class _CommentLayoutInVerticalListState
-    extends State<CommentLayoutInVerticalList> {
+class _ReplyCommentLayoutState extends State<ReplyCommentLayout> {
   bool fullContent = false;
 
   @override
@@ -33,10 +30,10 @@ class _CommentLayoutInVerticalListState
       children: [
         //Profile Picture
         ProfilePicture(
-          imageUrl: widget.comment.userImageUrl,
-          height: 60.0,
-          width: 60.0,
-          reservedIconSize: 30.0,
+          imageUrl: widget.reply.userImageUrl,
+          height: 55.0,
+          width: 55.0,
+          reservedIconSize: 25.0,
         ),
         //Free space between profile picture & other widgets
         const SizedBox(
@@ -57,7 +54,7 @@ class _CommentLayoutInVerticalListState
                   children: [
                     //user's name section
                     Text(
-                      '${widget.comment.userName} ${widget.comment.userLastName}',
+                      '${widget.reply.userName} ${widget.reply.userLastName}',
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                           fontSize: 13.0, fontWeight: FontWeight.bold),
                     ),
@@ -77,7 +74,7 @@ class _CommentLayoutInVerticalListState
                     //comment's sent time
                     Text(
                       HelperMethods.calculateTimeForRepresetingInUI(
-                          widget.comment.createdAt),
+                          widget.reply.createdAt),
                       style: Theme.of(context)
                           .textTheme
                           .labelSmall
@@ -93,57 +90,19 @@ class _CommentLayoutInVerticalListState
               // comment's content
 
               TextHandleOverflow(
-                content: widget.comment.content,
+                content: widget.reply.content,
                 maxLine: 5,
                 textStyle: Theme.of(context).textTheme.bodyLarge,
               ),
 
-              const SizedBox(
-                height: 8.0,
-              ),
-
-              // reply Button
-              BorderTextButton(
-                onClicked: () => {},
-                buttonText: 'Reply',
-                bottomBorder: BorderSide(color: Theme.of(context).primaryColor),
-              ),
-
-              widget.comment.replies != null &&
-                      widget.comment.replies!.isNotEmpty
-                  ? const SizedBox(
-                      height: 30.0,
-                    )
-                  : const SizedBox(
-                      height: 0,
-                    ),
-              //replies list
-              widget.comment.replies != null &&
-                      widget.comment.replies!.isNotEmpty
-                  ? repliesToWidget()
-                  : const SizedBox(
-                      height: 0,
-                    ),
+              //Bottom Padding
+              SizedBox(
+                height: widget.bottomPadding,
+              )
             ],
           ),
         )
       ],
     );
-  }
-
-  Column repliesToWidget() {
-    //Map each reply to a ReplyCommentLayout Widget to show in UI
-    //Set last reply bottom paddings to 0 to avoid messing up the UI
-    List<Widget> tempWidgets = List.empty(growable: true);
-    for (int i = 0; i < widget.comment.replies!.length; i++) {
-      tempWidgets.add(ReplyCommentLayout(
-        reply: widget.comment.replies![i],
-        dotIconColor: widget.dotIconColor ?? Theme.of(context).primaryColor,
-        bottomPadding: i == widget.comment.replies!.length - 1
-            ? 0
-            : widget.spaceBetweenReplies ?? 30.0,
-      ));
-    }
-    return Column(children: tempWidgets);
   }
 }

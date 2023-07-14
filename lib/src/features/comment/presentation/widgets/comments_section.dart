@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
+import '../../../settings/presentation/blocs/theme_cubit/theme_cubit.dart';
 import '../../domain/comment.dart';
 import '../blocs/cubits.dart';
 import 'comment_widgets.dart';
@@ -39,8 +40,12 @@ class CommentsSection extends StatelessWidget {
             lastItemWithoutBottomPadding: false,
             hideDividerAfterLastItem: true,
             showDivider: true,
-            itemLayoutBuilder: (comment, index) =>
-                CommentLayoutInVerticalList(comment: comment),
+            itemLayoutBuilder: (comment, index) => CommentLayoutInVerticalList(
+                comment: comment,
+                dotIconColor:
+                    context.read<ThemeCubit>().state is ThemeLightModeState
+                        ? Colors.black
+                        : Colors.white),
             loadingLayout: const ListDefaultLoadingIndicator(),
             onItemsAreInserted: onNewItemsAreInserted,
           );
