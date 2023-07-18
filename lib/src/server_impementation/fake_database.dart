@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:faker/faker.dart';
+import 'package:responsive_admin_dashboard/src/features/comment/domain/comment.dart';
 
 import 'databse_entities/databse_comment.dart';
 import 'databse_entities/databse_entities.dart';
@@ -144,6 +145,11 @@ class FakeDatabase {
                     faker.lorem.sentence()
                 : faker.lorem.sentence(),
             user: clients[Random().nextInt(clients.length)],
+<<<<<<< Updated upstream
+=======
+            replies: createDummyRepliesForComments(
+                posts[j].id, faker.randomGenerator.integer(5)),
+>>>>>>> Stashed changes
           ),
         );
       }
@@ -151,6 +157,28 @@ class FakeDatabase {
       //set post's commentsCount
       posts[j].commentsCount = commentsCount;
     }
+  }
+
+  List<DatabaseComment> createDummyRepliesForComments(
+      String postId, int howManyReplies) {
+    List<DatabaseComment> replies = List.empty(growable: true);
+
+    for (int i = 0; i <= howManyReplies; i++) {
+      replies.add(DatabaseComment(
+          id: DateTime.now().microsecondsSinceEpoch.toString(),
+          createdAt: faker.date.dateTime(minYear: 2018, maxYear: 2022),
+          updatedAt: DateTime.now(),
+          user: clients[Random().nextInt(clients.length)],
+          postId: postId,
+          content: i % 2 == 0
+              ? faker.lorem.sentence() +
+                  faker.lorem.sentence() +
+                  faker.lorem.sentence()
+              : faker.lorem.sentence(),
+          replies: List.empty(growable: true)));
+    }
+
+    return replies;
   }
 
   void createDummyPost(int count) {
