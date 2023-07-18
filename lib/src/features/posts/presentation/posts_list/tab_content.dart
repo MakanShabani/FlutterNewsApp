@@ -217,6 +217,8 @@ class _TabContentState extends State<TabContent>
                     if (state is PostsListCubitFetchedSuccessfully) {
                       return SliverInfiniteAnimatedList<Post>(
                         items: state.posts,
+                        firstItemWithoutTopPadding: true,
+                        lastItemWithoutBottomPadding: true,
                         itemLayoutBuilder: (item, index) =>
                             PostItemInVerticalList(
                           itemHeight: 160,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ThemeStyle {
   static double cardBorderRadious = 10.0;
+  static double appbarbuttonIconsSize = 20.0;
 
   static ThemeData lightTheme() {
     return ThemeData(
@@ -21,7 +22,7 @@ class ThemeStyle {
           centerTitle: true,
           backgroundColor: Colors.white,
           iconTheme: const IconThemeData().copyWith(
-            color: Colors.white,
+            color: Colors.black87,
           )),
       switchTheme: const SwitchThemeData().copyWith(
         thumbColor:

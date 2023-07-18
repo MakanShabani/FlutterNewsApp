@@ -410,6 +410,8 @@ class _BookmarkSectionState extends State<BookmarkSection>
         state is PostsListCubitPostHasBeenAdded) {
       return SliverInfiniteAnimatedList<Post>(
         items: state.posts,
+        firstItemWithoutTopPadding: true,
+        lastItemWithoutBottomPadding: true,
         itemLayoutBuilder: (item, index) => PostItemInVerticalList(
           key: UniqueKey(),
           itemHeight: 160,

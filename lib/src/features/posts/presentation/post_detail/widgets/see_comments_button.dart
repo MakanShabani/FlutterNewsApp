@@ -25,7 +25,7 @@ class SeeCommentsButton extends StatelessWidget {
         margin: EdgeInsets.fromLTRB(leftMargin ?? 0, topMargin ?? 0,
             rightMargin ?? 0, bottomMargin ?? 0),
         child: CustomeButton(
-          onPressed: () => {},
+          onPressed: onClicked,
           text: text,
         ),
       ),

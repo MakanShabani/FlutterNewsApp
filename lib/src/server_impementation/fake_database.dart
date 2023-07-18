@@ -45,10 +45,11 @@ class FakeDatabase {
     createDummyClients(20);
     createDummyStaffs(15);
     createDummyPost(30);
-    createDummyComments(15);
+    createDummyComments(60);
   }
 
   void createDummyClients(int count) {
+    Faker faker = Faker();
     //Add some users as static memebrs -- for login & test purposes
     clients.add(DatabaseUser(
       id: 'user_static1',
@@ -61,21 +62,25 @@ class FakeDatabase {
       password: 'mk',
       role: DatabseUserRole.client,
       status: DatabseUserStatus.active,
+      imageUrl: faker.image.image(),
     ));
     //Create Dummy Clients
-    Faker faker = Faker();
     for (int i = 0; i <= count; i++) {
       clients.add(DatabaseUser(
-        id: DateTime.now().microsecondsSinceEpoch.toString(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        firstName: faker.person.name(),
-        lastName: faker.person.lastName(),
-        age: faker.randomGenerator.integer(80, min: 18),
-        email: faker.internet.email(),
-        role: DatabseUserRole.client,
-        status: DatabseUserStatus.active,
-      ));
+          id: DateTime.now().microsecondsSinceEpoch.toString(),
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          firstName: faker.person.name(),
+          lastName: faker.person.lastName(),
+          age: faker.randomGenerator.integer(80, min: 18),
+          email: faker.internet.email(),
+          role: DatabseUserRole.client,
+          status: DatabseUserStatus.active,
+          imageUrl: faker.image.image(
+              keywords: ['face', 'man', 'woman'],
+              random: true,
+              height: 300,
+              width: 400)));
     }
   }
 
@@ -145,8 +150,12 @@ class FakeDatabase {
                     faker.lorem.sentence()
                 : faker.lorem.sentence(),
             user: clients[Random().nextInt(clients.length)],
+<<<<<<< HEAD
             replies: createDummyRepliesForComments(
                 posts[j].id, faker.randomGenerator.integer(5)),
+=======
+            replies: List.empty(growable: true),
+>>>>>>> Comment_feature
           ),
         );
       }
@@ -224,8 +233,8 @@ class FakeDatabase {
         isBookmarked: false,
         imagesUrls: [
           faker.image.image(
-              width: 1280,
-              height: 720,
+              width: 640,
+              height: 320,
               keywords: ['spring', 'winter', 'nature'],
               random: true),
           faker.image.image(

@@ -42,6 +42,8 @@ class RelatedPostsSection extends StatelessWidget {
             ),
             SliverInfiniteAnimatedList<Post>(
               items: state.fetchedPosts,
+              firstItemWithoutTopPadding: true,
+              lastItemWithoutBottomPadding: true,
               itemLayoutBuilder: (item, index) => PostItemInVerticalList(
                 itemHeight: 160,
                 rightMargin: screenHorizontalPadding,
