@@ -24,11 +24,16 @@ class _LoginScreenState extends State<LoginScreen> {
           current is AuthenticationLoggedIn,
       listener: (context, state) {
         if (state is AuthenticationLoggingInError) {
-          ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
+            appSnackBar(
               message: state.error.message,
               isFloating: false,
               isTop: false,
-              context: context));
+              context: context,
+              action: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+              actionLabel: 'OK',
+            ),
+          );
           return;
         }
         if (state is AuthenticationLoggedIn) {

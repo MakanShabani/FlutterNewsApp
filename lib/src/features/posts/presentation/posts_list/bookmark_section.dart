@@ -101,7 +101,11 @@ class _BookmarkSectionState extends State<BookmarkSection>
             //show snackbar --> no more bookmarks
 
             ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
-                context: context, message: noMoreBookmarkToFetchSnackBar));
+              context: context,
+              message: noMoreBookmarkToFetchSnackBar,
+              action: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+              actionLabel: 'OK',
+            ));
 
             return;
           }
@@ -207,6 +211,8 @@ class _BookmarkSectionState extends State<BookmarkSection>
       ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
         context: context,
         message: updatingBookmarksListSnackBar,
+        action: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+        actionLabel: 'OK',
       ));
       return;
     }

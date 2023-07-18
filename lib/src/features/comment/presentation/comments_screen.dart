@@ -175,9 +175,15 @@ class _CommentsScreenState extends State<CommentsScreen> {
               if (state is SendCommentSentState) {
                 //comment sent successfully
                 //show snackbar to notify user
-                ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(
+                  appSnackBar(
                     context: context,
-                    message: commentsSentSuccessfullySnackBar));
+                    message: commentsSentSuccessfullySnackBar,
+                    action: () =>
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                    actionLabel: 'OK',
+                  ),
+                );
                 return;
               }
             }),

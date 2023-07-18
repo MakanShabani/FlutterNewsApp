@@ -354,6 +354,8 @@ class _TabContentState extends State<TabContent>
       ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
         context: context,
         message: updatingBookmarksListSnackBar,
+        action: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+        actionLabel: 'OK',
       ));
       return;
     }

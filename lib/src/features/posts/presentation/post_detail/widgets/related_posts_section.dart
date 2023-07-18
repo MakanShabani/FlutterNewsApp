@@ -103,6 +103,8 @@ class RelatedPostsSection extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(appSnackBar(
         context: context,
         message: updatingBookmarksListSnackBar,
+        action: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+        actionLabel: 'OK',
       ));
       return;
     }
