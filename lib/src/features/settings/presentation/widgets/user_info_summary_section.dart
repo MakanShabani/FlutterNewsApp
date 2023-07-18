@@ -28,26 +28,12 @@ class UserInfoSummarySection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 15.0),
-                  child: SizedBox(
-                    height: 100.0,
-                    width: 100.0,
-                    child: state is AuthenticationLoggedIn ||
-                            state is AuthenticationLoggingOut
-                        ? const CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                'https://resize-elle.ladmedia.fr/rcrop/1024,1024/img/var/plain_site/storage/images/people/la-vie-des-people/news/brad-pitt-en-fauteuil-roulant-une-photo-inquiete-ses-fans-3924809/94792543-1-fre-FR/Brad-Pitt-en-fauteuil-roulant-une-photo-inquiete-ses-fans.jpg'),
-                          )
-                        : const CircleAvatar(
-                            backgroundColor: Colors.blue,
-                            child: Icon(
-                              size: 50.0,
-                              Icons.person,
-                              color: Colors.white,
-                            ),
-                          ),
-                  ),
-                ),
+                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 15.0),
+                    child: ProfilePicture(
+                      imageUrl: state is AuthenticationLoggedIn
+                          ? state.user.imageUrl
+                          : null,
+                    )),
                 const SizedBox(
                   width: 50.0,
                 ),
