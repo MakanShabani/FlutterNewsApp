@@ -150,12 +150,8 @@ class FakeDatabase {
                     faker.lorem.sentence()
                 : faker.lorem.sentence(),
             user: clients[Random().nextInt(clients.length)],
-<<<<<<< HEAD
             replies: createDummyRepliesForComments(
                 posts[j].id, faker.randomGenerator.integer(5)),
-=======
-            replies: List.empty(growable: true),
->>>>>>> Comment_feature
           ),
         );
       }
