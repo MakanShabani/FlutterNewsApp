@@ -29,6 +29,7 @@ class AppbarSection extends StatelessWidget {
         icon: const Icon(
           Icons.arrow_back_ios,
           size: 20.0,
+          color: Colors.white,
         ),
       ),
       actions: [
@@ -36,6 +37,7 @@ class AppbarSection extends StatelessWidget {
           onPressed: () => {},
           icon: const Icon(Icons.share),
           iconSize: 20.0,
+          color: Colors.white,
         ),
         BlocBuilder<PostDetailsCubit, PostDetailsState>(
           buildWhen: (previous, current) =>
