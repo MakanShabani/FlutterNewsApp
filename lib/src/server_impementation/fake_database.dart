@@ -145,11 +145,8 @@ class FakeDatabase {
                     faker.lorem.sentence()
                 : faker.lorem.sentence(),
             user: clients[Random().nextInt(clients.length)],
-<<<<<<< Updated upstream
-=======
             replies: createDummyRepliesForComments(
                 posts[j].id, faker.randomGenerator.integer(5)),
->>>>>>> Stashed changes
           ),
         );
       }
