@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../features/posts/presentation/posts_list/bookmark_section.dart';
 import '../../features/posts/presentation/posts_list/home_section/home_section.dart';
+import '../../features/search/presentation/search_section.dart';
 import '../../features/settings/presentation/settings_section.dart';
 import 'bottom_navigation.dart';
 
@@ -17,9 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _pages = const [
     HomeSection(),
-    Text(
-      'Index 1: Search',
-    ),
+    SearchSection(),
     BookmarkSection(),
     SettingsSection(),
   ];
