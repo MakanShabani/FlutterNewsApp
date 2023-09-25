@@ -21,10 +21,6 @@ class _HomeSectionState extends State<HomeSection>
   @override
   bool get wantKeepAlive => true;
 
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {

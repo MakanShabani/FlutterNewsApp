@@ -29,11 +29,11 @@ class ButtonSections extends StatelessWidget {
               onPressed:
                   state is AuthenticationLoggingIn ? null : signInOnPressed,
               child: state is AuthenticationLoggingIn
-                  ? Align(
+                  ? const Align(
                       alignment: Alignment.center,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text('Signing in'),
                           SizedBox(
                             width: 2.0,
@@ -48,8 +48,8 @@ class ButtonSections extends StatelessWidget {
                   : const Text('Sign in'),
             ),
             const SizedBox(height: 20.0),
-            Row(
-              children: const [
+            const Row(
+              children: [
                 Expanded(
                   child: Divider(
                     color: Colors.black12,

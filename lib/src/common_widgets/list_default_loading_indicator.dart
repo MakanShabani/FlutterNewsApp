@@ -7,9 +7,9 @@ class ListDefaultLoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: const SizedBox(
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: SizedBox(
           height: 10.0,
           child: LoadingIndicator(
             hasBackground: false,

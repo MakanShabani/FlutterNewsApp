@@ -7,7 +7,7 @@ class SearchSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child:
-          Text('This is search section, where you can search all posts/news'),
+          const Text('This is search section, where you can search all posts/news'),
     );
   }
 }

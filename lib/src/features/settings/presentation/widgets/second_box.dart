@@ -8,17 +8,17 @@ class SecondBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const OptionBoxTitle(title: 'Account'),
-        const SizedBox(
+        OptionBoxTitle(title: 'Account'),
+        SizedBox(
           height: 12.0,
         ),
         Card(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               ListTile(
                 title: OptionTitle(text: 'Edit Account'),
                 trailing: Icon(

@@ -1,6 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'dart:ffi';
 
 import '../../features/comment/data/dtos/send_comment_dto.dart';
 import '../../features/comment/domain/comment.dart';
