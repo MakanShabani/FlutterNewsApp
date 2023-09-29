@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_admin_dashboard/src/features/comment/data/repositories/fake_comments_repository.dart';
-import 'package:responsive_admin_dashboard/src/server_impementation/data_sources/comment_data_source.dart';
+import 'src/features/comment/data/repositories/fake_comments_repository.dart';
+import 'src/features/search/data/Repository/fake_search_repository.dart';
+import 'src/server_impementation/data_sources/comment_data_source.dart';
+import 'src/server_impementation/data_sources/search_data_source.dart';
 
 import 'src/features/authentication/application/authentication_services.dart';
 import 'src/features/authentication/data/repositories/authentciation_repositories.dart';
@@ -49,6 +51,10 @@ class App extends StatelessWidget {
               delayDurationInSeconds: 5,
               commentDataSource: CommentDataSource()),
         ),
+        RepositoryProvider(
+          create: (context) => FakeSearchRepository(
+              delayDurationInSeconds: 5, searchDataSource: SearchDataSource()),
+        )
       ],
       child: MultiBlocProvider(
         providers: [
