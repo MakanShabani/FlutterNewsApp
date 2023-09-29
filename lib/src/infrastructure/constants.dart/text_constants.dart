@@ -5,6 +5,10 @@ const error401SnackBar = 'Please sign in to use this feature';
 const error500 = "Its's Not Your Fault, It's On Us";
 const error500Subtitle =
     'Sorry, we are expericencing some trouble currently, please try again later';
+
+const searchNothingFound = "Looks Like We Couldn't Find Any Thing";
+const searchNothingFoundSubtitle =
+    'Try something else, we have lots of news about anything you could imagine';
 const errorFetching = 'Sorry, something went wrong';
 
 const bookmarkListsEmpty = "Looks Like You Haven't Bookmarked Any Post Yet";
