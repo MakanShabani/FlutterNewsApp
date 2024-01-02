@@ -1,4 +1,4 @@
-# responsive_admin_dashboard
+# A news application
 
 A new Flutter project.
 
