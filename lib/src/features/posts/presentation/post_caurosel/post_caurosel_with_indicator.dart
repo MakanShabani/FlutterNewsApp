@@ -84,10 +84,11 @@ class _CarouselWithIndicatorState extends State<PostCarouselWithIndicator> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            height: 34.0,
+                            height: 45.0,
                             child: Text(
                               widget.items[itemIndex].title,
                               maxLines: 2,
+                              overflow: TextOverflow.fade,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16.0,

@@ -23,7 +23,7 @@ class PostItemInVerticalList extends StatelessWidget {
   static double _imageHeight = 0;
   static double _itemFinalHeight = 0;
   static double _textContainerLeftPadding = 0;
-  static double itemDefaultHeight = 160;
+  static double itemDefaultHeight = 170;
   static const double textImageGap = 10.0;
   static const double textContainerLeftMargin = 15.0;
   static const double textContainerTopMargin = 12.0;
@@ -89,6 +89,8 @@ class PostItemInVerticalList extends StatelessWidget {
                       children: [
                         Text(
                           item.title,
+                          maxLines: 3,
+                          overflow: TextOverflow.fade,
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
                         SizedBox(
