@@ -77,6 +77,7 @@ class User extends Entity {
         lastName: databseUser.lastName,
         email: databseUser.email,
         role: UserRole.fromIndex(databseUser.role.index),
+        imageUrl: databseUser.imageUrl,
         status: UserStatus.fromIndex(databseUser.status.index));
   }
 }

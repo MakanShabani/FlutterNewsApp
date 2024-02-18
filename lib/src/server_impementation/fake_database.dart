@@ -58,11 +58,12 @@ class FakeDatabase {
       firstName: 'Makan',
       lastName: 'Shabani',
       age: 30,
-      email: 'makan@gmail.com',
-      password: 'mk',
+      email: 'admin@admin.com',
+      password: 'admin',
       role: DatabseUserRole.client,
       status: DatabseUserStatus.active,
-      imageUrl: faker.image.image(),
+      imageUrl:
+          "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTWIAgscj08lMgBbtSui2OFqTAIeJ5HslBkW3mZO30zZiaT-3M-",
     ));
     //Create Dummy Clients
     for (int i = 0; i <= count; i++) {
