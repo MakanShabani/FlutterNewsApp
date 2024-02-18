@@ -52,7 +52,10 @@ class CustomeButton extends StatelessWidget {
             Expanded(
               child: Align(
                 alignment: Alignment.center,
-                child: Text(text),
+                child: Text(
+                  text,
+                  style: TextStyle(color: textColor),
+                ),
               ),
             ),
           ],

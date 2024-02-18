@@ -78,6 +78,7 @@ class ButtonSections extends StatelessWidget {
                   backgroundColor: state is ThemeDarkModeState
                       ? Colors.white
                       : Colors.black12,
+                  textColor: Theme.of(context).primaryColor,
                   logoImageAsset: 'assets/images/google.png',
                   text: 'Sign in with Google',
                   onPressed: state is AuthenticationLoggingIn ? null : () => {},
