@@ -1,11 +1,11 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:responsive_admin_dashboard/src/features/comment/application/comment_application.dart';
-import 'package:responsive_admin_dashboard/src/features/comment/domain/comment.dart';
-import 'package:responsive_admin_dashboard/src/features/comment/presentation/blocs/fetch_comments/comments_fetching_cubit.dart';
-import 'package:responsive_admin_dashboard/src/infrastructure/shared_dtos/shared_dtos.dart';
-import 'package:responsive_admin_dashboard/src/infrastructure/shared_models/error_model.dart';
+import 'package:shaspeaker_news_app/src/features/comment/application/comment_application.dart';
+import 'package:shaspeaker_news_app/src/features/comment/domain/comment.dart';
+import 'package:shaspeaker_news_app/src/features/comment/presentation/blocs/fetch_comments/comments_fetching_cubit.dart';
+import 'package:shaspeaker_news_app/src/infrastructure/shared_dtos/shared_dtos.dart';
+import 'package:shaspeaker_news_app/src/infrastructure/shared_models/error_model.dart';
 
 class MockCommentFethcingService extends Mock
     implements CommentsFetchingService {}

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_admin_dashboard/src/features/posts/domain/post.dart';
-import 'package:responsive_admin_dashboard/src/features/posts/presentation/post_detail/widgets/widgets.dart';
-import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts_list/blocs/posts_list_blocs.dart';
-import 'package:responsive_admin_dashboard/src/router/app_router.dart';
+import 'package:shaspeaker_news_app/src/features/posts/domain/post.dart';
+import 'package:shaspeaker_news_app/src/features/posts/presentation/post_detail/widgets/widgets.dart';
+import 'package:shaspeaker_news_app/src/features/posts/presentation/posts_list/blocs/posts_list_blocs.dart';
+import 'package:shaspeaker_news_app/src/router/app_router.dart';
 import '../../../../router/route_names.dart';
 
 import '../../../../common_widgets/common_widgest.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:responsive_admin_dashboard/src/infrastructure/utils/helper_methods.dart';
+import 'package:shaspeaker_news_app/src/infrastructure/utils/helper_methods.dart';
 
 class TimeInText extends StatelessWidget {
   const TimeInText(

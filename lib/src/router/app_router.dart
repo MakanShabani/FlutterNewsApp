@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:responsive_admin_dashboard/src/features/comment/presentation/comments_screen.dart';
-import 'package:responsive_admin_dashboard/src/features/posts/presentation/post_detail/post_screen.dart';
+import 'package:shaspeaker_news_app/src/features/comment/presentation/comments_screen.dart';
+import 'package:shaspeaker_news_app/src/features/posts/presentation/post_detail/post_screen.dart';
 
 import '../screens/home_screen/home_screen.dart';
 import '../screens/splash_screen.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_admin_dashboard/src/features/authentication/presentation/authentication_presentations.dart';
-import 'package:responsive_admin_dashboard/src/features/comment/data/dtos/dtos.dart';
-import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
-import 'package:responsive_admin_dashboard/src/router/route_names.dart';
+import 'package:shaspeaker_news_app/src/features/authentication/presentation/authentication_presentations.dart';
+import 'package:shaspeaker_news_app/src/features/comment/data/dtos/dtos.dart';
+import 'package:shaspeaker_news_app/src/infrastructure/constants.dart/constants.dart';
+import 'package:shaspeaker_news_app/src/router/route_names.dart';
 
 import '../../../common_widgets/common_widgest.dart';
 import '../application/comment_application.dart';

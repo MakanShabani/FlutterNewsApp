@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_admin_dashboard/src/common_widgets/common_widgest.dart';
+import 'package:shaspeaker_news_app/src/common_widgets/common_widgest.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 export './list_notifire_cubit/list_notifire_cubit.dart';

@@ -1,5 +1,5 @@
-import 'package:responsive_admin_dashboard/src/features/posts/domain/post.dart';
-import 'package:responsive_admin_dashboard/src/server_impementation/data_sources/post_data_source.dart';
+import 'package:shaspeaker_news_app/src/features/posts/domain/post.dart';
+import 'package:shaspeaker_news_app/src/server_impementation/data_sources/post_data_source.dart';
 
 import '../../../../infrastructure/shared_dtos/shared_dtos.dart';
 import 'post_repository.dart';

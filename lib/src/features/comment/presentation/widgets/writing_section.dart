@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_admin_dashboard/src/common_widgets/common_widgest.dart';
-import 'package:responsive_admin_dashboard/src/features/comment/presentation/blocs/cubits.dart';
-import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
+import 'package:shaspeaker_news_app/src/common_widgets/common_widgest.dart';
+import 'package:shaspeaker_news_app/src/features/comment/presentation/blocs/cubits.dart';
+import 'package:shaspeaker_news_app/src/infrastructure/constants.dart/constants.dart';
 import 'dart:math' as math;
 
 class WritingSection extends StatefulWidget {

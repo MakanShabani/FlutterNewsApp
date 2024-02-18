@@ -1,7 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.responsive_admin_dashboard">
+    package="com.shaspeaker.shaspeaker_news_app">
+    <!--For accessing to the Internet on Release mode-->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    
    <application
-        android:label="responsive_admin_dashboard"
+        android:label="Shaspeaker News"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

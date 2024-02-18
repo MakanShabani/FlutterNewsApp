@@ -2,7 +2,7 @@
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:responsive_admin_dashboard/src/infrastructure/shared_dtos/shared_dtos.dart';
+import 'package:shaspeaker_news_app/src/infrastructure/shared_dtos/shared_dtos.dart';
 
 import '../../../../../infrastructure/shared_models/shared_model.dart';
 import '../../../application/comment_application.dart';

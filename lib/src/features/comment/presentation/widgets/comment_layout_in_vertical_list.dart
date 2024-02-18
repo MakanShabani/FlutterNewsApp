@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:responsive_admin_dashboard/src/features/comment/presentation/widgets/comment_widgets.dart';
-import 'package:responsive_admin_dashboard/src/infrastructure/utils/helper_methods.dart';
+import 'package:shaspeaker_news_app/src/features/comment/presentation/widgets/comment_widgets.dart';
+import 'package:shaspeaker_news_app/src/infrastructure/utils/helper_methods.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../domain/comment.dart';

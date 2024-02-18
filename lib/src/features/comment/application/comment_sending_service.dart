@@ -1,4 +1,4 @@
-import 'package:responsive_admin_dashboard/src/features/comment/data/repositories/comment_repository.dart';
+import 'package:shaspeaker_news_app/src/features/comment/data/repositories/comment_repository.dart';
 
 import '../../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../data/dtos/dtos.dart';

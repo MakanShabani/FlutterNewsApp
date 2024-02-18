@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
+import 'package:shaspeaker_news_app/src/infrastructure/constants.dart/constants.dart';
 
 import '../../../../common_widgets/common_widgest.dart';
 import '../../../settings/presentation/blocs/theme_cubit/theme_cubit.dart';

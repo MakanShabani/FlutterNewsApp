@@ -1,5 +1,5 @@
-import 'package:responsive_admin_dashboard/src/infrastructure/shared_models/entity.dart';
-import 'package:responsive_admin_dashboard/src/server_impementation/databse_entities/databse_comment.dart';
+import 'package:shaspeaker_news_app/src/infrastructure/shared_models/entity.dart';
+import 'package:shaspeaker_news_app/src/server_impementation/databse_entities/databse_comment.dart';
 
 class Comment extends Entity {
   final String userId;

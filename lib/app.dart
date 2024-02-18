@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_admin_dashboard/src/features/comment/data/repositories/fake_comments_repository.dart';
-import 'package:responsive_admin_dashboard/src/server_impementation/data_sources/comment_data_source.dart';
+import 'package:shaspeaker_news_app/src/features/comment/data/repositories/fake_comments_repository.dart';
+import 'package:shaspeaker_news_app/src/server_impementation/data_sources/comment_data_source.dart';
 
 import 'src/features/authentication/application/authentication_services.dart';
 import 'src/features/authentication/data/repositories/authentciation_repositories.dart';

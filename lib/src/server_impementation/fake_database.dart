@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:faker/faker.dart';
-import 'package:responsive_admin_dashboard/src/features/comment/domain/comment.dart';
+import 'package:shaspeaker_news_app/src/features/comment/domain/comment.dart';
 
 import 'databse_entities/databse_comment.dart';
 import 'databse_entities/databse_entities.dart';

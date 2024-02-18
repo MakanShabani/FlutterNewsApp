@@ -1,7 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:collection/collection.dart';
-import 'package:responsive_admin_dashboard/src/server_impementation/databse_entities/databse_entities.dart';
-import 'package:responsive_admin_dashboard/src/server_impementation/services/signed_in_user_service.dart';
+import 'package:shaspeaker_news_app/src/server_impementation/databse_entities/databse_entities.dart';
+import 'package:shaspeaker_news_app/src/server_impementation/services/signed_in_user_service.dart';
 
 import '../../features/authentication/data/dtos/authenticate_dtos.dart';
 import '../../features/authentication/domain/authentication_models.dart';

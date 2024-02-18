@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:responsive_admin_dashboard/src/common_widgets/common_widgest.dart';
-import 'package:responsive_admin_dashboard/src/features/authentication/presentation/authentication_presentations.dart';
-import 'package:responsive_admin_dashboard/src/features/posts/presentation/posts_list/empty_posts_list.dart';
-import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
-import 'package:responsive_admin_dashboard/src/router/route_names.dart';
+import 'package:shaspeaker_news_app/src/common_widgets/common_widgest.dart';
+import 'package:shaspeaker_news_app/src/features/authentication/presentation/authentication_presentations.dart';
+import 'package:shaspeaker_news_app/src/features/posts/presentation/posts_list/empty_posts_list.dart';
+import 'package:shaspeaker_news_app/src/infrastructure/constants.dart/constants.dart';
+import 'package:shaspeaker_news_app/src/router/route_names.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import '../../../../router/app_router.dart';
 import '../../../bookmark post/presentation/post_bookmark_button/post_bookmark_cubit/post_bookmark_cubit.dart';

@@ -1,4 +1,4 @@
-import 'package:responsive_admin_dashboard/src/server_impementation/services/signed_in_user_service.dart';
+import 'package:shaspeaker_news_app/src/server_impementation/services/signed_in_user_service.dart';
 
 import '../../infrastructure/shared_dtos/shared_dtos.dart';
 import '../databse_entities/databse_entities.dart';

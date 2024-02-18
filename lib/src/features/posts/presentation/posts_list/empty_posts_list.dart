@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:responsive_admin_dashboard/src/infrastructure/constants.dart/constants.dart';
+import 'package:shaspeaker_news_app/src/infrastructure/constants.dart/constants.dart';
 
 class EmptyPostsList extends StatelessWidget {
   const EmptyPostsList({
